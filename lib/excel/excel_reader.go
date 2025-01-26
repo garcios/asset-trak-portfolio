@@ -1,11 +1,11 @@
-package service
+package excel
 
 import (
 	"github.com/xuri/excelize/v2"
 	"log"
 )
 
-func getRows(filePath string, tabName string) ([][]string, error) {
+func GetRows(filePath string, tabName string) ([][]string, error) {
 	file, err := excelize.OpenFile(filePath)
 	if err != nil {
 		log.Fatal(err)

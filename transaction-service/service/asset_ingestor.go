@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/garcios/asset-trak-portfolio/lib/excel"
 	"github.com/garcios/asset-trak-portfolio/transaction-service/db"
 	"github.com/garcios/asset-trak-portfolio/transaction-service/model"
 	"log"
@@ -29,7 +30,7 @@ func NewAssetIngestor(am IAssetManager) *AssetIngestor {
 
 func (ingestor *AssetIngestor) ProcessAssets(filePath string, tabName string, skipRows int) error {
 	log.Println("Processing assets...")
-	rows, err := getRows(filePath, tabName)
+	rows, err := excel.GetRows(filePath, tabName)
 	if err != nil {
 		return err
 	}
