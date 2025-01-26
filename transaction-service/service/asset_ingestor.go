@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/garcios/asset-trak-portfolio/transactions-service/db"
-	"github.com/garcios/asset-trak-portfolio/transactions-service/model"
+	"github.com/garcios/asset-trak-portfolio/transaction-service/db"
+	"github.com/garcios/asset-trak-portfolio/transaction-service/model"
 	"log"
 
 	"github.com/google/uuid"

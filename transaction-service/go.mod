@@ -1,4 +1,4 @@
-module github.com/garcios/asset-trak-portfolio/transactions-service
+module github.com/garcios/asset-trak-portfolio/transaction-service
 
 go 1.22.2
 

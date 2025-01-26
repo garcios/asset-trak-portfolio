@@ -2,8 +2,8 @@ package service
 
 import (
 	"fmt"
-	"github.com/garcios/asset-trak-portfolio/transactions-service/db"
-	"github.com/garcios/asset-trak-portfolio/transactions-service/model"
+	"github.com/garcios/asset-trak-portfolio/transaction-service/db"
+	"github.com/garcios/asset-trak-portfolio/transaction-service/model"
 	"github.com/google/uuid"
 	"log"
 	"strconv"

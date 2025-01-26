@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"github.com/garcios/asset-trak-portfolio/lib/mysql"
-	"github.com/garcios/asset-trak-portfolio/transactions-service/db"
-	"github.com/garcios/asset-trak-portfolio/transactions-service/service"
+	"github.com/garcios/asset-trak-portfolio/transaction-service/db"
+	"github.com/garcios/asset-trak-portfolio/transaction-service/service"
 	"log"
 )
 

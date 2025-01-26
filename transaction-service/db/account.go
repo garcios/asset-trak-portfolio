@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/garcios/asset-trak-portfolio/transactions-service/model"
+	"github.com/garcios/asset-trak-portfolio/transaction-service/model"
 )
 
 type AccountRepository struct {

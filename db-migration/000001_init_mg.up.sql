@@ -42,3 +42,10 @@ CREATE TABLE asset_balance (
    FOREIGN KEY (asset_id) REFERENCES asset(id)
 );
 
+CREATE TABLE currency_rate (
+ id INT AUTO_INCREMENT PRIMARY KEY,
+ base_currency VARCHAR(10) NOT NULL,
+ target_currency VARCHAR(10) NOT NULL,
+ exchange_rate DECIMAL(10, 4) NOT NULL,
+ updated_at TIMESTAMP  NOT NULL
+);

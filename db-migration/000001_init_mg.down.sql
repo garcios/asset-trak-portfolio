@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS asset;
 
 DROP TABLE IF EXISTS account;
 
+DROP TABLE IF EXISTS currency_rate;
 
 
 
