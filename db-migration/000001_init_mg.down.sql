@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS asset_balance;
 
-DROP TABLE IF EXISTS asset_prices;
+DROP TABLE IF EXISTS asset_price;
 
 DROP TABLE IF EXISTS transaction;
 

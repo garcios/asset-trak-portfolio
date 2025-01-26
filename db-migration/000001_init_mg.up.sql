@@ -24,7 +24,7 @@ CREATE TABLE transaction (
   FOREIGN KEY (asset_id) REFERENCES asset(id)
 );
 
-CREATE TABLE asset_prices (
+CREATE TABLE asset_price (
    asset_id VARCHAR(36)  NOT NULL,
    price DECIMAL(15, 2) NOT NULL,
    currency_code   VARCHAR(3)  NOT NULL,
