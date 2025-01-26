@@ -33,6 +33,8 @@ func (r *AssetRepository) AssetExists(symbol string, marketCode string) (bool, e
 		return false, fmt.Errorf("AssetExists: %v", err)
 	}
 
+	defer stmt.Close()
+
 	row := stmt.QueryRow(symbol, marketCode)
 
 	var count int

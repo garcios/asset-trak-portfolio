@@ -1,8 +1,10 @@
 package service
 
 import (
+	"fmt"
 	"github.com/garcios/asset-trak-portfolio/transactions-service/db"
 	"github.com/garcios/asset-trak-portfolio/transactions-service/model"
+	"github.com/google/uuid"
 	"log"
 )
 
@@ -10,19 +12,43 @@ type ITransactionManager interface {
 	AddTransaction(rec *model.Transaction) error
 }
 
+type IAccountManager interface {
+	FindAccountByID(id string) (*model.Account, error)
+}
+
 // verify interface compliance
 var _ ITransactionManager = &db.TransactionRepository{}
+var _ IAccountManager = &db.AccountRepository{}
 
 type TransactionIngestor struct {
 	TransactionManager ITransactionManager
+	AccountManager     IAccountManager
 }
 
-func NewTransactionIngestor(tm ITransactionManager) *TransactionIngestor {
-	return &TransactionIngestor{TransactionManager: tm}
+func NewTransactionIngestor(tm ITransactionManager, am IAccountManager) *TransactionIngestor {
+	return &TransactionIngestor{
+		TransactionManager: tm,
+		AccountManager:     am,
+	}
 }
 
-func (ingestor *TransactionIngestor) ProcessTransactions(filePath, tabName string, skipRows int) error {
+func (ingestor *TransactionIngestor) ProcessTransactions(
+	filePath,
+	tabName string,
+	skipRows int,
+	accountID string,
+) error {
 	log.Println("Processing transactions...")
+
+	// verify account
+	account, err := ingestor.AccountManager.FindAccountByID(accountID)
+	if err != nil {
+		return err
+	}
+
+	if account == nil {
+		return fmt.Errorf("account with ID %s not found", accountID)
+	}
 
 	rows, err := getRows(filePath, tabName)
 	if err != nil {
@@ -44,6 +70,10 @@ func (ingestor *TransactionIngestor) ProcessTransactions(filePath, tabName strin
 		if err != nil {
 			return err
 		}
+
+		// populate IDs
+		transaction.ID = uuid.New().String()
+		transaction.AccountID = accountID
 
 		err = ingestor.addTransaction(transaction)
 		if err != nil {
