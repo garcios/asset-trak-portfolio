@@ -1,4 +1,4 @@
-module github.com/garcios/asset-track-portfolio/lib
+module github.com/garcios/asset-trak-portfolio/lib
 
 go 1.22.2
 
