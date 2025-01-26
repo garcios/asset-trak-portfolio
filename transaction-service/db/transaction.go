@@ -15,15 +15,17 @@ func NewTransactionRepository(conn *sql.DB) *TransactionRepository {
 }
 
 func (r *TransactionRepository) AddTransaction(rec *model.Transaction) error {
-	_, err := r.DB.Exec("INSERT INTO "+
-		"transaction (id,"+
-		" account_id,"+
-		" asset_id,"+
-		" transaction_type,"+
-		" transaction_date,"+
-		" quantity,"+
-		" price,"+
-		" currency_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+	insertQuery := `INSERT INTO 
+	   transaction (id,
+		account_id,
+		asset_id,
+		transaction_type,
+		transaction_date,
+		quantity,
+		price,
+		currency_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+
+	_, err := r.DB.Exec(insertQuery,
 		rec.ID,
 		rec.AccountID,
 		rec.AssetID,
