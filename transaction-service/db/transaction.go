@@ -3,7 +3,7 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	"github.com/garcios/asset-track-portfolio/transactions/model"
+	"github.com/garcios/asset-trak-portfolio/transactions-service/model"
 )
 
 type TransactionRepository struct {

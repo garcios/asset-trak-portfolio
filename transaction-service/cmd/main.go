@@ -2,9 +2,9 @@ package main
 
 import (
 	"flag"
-	"github.com/garcios/asset-track-portfolio/lib/mysql"
-	"github.com/garcios/asset-track-portfolio/transactions/db"
-	"github.com/garcios/asset-track-portfolio/transactions/service"
+	"github.com/garcios/asset-trak-portfolio/lib/mysql"
+	"github.com/garcios/asset-trak-portfolio/transactions-service/db"
+	"github.com/garcios/asset-trak-portfolio/transactions-service/service"
 	"log"
 )
 

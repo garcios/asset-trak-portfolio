@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/garcios/asset-track-portfolio/transactions/model"
+	"github.com/garcios/asset-trak-portfolio/transactions-service/model"
 )
 
 type AssetRepository struct {
