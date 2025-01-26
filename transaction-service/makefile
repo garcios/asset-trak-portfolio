@@ -1,0 +1,17 @@
+include .env
+
+tidy:
+	go mod tidy
+
+ingest_assets:
+	go run cmd/main.go -processor=assetIngestor
+
+ingest_transactions:
+	go run cmd/main.go -processor=transactionIngestor
+
+run_server:
+	go run cmd/main.go
+
+
+.PHONY: tidy ingest_assets ingest_transactions run_server
+

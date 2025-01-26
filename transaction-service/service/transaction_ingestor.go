@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"github.com/garcios/asset-trak-portfolio/lib/excel"
 	"github.com/garcios/asset-trak-portfolio/transaction-service/db"
 	"github.com/garcios/asset-trak-portfolio/transaction-service/model"
 	"github.com/google/uuid"
@@ -63,7 +64,7 @@ func (ingestor *TransactionIngestor) ProcessTransactions(
 		return fmt.Errorf("account with ID %s not found", accountID)
 	}
 
-	rows, err := getRows(filePath, tabName)
+	rows, err := excel.GetRows(filePath, tabName)
 	if err != nil {
 		return err
 	}
@@ -99,7 +100,6 @@ func (ingestor *TransactionIngestor) ProcessTransactions(
 }
 
 func (ingestor *TransactionIngestor) mapColumnsToTransaction(row []string) (*model.Transaction, error) {
-
 	if len(row) < fieldLength {
 		log.Printf("row: %v", row)
 		return nil, fmt.Errorf("row contains less than expected fields: %d", len(row))
