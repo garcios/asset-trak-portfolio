@@ -36,8 +36,7 @@ CREATE TABLE asset_prices (
 CREATE TABLE asset_balance (
    account_id VARCHAR(36),
    asset_id VARCHAR(36)  NOT NULL,
-   balance DECIMAL(15, 2) NOT NULL,
-   currency_code   VARCHAR(3)  NOT NULL,
+   quantity DECIMAL(15, 2) NOT NULL,
    PRIMARY KEY (account_id, asset_id),
    FOREIGN KEY (account_id) REFERENCES account(id),
    FOREIGN KEY (asset_id) REFERENCES asset(id)

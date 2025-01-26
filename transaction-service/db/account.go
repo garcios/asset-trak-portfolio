@@ -32,7 +32,7 @@ func (r *AccountRepository) FindAccountByID(id string) (*model.Account, error) {
 
 	account := new(model.Account)
 
-	err = row.Scan(account.ID, account.Name, account.Email)
+	err = row.Scan(&account.ID, &account.Name, &account.Email)
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {

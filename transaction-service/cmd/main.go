@@ -14,7 +14,7 @@ const (
 	skipRows            = 3
 	tabName             = "Combined"
 	filePath            = "data/AllTradesReport.xlsx"
-	accountID           = "eb08df3c-958d-4ae8-b3ae-41ec04418786xxx"
+	accountID           = "eb08df3c-958d-4ae8-b3ae-41ec04418786"
 )
 
 func main() {
@@ -42,7 +42,7 @@ func main() {
 	}
 
 	if *processor == transactionIngestor {
-		transactionIngestor := service.NewTransactionIngestor(transactionRepo, accountRepo)
+		transactionIngestor := service.NewTransactionIngestor(transactionRepo, accountRepo, assetRepo)
 		err = transactionIngestor.ProcessTransactions(filePath, tabName, skipRows, accountID)
 		if err != nil {
 			log.Printf("failed to process transactions: %v", err)

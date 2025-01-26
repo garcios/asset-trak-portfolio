@@ -11,6 +11,7 @@ import (
 type IAssetManager interface {
 	AddAsset(rec *model.Asset) error
 	AssetExists(symbol string, marketCode string) (bool, error)
+	FindAssetBySymbol(symbol string) (*model.Asset, error)
 }
 
 // verify interface compliance
