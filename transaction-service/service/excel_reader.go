@@ -5,8 +5,8 @@ import (
 	"log"
 )
 
-func getRows(tabName string) ([][]string, error) {
-	file, err := excelize.OpenFile("data/AllTradesReport.xlsx")
+func getRows(filePath string, tabName string) ([][]string, error) {
+	file, err := excelize.OpenFile(filePath)
 	if err != nil {
 		log.Fatal(err)
 	}

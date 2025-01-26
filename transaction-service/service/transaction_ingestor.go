@@ -21,10 +21,10 @@ func NewTransactionIngestor(tm ITransactionManager) *TransactionIngestor {
 	return &TransactionIngestor{TransactionManager: tm}
 }
 
-func (ingestor *TransactionIngestor) ProcessTransactions(tabName string, skipRows int) error {
+func (ingestor *TransactionIngestor) ProcessTransactions(filePath, tabName string, skipRows int) error {
 	log.Println("Processing transactions...")
 
-	rows, err := getRows(tabName)
+	rows, err := getRows(filePath, tabName)
 	if err != nil {
 		return err
 	}

@@ -13,6 +13,7 @@ const (
 	transactionIngestor = "transactionIngestor"
 	skipRows            = 3
 	tabName             = "Combined"
+	filePath            = "data/AllTradesReport.xlsx"
 )
 
 func main() {
@@ -30,7 +31,7 @@ func main() {
 	if *processor == assetIngestor {
 		assetIngestor := service.NewAssetIngestor(assetRepo)
 
-		err = assetIngestor.ProcessAssets(tabName, skipRows)
+		err = assetIngestor.ProcessAssets(filePath, tabName, skipRows)
 		if err != nil {
 			log.Printf("failed to process assets: %v", err)
 		}
@@ -40,7 +41,7 @@ func main() {
 
 	if *processor == transactionIngestor {
 		transactionIngestor := service.NewTransactionIngestor(transactionRepo)
-		err = transactionIngestor.ProcessTransactions(tabName, skipRows)
+		err = transactionIngestor.ProcessTransactions(filePath, tabName, skipRows)
 		if err != nil {
 			log.Printf("failed to process transactions: %v", err)
 		}

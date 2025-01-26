@@ -26,9 +26,9 @@ func NewAssetIngestor(am IAssetManager) *AssetIngestor {
 	}
 }
 
-func (ingestor *AssetIngestor) ProcessAssets(tabName string, skipRows int) error {
+func (ingestor *AssetIngestor) ProcessAssets(filePath string, tabName string, skipRows int) error {
 	log.Println("Processing assets...")
-	rows, err := getRows(tabName)
+	rows, err := getRows(filePath, tabName)
 	if err != nil {
 		return err
 	}
