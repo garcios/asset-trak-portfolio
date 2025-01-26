@@ -4,23 +4,24 @@ CREATE TABLE account (
   email VARCHAR(50)  NOT NULL
 );
 
+CREATE TABLE asset (
+   id  VARCHAR(36) PRIMARY KEY,
+   symbol VARCHAR(50) NOT NULL,
+   name VARCHAR(255) NOT NULL,
+   market_code  VARCHAR(20) NOT NULL
+);
+
 CREATE TABLE transaction (
   id VARCHAR(36) PRIMARY KEY,
   account_id VARCHAR(36) NOT NULL,
-  asset_symbol VARCHAR(10)  NOT NULL,
+  asset_id VARCHAR(36)  NOT NULL,
   transaction_type VARCHAR(10)  NOT NULL,
   transaction_date DATE  NOT NULL,
   quantity INT  NOT NULL,
   price DECIMAL(10, 2)  NOT NULL,
   currency_code   VARCHAR(3)  NOT NULL,
-  FOREIGN KEY (account_id) REFERENCES account(id)
-);
-
-CREATE TABLE asset (
-    id  VARCHAR(36) PRIMARY KEY,
-    symbol VARCHAR(50) NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    market_code  VARCHAR(20) NOT NULL
+  FOREIGN KEY (account_id) REFERENCES account(id),
+  FOREIGN KEY (asset_id) REFERENCES asset(id)
 );
 
 CREATE TABLE asset_prices (
