@@ -17,8 +17,8 @@ CREATE TABLE transaction (
   asset_id VARCHAR(36)  NOT NULL,
   transaction_type VARCHAR(10)  NOT NULL,
   transaction_date DATE  NOT NULL,
-  quantity INT  NOT NULL,
-  price DECIMAL(10, 2)  NOT NULL,
+  quantity DECIMAL(15, 4)  NOT NULL,
+  price DECIMAL(15, 4)  NOT NULL,
   currency_code   VARCHAR(3)  NOT NULL,
   FOREIGN KEY (account_id) REFERENCES account(id),
   FOREIGN KEY (asset_id) REFERENCES asset(id)
@@ -36,7 +36,7 @@ CREATE TABLE asset_price (
 CREATE TABLE asset_balance (
    account_id VARCHAR(36),
    asset_id VARCHAR(36)  NOT NULL,
-   quantity DECIMAL(15, 2) NOT NULL,
+   quantity DECIMAL(15, 4) NOT NULL,
    PRIMARY KEY (account_id, asset_id),
    FOREIGN KEY (account_id) REFERENCES account(id),
    FOREIGN KEY (asset_id) REFERENCES asset(id)
@@ -46,6 +46,6 @@ CREATE TABLE currency_rate (
  id INT AUTO_INCREMENT PRIMARY KEY,
  base_currency VARCHAR(10) NOT NULL,
  target_currency VARCHAR(10) NOT NULL,
- exchange_rate DECIMAL(10, 4) NOT NULL,
+ exchange_rate DECIMAL(15, 4) NOT NULL,
  updated_at TIMESTAMP  NOT NULL
 );

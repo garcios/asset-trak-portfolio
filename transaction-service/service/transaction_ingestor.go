@@ -34,14 +34,22 @@ type IAccountManager interface {
 	FindAccountByID(id string) (*model.Account, error)
 }
 
+type IBalanceManager interface {
+	AddBalance(rec *model.AssetBalance) error
+	UpdateBalance(rec *model.AssetBalance) error
+	GetBalance(accountID string, assetID string) (*model.AssetBalance, error)
+}
+
 // verify interface compliance
 var _ ITransactionManager = &db.TransactionRepository{}
 var _ IAccountManager = &db.AccountRepository{}
+var _ IBalanceManager = &db.AssetBalanceRepository{}
 
 type TransactionIngestor struct {
 	TransactionManager ITransactionManager
 	AccountManager     IAccountManager
 	AssetManager       IAssetManager
+	BalanceManager     IBalanceManager
 	cache              *allCache
 }
 
@@ -49,12 +57,14 @@ func NewTransactionIngestor(
 	tm ITransactionManager,
 	am IAccountManager,
 	astm IAssetManager,
+	bm IBalanceManager,
 ) *TransactionIngestor {
 	ac := cache.New(defaultExpiration, purgeTime)
 	return &TransactionIngestor{
 		TransactionManager: tm,
 		AccountManager:     am,
 		AssetManager:       astm,
+		BalanceManager:     bm,
 		cache:              &allCache{assets: ac},
 	}
 }
@@ -146,7 +156,7 @@ func (ingestor *TransactionIngestor) mapColumnsToTransaction(row []string) (*mod
 		AssetID:         asset.ID,
 		TransactionType: getStringValue(row[4]),
 		TransactionDate: transactionDate,
-		Quantity:        int(quantity),
+		Quantity:        quantity,
 		Price:           price,
 		CurrencyCode:    row[7],
 	}, nil
@@ -165,6 +175,31 @@ func (ingestor *TransactionIngestor) addTransaction(rec *model.Transaction) erro
 	err := ingestor.TransactionManager.AddTransaction(rec)
 	if err != nil {
 		return err
+	}
+
+	balance, err := ingestor.BalanceManager.GetBalance(rec.AccountID, rec.AssetID)
+	if err != nil {
+		return err
+	}
+
+	if balance == nil {
+		err = ingestor.BalanceManager.AddBalance(&model.AssetBalance{
+			AccountID: rec.AccountID,
+			AssetID:   rec.AssetID,
+			Quantity:  rec.Quantity,
+		})
+		if err != nil {
+			return err
+		}
+	} else {
+		err = ingestor.BalanceManager.UpdateBalance(&model.AssetBalance{
+			AccountID: rec.AccountID,
+			AssetID:   rec.AssetID,
+			Quantity:  balance.Quantity + rec.Quantity,
+		})
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

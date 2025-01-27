@@ -29,6 +29,7 @@ func main() {
 	assetRepo := db.NewAssetRepository(conn)
 	transactionRepo := db.NewTransactionRepository(conn)
 	accountRepo := db.NewAccountRepository(conn)
+	balanceRepo := db.NewAssetBalanceRepository(conn)
 
 	if *processor == assetIngestor {
 		assetIngestor := service.NewAssetIngestor(assetRepo)
@@ -42,7 +43,12 @@ func main() {
 	}
 
 	if *processor == transactionIngestor {
-		transactionIngestor := service.NewTransactionIngestor(transactionRepo, accountRepo, assetRepo)
+		transactionIngestor := service.NewTransactionIngestor(
+			transactionRepo,
+			accountRepo,
+			assetRepo,
+			balanceRepo,
+		)
 		err = transactionIngestor.ProcessTransactions(filePath, tabName, skipRows, accountID)
 		if err != nil {
 			log.Printf("failed to process transactions: %v", err)
