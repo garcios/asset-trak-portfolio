@@ -7,7 +7,7 @@ type Transaction struct {
 	AccountID       string
 	AssetID         string
 	TransactionType string
-	TransactionDate time.Time
+	TransactionDate *time.Time
 	Quantity        int
 	Price           float64
 	CurrencyCode    string

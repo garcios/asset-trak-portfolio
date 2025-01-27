@@ -6,6 +6,7 @@ import (
 	"github.com/garcios/asset-trak-portfolio/transaction-service/db"
 	"github.com/garcios/asset-trak-portfolio/transaction-service/model"
 	"github.com/google/uuid"
+	"github.com/patrickmn/go-cache"
 	"log"
 	"strconv"
 	"strings"
@@ -14,6 +15,15 @@ import (
 
 const (
 	fieldLength = 8
+)
+
+type allCache struct {
+	assets *cache.Cache
+}
+
+const (
+	defaultExpiration = 5 * time.Minute
+	purgeTime         = 10 * time.Minute
 )
 
 type ITransactionManager interface {
@@ -32,6 +42,7 @@ type TransactionIngestor struct {
 	TransactionManager ITransactionManager
 	AccountManager     IAccountManager
 	AssetManager       IAssetManager
+	cache              *allCache
 }
 
 func NewTransactionIngestor(
@@ -39,10 +50,12 @@ func NewTransactionIngestor(
 	am IAccountManager,
 	astm IAssetManager,
 ) *TransactionIngestor {
+	ac := cache.New(defaultExpiration, purgeTime)
 	return &TransactionIngestor{
 		TransactionManager: tm,
 		AccountManager:     am,
 		AssetManager:       astm,
+		cache:              &allCache{assets: ac},
 	}
 }
 
@@ -101,61 +114,42 @@ func (ingestor *TransactionIngestor) ProcessTransactions(
 
 func (ingestor *TransactionIngestor) mapColumnsToTransaction(row []string) (*model.Transaction, error) {
 	if len(row) < fieldLength {
-		log.Printf("row: %v", row)
+		displayRow(row)
 		return nil, fmt.Errorf("row contains less than expected fields: %d", len(row))
 	}
 
-	assetSymbol := row[0]
-	var assetID string
-	a, err := ingestor.AssetManager.FindAssetBySymbol(assetSymbol)
+	asset, err := ingestor.getAsset(row[0])
 	if err != nil {
-		return nil, err
+		displayRow(row)
+		return nil, fmt.Errorf("unable to retrieve asset with symbol: %s", row[0])
 	}
 
-	assetID = a.ID
-
-	dateString := row[3]
-	var transactionDate time.Time
-	dateValue, err := time.Parse("2006-01-02", dateString)
+	transactionDate, err := getDateValue(row[3])
 	if err != nil {
-		return nil, err
-	}
-	transactionDate = dateValue
-
-	transactionType := normalizeString(row[4])
-
-	quantityString := row[5]
-
-	var quantity float64
-	if quantityString != "" {
-		quantity, err = strconv.ParseFloat(normalizeNumber(quantityString), 64)
-		if err != nil {
-			log.Printf("row: %v", row)
-			return nil, err
-		}
+		displayRow(row)
+		return nil, fmt.Errorf("unable to process transaction date with value: %s", row[3])
 	}
 
-	priceString := row[6]
-
-	var price float64
-	if priceString != "" {
-		price, err = strconv.ParseFloat(normalizeNumber(priceString), 64)
-		if err != nil {
-			log.Printf("row: %v", row)
-			return nil, err
-		}
+	quantity, err := getFloatValue(row[5])
+	if err != nil {
+		displayRow(row)
+		return nil, fmt.Errorf("unable to process quantity with value: %s", row[5])
 	}
 
-	transaction := &model.Transaction{
-		AssetID:         assetID,
-		TransactionType: transactionType,
+	price, err := getFloatValue(row[6])
+	if err != nil {
+		displayRow(row)
+		return nil, fmt.Errorf("unable to process price with value: %s", row[6])
+	}
+
+	return &model.Transaction{
+		AssetID:         asset.ID,
+		TransactionType: getStringValue(row[4]),
 		TransactionDate: transactionDate,
 		Quantity:        int(quantity),
 		Price:           price,
 		CurrencyCode:    row[7],
-	}
-
-	return transaction, nil
+	}, nil
 }
 
 func (ingestor *TransactionIngestor) addTransaction(rec *model.Transaction) error {
@@ -176,10 +170,67 @@ func (ingestor *TransactionIngestor) addTransaction(rec *model.Transaction) erro
 	return nil
 }
 
-func normalizeString(s string) string {
-	return strings.ToUpper(strings.TrimSpace(s))
+// getAsset retrieves an asset by its symbol. If the asset is not found in the cache, it is retrieved from the database.
+func (ingestor *TransactionIngestor) getAsset(assetSymbol string) (*model.Asset, error) {
+	var (
+		asset *model.Asset
+		err   error
+	)
+
+	assetFromCache, ok := ingestor.cache.assets.Get(assetSymbol)
+	if ok {
+		log.Printf("found asset from cache: %v", assetSymbol)
+		asset = assetFromCache.(*model.Asset)
+	} else {
+		log.Printf("retrieving asset from DB: %v", assetSymbol)
+		asset, err = ingestor.AssetManager.FindAssetBySymbol(assetSymbol)
+		if err != nil {
+			return nil, err
+		}
+		ingestor.cache.assets.Set(assetSymbol, asset, cache.DefaultExpiration)
+	}
+
+	return asset, nil
+}
+
+func getDateValue(dateString string) (*time.Time, error) {
+	if dateString == "" {
+		return nil, nil
+	}
+
+	dateValue, err := time.Parse("2006-01-02", dateString)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dateValue, nil
+}
+
+func getFloatValue(valueString string) (float64, error) {
+	if valueString == "" {
+		return 0, nil
+	}
+
+	value, err := strconv.ParseFloat(normalizeNumber(valueString), 64)
+	if err != nil {
+		return 0, err
+	}
+
+	return value, nil
 }
 
 func normalizeNumber(s string) string {
 	return strings.Replace(s, ",", "", -1)
+}
+
+func getStringValue(valueString string) string {
+	if valueString == "" {
+		return ""
+	}
+
+	return strings.ToUpper(strings.TrimSpace(valueString))
+}
+
+func displayRow(row []string) {
+	log.Printf("row: %v", row)
 }

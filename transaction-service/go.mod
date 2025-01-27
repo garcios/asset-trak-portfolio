@@ -5,6 +5,7 @@ go 1.22.2
 require (
 	github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250126122401-d170e7beadc6
 	github.com/google/uuid v1.6.0
+	github.com/patrickmn/go-cache v2.1.0+incompatible
 )
 
 require (
