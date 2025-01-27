@@ -1,7 +1,7 @@
 # Transaction service
 
 ## Transaction Ingestor
-This program is ingesting data from excel file with the format:
+This program is ingesting data from Excel file with the following format:
 
 ![transaction-excel.png](transaction-excel.png)
 
