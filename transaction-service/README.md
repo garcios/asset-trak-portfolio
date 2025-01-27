@@ -42,6 +42,16 @@ go run cmd/main.go -processor=transactionIngestor
 go run cmd/main.go 
 ```
 
+## Truncate data
+```shell
+make truncate
+```
+
+## Ingesting asset and transaction data
+```shell
+make ingest_transactions
+```
+
 ## Cache-Aside pattern
 The cache-aside pattern is a design pattern used to manage the cache in a system. In this pattern, the application is 
 responsible for controlling the cache. The cache is purely a storage mechanism and does not have any other functionality, 
