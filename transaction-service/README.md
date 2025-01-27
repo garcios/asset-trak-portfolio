@@ -11,6 +11,11 @@ go get github.com/xuri/excelize/v2
 go get -u github.com/go-sql-driver/mysql
 ```
 
+## Install go-cache
+```shell
+go get github.com/patrickmn/go-cache
+```
+
 ## Install my custom libraries
 ```shell
 go get github.com/garcios/asset-trak-portfolio/lib@main 
