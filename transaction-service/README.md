@@ -1,5 +1,10 @@
 # Transaction service
 
+## Transaction Ingestor
+This program is ingesting data from excel file with the format:
+
+![transaction-excel.png](transaction-excel.png)
+
 
 ## Processing excel file 
 ```shell
