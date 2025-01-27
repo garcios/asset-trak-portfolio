@@ -172,23 +172,18 @@ func (ingestor *TransactionIngestor) addTransaction(rec *model.Transaction) erro
 
 // getAsset retrieves an asset by its symbol. If the asset is not found in the cache, it is retrieved from the database.
 func (ingestor *TransactionIngestor) getAsset(assetSymbol string) (*model.Asset, error) {
-	var (
-		asset *model.Asset
-		err   error
-	)
-
-	assetFromCache, ok := ingestor.cache.assets.Get(assetSymbol)
-	if ok {
+	if assetFromCache, ok := ingestor.cache.assets.Get(assetSymbol); ok {
 		log.Printf("found asset from cache: %v", assetSymbol)
-		asset = assetFromCache.(*model.Asset)
-	} else {
-		log.Printf("retrieving asset from DB: %v", assetSymbol)
-		asset, err = ingestor.AssetManager.FindAssetBySymbol(assetSymbol)
-		if err != nil {
-			return nil, err
-		}
-		ingestor.cache.assets.Set(assetSymbol, asset, cache.DefaultExpiration)
+		return assetFromCache.(*model.Asset), nil
 	}
+
+	log.Printf("retrieving asset from DB: %v", assetSymbol)
+	asset, err := ingestor.AssetManager.FindAssetBySymbol(assetSymbol)
+	if err != nil {
+		return nil, err
+	}
+
+	ingestor.cache.assets.Set(assetSymbol, asset, cache.DefaultExpiration)
 
 	return asset, nil
 }
