@@ -16,6 +16,11 @@ go get -u github.com/go-sql-driver/mysql
 go get github.com/patrickmn/go-cache
 ```
 
+## Install transactor
+```shell
+go get github.com/Thiht/transactor
+```
+
 ## Install my custom libraries
 ```shell
 go get github.com/garcios/asset-trak-portfolio/lib@main 

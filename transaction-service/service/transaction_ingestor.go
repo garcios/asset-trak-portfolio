@@ -1,7 +1,9 @@
 package service
 
 import (
+	"context"
 	"fmt"
+	"github.com/Thiht/transactor"
 	"github.com/garcios/asset-trak-portfolio/lib/excel"
 	"github.com/garcios/asset-trak-portfolio/transaction-service/db"
 	"github.com/garcios/asset-trak-portfolio/transaction-service/model"
@@ -25,8 +27,8 @@ const (
 )
 
 type ITransactionManager interface {
-	AddTransaction(rec *model.Transaction) error
-	Truncate() error
+	AddTransaction(ctx context.Context, rec *model.Transaction) error
+	Truncate(ctx context.Context) error
 }
 
 type IAccountManager interface {
@@ -34,10 +36,10 @@ type IAccountManager interface {
 }
 
 type IBalanceManager interface {
-	AddBalance(rec *model.AssetBalance) error
-	UpdateBalance(rec *model.AssetBalance) error
-	GetBalance(accountID string, assetID string) (*model.AssetBalance, error)
-	Truncate() error
+	AddBalance(ctx context.Context, rec *model.AssetBalance) error
+	UpdateBalance(ctx context.Context, rec *model.AssetBalance) error
+	GetBalance(ctx context.Context, accountID string, assetID string) (*model.AssetBalance, error)
+	Truncate(ctx context.Context) error
 }
 
 // verify interface compliance
@@ -50,6 +52,7 @@ type TransactionIngestor struct {
 	AccountManager     IAccountManager
 	AssetManager       IAssetManager
 	BalanceManager     IBalanceManager
+	Transactor         transactor.Transactor
 	cache              *allCache
 }
 
@@ -58,6 +61,7 @@ func NewTransactionIngestor(
 	am IAccountManager,
 	astm IAssetManager,
 	bm IBalanceManager,
+	tr transactor.Transactor,
 ) *TransactionIngestor {
 	ac := cache.New(defaultExpiration, purgeTime)
 	return &TransactionIngestor{
@@ -65,19 +69,20 @@ func NewTransactionIngestor(
 		AccountManager:     am,
 		AssetManager:       astm,
 		BalanceManager:     bm,
+		Transactor:         tr,
 		cache:              &allCache{assets: ac},
 	}
 }
 
-func (ingestor *TransactionIngestor) Truncate() error {
-	err := ingestor.BalanceManager.Truncate()
+func (ingestor *TransactionIngestor) Truncate(ctx context.Context) error {
+	err := ingestor.BalanceManager.Truncate(ctx)
 	if err != nil {
 		return fmt.Errorf("failed to truncate balance data: %w", err)
 	}
 
 	log.Println("truncated balance data successfully")
 
-	err = ingestor.TransactionManager.Truncate()
+	err = ingestor.TransactionManager.Truncate(ctx)
 	if err != nil {
 		return fmt.Errorf("failed to truncate transaction data: %w", err)
 	}
@@ -88,7 +93,8 @@ func (ingestor *TransactionIngestor) Truncate() error {
 }
 
 func (ingestor *TransactionIngestor) ProcessTransactions(
-	filePath,
+	ctx context.Context,
+	filePath string,
 	tabName string,
 	skipRows int,
 	accountID string,
@@ -130,7 +136,7 @@ func (ingestor *TransactionIngestor) ProcessTransactions(
 		transaction.ID = uuid.New().String()
 		transaction.AccountID = accountID
 
-		err = ingestor.addTransaction(transaction)
+		err = ingestor.addTransaction(ctx, transaction)
 		if err != nil {
 			return err
 		}
@@ -180,47 +186,41 @@ func (ingestor *TransactionIngestor) mapColumnsToTransaction(row []string) (*mod
 	}, nil
 }
 
-func (ingestor *TransactionIngestor) addTransaction(rec *model.Transaction) error {
-
-	// TODO:
-	// Insert asset if it does not exist yet.
-
-	// The following steps should be atomic.
-	// 1. insert into transaction table
-	// 2. insert/update asset balance
-	//     - if asset for account_id already exists, insert; otherwise update balance.
-
-	err := ingestor.TransactionManager.AddTransaction(rec)
-	if err != nil {
-		return err
-	}
-
-	balance, err := ingestor.BalanceManager.GetBalance(rec.AccountID, rec.AssetID)
-	if err != nil {
-		return err
-	}
-
-	if balance == nil {
-		err = ingestor.BalanceManager.AddBalance(&model.AssetBalance{
-			AccountID: rec.AccountID,
-			AssetID:   rec.AssetID,
-			Quantity:  rec.Quantity,
-		})
+func (ingestor *TransactionIngestor) addTransaction(ctx context.Context, rec *model.Transaction) error {
+	// execute add transaction and add/update balance within a transaction.
+	return ingestor.Transactor.WithinTransaction(ctx, func(ctx context.Context) error {
+		err := ingestor.TransactionManager.AddTransaction(ctx, rec)
 		if err != nil {
 			return err
 		}
-	} else {
-		err = ingestor.BalanceManager.UpdateBalance(&model.AssetBalance{
-			AccountID: rec.AccountID,
-			AssetID:   rec.AssetID,
-			Quantity:  balance.Quantity + rec.Quantity,
-		})
+
+		balance, err := ingestor.BalanceManager.GetBalance(ctx, rec.AccountID, rec.AssetID)
 		if err != nil {
 			return err
 		}
-	}
 
-	return nil
+		if balance == nil {
+			err = ingestor.BalanceManager.AddBalance(ctx, &model.AssetBalance{
+				AccountID: rec.AccountID,
+				AssetID:   rec.AssetID,
+				Quantity:  rec.Quantity,
+			})
+			if err != nil {
+				return err
+			}
+		} else {
+			err = ingestor.BalanceManager.UpdateBalance(ctx, &model.AssetBalance{
+				AccountID: rec.AccountID,
+				AssetID:   rec.AssetID,
+				Quantity:  balance.Quantity + rec.Quantity,
+			})
+			if err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
 }
 
 // getAsset retrieves an asset by its symbol. If the asset is not found in the cache, it is retrieved from the database.

@@ -1,20 +1,21 @@
 package db
 
 import (
-	"database/sql"
+	"context"
 	"fmt"
+	stdlibTransactor "github.com/Thiht/transactor/stdlib"
 	"github.com/garcios/asset-trak-portfolio/transaction-service/model"
 )
 
 type TransactionRepository struct {
-	DB *sql.DB
+	dbGetter stdlibTransactor.DBGetter
 }
 
-func NewTransactionRepository(conn *sql.DB) *TransactionRepository {
-	return &TransactionRepository{DB: conn}
+func NewTransactionRepository(dbGetter stdlibTransactor.DBGetter) *TransactionRepository {
+	return &TransactionRepository{dbGetter: dbGetter}
 }
 
-func (r *TransactionRepository) AddTransaction(rec *model.Transaction) error {
+func (r *TransactionRepository) AddTransaction(ctx context.Context, rec *model.Transaction) error {
 	insertQuery := `INSERT INTO 
 	   transaction (id,
 		account_id,
@@ -25,7 +26,7 @@ func (r *TransactionRepository) AddTransaction(rec *model.Transaction) error {
 		price,
 		currency_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
 
-	_, err := r.DB.Exec(insertQuery,
+	_, err := r.dbGetter(ctx).Exec(insertQuery,
 		rec.ID,
 		rec.AccountID,
 		rec.AssetID,
@@ -42,8 +43,8 @@ func (r *TransactionRepository) AddTransaction(rec *model.Transaction) error {
 	return nil
 }
 
-func (r *TransactionRepository) Truncate() error {
-	_, err := r.DB.Exec("TRUNCATE transaction")
+func (r *TransactionRepository) Truncate(ctx context.Context) error {
+	_, err := r.dbGetter(ctx).Exec("TRUNCATE transaction")
 	if err != nil {
 		return fmt.Errorf("truncate: %v", err)
 	}
