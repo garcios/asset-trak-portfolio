@@ -75,3 +75,22 @@ func (r *AssetRepository) FindAssetBySymbol(symbol string) (*model.Asset, error)
 
 	return asset, nil
 }
+
+func (r *AssetRepository) Truncate() error {
+	_, err := r.DB.Exec("SET FOREIGN_KEY_CHECKS = 0")
+	if err != nil {
+		return fmt.Errorf("truncate: %v", err)
+	}
+
+	_, err = r.DB.Exec("TRUNCATE asset")
+	if err != nil {
+		return fmt.Errorf("truncate: %v", err)
+	}
+
+	_, err = r.DB.Exec("SET FOREIGN_KEY_CHECKS = 1")
+	if err != nil {
+		return fmt.Errorf("truncate: %v", err)
+	}
+
+	return nil
+}

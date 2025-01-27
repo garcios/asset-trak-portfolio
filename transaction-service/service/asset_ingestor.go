@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"github.com/garcios/asset-trak-portfolio/lib/excel"
 	"github.com/garcios/asset-trak-portfolio/transaction-service/db"
 	"github.com/garcios/asset-trak-portfolio/transaction-service/model"
@@ -13,6 +14,7 @@ type IAssetManager interface {
 	AddAsset(rec *model.Asset) error
 	AssetExists(symbol string, marketCode string) (bool, error)
 	FindAssetBySymbol(symbol string) (*model.Asset, error)
+	Truncate() error
 }
 
 // verify interface compliance
@@ -28,8 +30,20 @@ func NewAssetIngestor(am IAssetManager) *AssetIngestor {
 	}
 }
 
+func (ingestor *AssetIngestor) Truncate() error {
+	err := ingestor.AssetManager.Truncate()
+	if err != nil {
+		return fmt.Errorf("failed to truncate asset data: %w", err)
+	}
+
+	log.Println("truncated asset data successfully")
+
+	return nil
+}
+
 func (ingestor *AssetIngestor) ProcessAssets(filePath string, tabName string, skipRows int) error {
 	log.Println("Processing assets...")
+
 	rows, err := excel.GetRows(filePath, tabName)
 	if err != nil {
 		return err

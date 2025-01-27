@@ -9,16 +9,17 @@ import (
 )
 
 const (
-	assetIngestor       = "assetIngestor"
-	transactionIngestor = "transactionIngestor"
-	skipRows            = 3
-	tabName             = "Combined"
-	filePath            = "data/AllTradesReport.xlsx"
-	accountID           = "eb08df3c-958d-4ae8-b3ae-41ec04418786"
+	assetIngestorProcessor       = "assetIngestor"
+	transactionIngestorProcessor = "transactionIngestor"
+	truncateProcessor            = "truncate"
+	skipRows                     = 3
+	tabName                      = "Combined"
+	filePath                     = "data/AllTradesReport.xlsx"
+	accountID                    = "eb08df3c-958d-4ae8-b3ae-41ec04418786"
 )
 
 func main() {
-	processor := flag.String("processor", "", "a string")
+	processor := flag.String("processor", "", "the processor to run")
 	flag.Parse()
 
 	conn, err := mysql.Connect()
@@ -31,30 +32,43 @@ func main() {
 	accountRepo := db.NewAccountRepository(conn)
 	balanceRepo := db.NewAssetBalanceRepository(conn)
 
-	if *processor == assetIngestor {
-		assetIngestor := service.NewAssetIngestor(assetRepo)
+	assetIngestor := service.NewAssetIngestor(assetRepo)
+	transactionIngestor := service.NewTransactionIngestor(
+		transactionRepo,
+		accountRepo,
+		assetRepo,
+		balanceRepo,
+	)
 
-		err = assetIngestor.ProcessAssets(filePath, tabName, skipRows)
+	switch *processor {
+	case assetIngestorProcessor:
+		err := assetIngestor.ProcessAssets(filePath, tabName, skipRows)
 		if err != nil {
-			log.Printf("failed to process assets: %v", err)
+			log.Fatalf("failed to process asset ingestor: %v", err)
 		}
 
 		return
-	}
-
-	if *processor == transactionIngestor {
-		transactionIngestor := service.NewTransactionIngestor(
-			transactionRepo,
-			accountRepo,
-			assetRepo,
-			balanceRepo,
-		)
-		err = transactionIngestor.ProcessTransactions(filePath, tabName, skipRows, accountID)
+	case transactionIngestorProcessor:
+		err := transactionIngestor.ProcessTransactions(filePath, tabName, skipRows, accountID)
 		if err != nil {
-			log.Printf("failed to process transactions: %v", err)
+			log.Fatalf("failed to process transaction ingestor: %v", err)
 		}
 
 		return
+	case truncateProcessor:
+		err := transactionIngestor.Truncate()
+		if err != nil {
+			log.Fatalf("failed to truncate transaction data: %v", err)
+		}
+
+		err = assetIngestor.Truncate()
+		if err != nil {
+			log.Fatalf("failed to truncate asset data: %v", err)
+		}
+
+		return
+	default:
+		log.Fatalf("invalid processor: %s", *processor)
 	}
 
 	//TODO: start gRPC service

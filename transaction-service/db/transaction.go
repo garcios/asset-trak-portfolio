@@ -41,3 +41,12 @@ func (r *TransactionRepository) AddTransaction(rec *model.Transaction) error {
 
 	return nil
 }
+
+func (r *TransactionRepository) Truncate() error {
+	_, err := r.DB.Exec("TRUNCATE transaction")
+	if err != nil {
+		return fmt.Errorf("truncate: %v", err)
+	}
+
+	return nil
+}

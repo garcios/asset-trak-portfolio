@@ -28,6 +28,7 @@ const (
 
 type ITransactionManager interface {
 	AddTransaction(rec *model.Transaction) error
+	Truncate() error
 }
 
 type IAccountManager interface {
@@ -38,6 +39,7 @@ type IBalanceManager interface {
 	AddBalance(rec *model.AssetBalance) error
 	UpdateBalance(rec *model.AssetBalance) error
 	GetBalance(accountID string, assetID string) (*model.AssetBalance, error)
+	Truncate() error
 }
 
 // verify interface compliance
@@ -67,6 +69,24 @@ func NewTransactionIngestor(
 		BalanceManager:     bm,
 		cache:              &allCache{assets: ac},
 	}
+}
+
+func (ingestor *TransactionIngestor) Truncate() error {
+	err := ingestor.BalanceManager.Truncate()
+	if err != nil {
+		return fmt.Errorf("failed to truncate balance data: %w", err)
+	}
+
+	log.Println("truncated balance data successfully")
+
+	err = ingestor.TransactionManager.Truncate()
+	if err != nil {
+		return fmt.Errorf("failed to truncate transaction data: %w", err)
+	}
+
+	log.Println("truncated transaction data successfully")
+
+	return nil
 }
 
 func (ingestor *TransactionIngestor) ProcessTransactions(

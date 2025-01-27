@@ -61,3 +61,12 @@ func (r *AssetBalanceRepository) GetBalance(accountID string, assetID string) (*
 
 	return balance, nil
 }
+
+func (r *AssetBalanceRepository) Truncate() error {
+	_, err := r.DB.Exec("TRUNCATE asset_balance")
+	if err != nil {
+		return fmt.Errorf("truncate: %v", err)
+	}
+
+	return nil
+}
