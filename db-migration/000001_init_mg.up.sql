@@ -28,8 +28,8 @@ CREATE TABLE asset_price (
    asset_id VARCHAR(36)  NOT NULL,
    price DECIMAL(15, 2) NOT NULL,
    currency_code   VARCHAR(3)  NOT NULL,
-   timestamp TIMESTAMP NOT NULL,
-   PRIMARY KEY (asset_id, timestamp),
+   trade_date TIMESTAMP NOT NULL,
+   PRIMARY KEY (asset_id, trade_date),
    FOREIGN KEY (asset_id) REFERENCES asset(id)
 );
 
