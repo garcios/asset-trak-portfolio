@@ -37,7 +37,7 @@ func (r *TransactionRepository) AddTransaction(ctx context.Context, rec *model.T
 		rec.CurrencyCode,
 	)
 	if err != nil {
-		return fmt.Errorf("AddAsset: %v", err)
+		return fmt.Errorf("AddTransaction: %v", err)
 	}
 
 	return nil

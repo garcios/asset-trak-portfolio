@@ -92,3 +92,4 @@ outdated data to your users.
 - https://www.kelche.co/blog/go/excel/
 - https://blog.logrocket.com/how-to-implement-memory-caching-go/
 - https://hazelcast.com/blog/a-hitchhikers-guide-to-caching-patterns/
+- https://github.com/Thiht/transactor

@@ -51,7 +51,7 @@ func (r *AssetBalanceRepository) GetBalance(ctx context.Context, accountID strin
 
 	stmt, err := r.dbGetter(ctx).Prepare(query)
 	if err != nil {
-		return nil, fmt.Errorf("BalanceExists: %v", err)
+		return nil, fmt.Errorf("GetBalance: %v", err)
 	}
 
 	defer stmt.Close()
@@ -63,7 +63,7 @@ func (r *AssetBalanceRepository) GetBalance(ctx context.Context, accountID strin
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
-		return nil, fmt.Errorf("BalanceExists: %v", err)
+		return nil, fmt.Errorf("GetBalance: %v", err)
 	}
 
 	return balance, nil
