@@ -47,5 +47,5 @@ CREATE TABLE currency_rate (
  base_currency VARCHAR(10) NOT NULL,
  target_currency VARCHAR(10) NOT NULL,
  exchange_rate DECIMAL(15, 4) NOT NULL,
- updated_at TIMESTAMP  NOT NULL
+ trade_date TIMESTAMP  NOT NULL
 );
