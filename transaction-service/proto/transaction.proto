@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option go_package = "./proto";
+
+service Transaction {
+  rpc GetBalanceSummary(BalanceSummaryRequest) returns (BalanceSummaryResponse) {}
+}
+
+message BalanceSummaryRequest {
+  string account_id = 1;
+}
+
+message BalanceSummaryResponse {
+  string account_id = 1;
+  repeated BalanceItem balance_items= 2;
+}
+
+message BalanceItem {
+   string asset_symbol=1;
+   Money amount=2;
+}
+
+message Money {
+  double amount=1;
+  string currency_code=2;
+}

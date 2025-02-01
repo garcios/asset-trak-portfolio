@@ -15,3 +15,6 @@ go get github.com/garcios/asset-trak-portfolio/lib@main
 export DBUSER=root
 export DBPASS=Pass123
 ```
+
+## References
+- https://support.microsoft.com/en-au/office/stockhistory-function-1ac8b5b3-5f62-4d94-8ab8-7504ec7239a8

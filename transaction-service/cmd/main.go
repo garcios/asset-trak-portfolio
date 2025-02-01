@@ -3,11 +3,20 @@ package main
 import (
 	"context"
 	"flag"
+	"github.com/garcios/asset-trak-portfolio/transaction-service/handler"
+	"go-micro.dev/v4"
+	"go-micro.dev/v4/logger"
+	"log"
+
+	_ "github.com/go-micro/plugins/v4/client/grpc"
+	_ "github.com/go-micro/plugins/v4/registry/etcd"
+
 	stdlibTransactor "github.com/Thiht/transactor/stdlib"
 	"github.com/garcios/asset-trak-portfolio/lib/mysql"
 	"github.com/garcios/asset-trak-portfolio/transaction-service/db"
 	"github.com/garcios/asset-trak-portfolio/transaction-service/service"
-	"log"
+
+	pb "github.com/garcios/asset-trak-portfolio/transaction-service/proto"
 )
 
 const (
@@ -18,6 +27,7 @@ const (
 	tabName                      = "Combined"
 	filePath                     = "data/AllTradesReport.xlsx"
 	accountID                    = "eb08df3c-958d-4ae8-b3ae-41ec04418786"
+	serviceName                  = "transaction-service"
 )
 
 func main() {
@@ -78,11 +88,24 @@ func main() {
 
 		return
 	default:
-		log.Fatalf("invalid processor: %s", *processor)
+		log.Println("starting Transaction service...")
 	}
 
-	//TODO: start gRPC service
+	srv := micro.NewService(
+		micro.Name(serviceName),
+		micro.Version("latest"),
+	)
 
-	log.Println("Transaction service is started.")
+	srv.Init()
+
+	h := handler.New(srv.Client())
+
+	pb.RegisterTransactionHandler(srv.Server(), h)
+
+	if err := srv.Run(); err != nil {
+		logger.Fatal(err)
+	}
+
+	log.Println("Transaction service has started.")
 
 }
