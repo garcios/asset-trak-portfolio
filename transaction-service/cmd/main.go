@@ -100,7 +100,10 @@ func main() {
 
 	h := handler.New(srv.Client())
 
-	pb.RegisterTransactionHandler(srv.Server(), h)
+	err = pb.RegisterTransactionHandler(srv.Server(), h)
+	if err != nil {
+		log.Fatalf("failed to register transaction handler: %v", err)
+	}
 
 	if err := srv.Run(); err != nil {
 		logger.Fatal(err)

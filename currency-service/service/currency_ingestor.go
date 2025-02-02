@@ -2,7 +2,6 @@ package service
 
 import (
 	"fmt"
-	"github.com/garcios/asset-trak-portfolio/currency-service/db"
 	"github.com/garcios/asset-trak-portfolio/currency-service/model"
 	"github.com/garcios/asset-trak-portfolio/lib/excel"
 	"github.com/xuri/excelize/v2"
@@ -14,14 +13,6 @@ const (
 	baseCurrency   = "USD"
 	targetCurrency = "AUD"
 )
-
-type ICurrencyManager interface {
-	AddCurrencyRate(rec *model.CurrencyRate) error
-	Truncate() error
-}
-
-// verify interface compliance
-var _ ICurrencyManager = &db.CurrencyRepository{}
 
 type CurrencyIngestor struct {
 	currencyManager ICurrencyManager

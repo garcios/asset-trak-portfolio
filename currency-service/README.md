@@ -11,6 +11,11 @@ go get github.com/BurntSushi/toml
 go get github.com/garcios/asset-trak-portfolio/lib@main 
 ```
 
+Go-Micro V4
+```shell
+go get go-micro.dev/v4@latest
+```
+
 ## Set env variables
 ```shell
 export DBUSER=root

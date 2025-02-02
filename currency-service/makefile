@@ -12,6 +12,8 @@ ingest_currency_rates:
 run_server:
 	go run cmd/main.go
 
+proto:
+	protoc --proto_path=. --micro_out=. --go_out=. proto/currency.proto
 
-.PHONY: tidy ingest_currency_rates run_server truncate
+.PHONY: tidy ingest_currency_rates run_server truncate proto
 
