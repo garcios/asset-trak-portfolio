@@ -3,10 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
-	"go-micro.dev/v4"
-	"log"
-
 	pb "github.com/garcios/asset-trak-portfolio/transaction-service/proto"
+	"go-micro.dev/v4"
 )
 
 const (
@@ -14,7 +12,6 @@ const (
 )
 
 func main() {
-
 	// Create a new service
 	service := micro.NewService(micro.Name("transaction-client"))
 	service.Init()
@@ -22,14 +19,17 @@ func main() {
 	transactionService := pb.NewTransactionService(ServiceName, service.Client())
 
 	req := &pb.BalanceSummaryRequest{
-		AccountId: "",
+		AccountId: "eb08df3c-958d-4ae8-b3ae-41ec04418786",
 	}
 
 	resp, err := transactionService.GetBalanceSummary(context.Background(), req)
 	if err != nil {
-		log.Fatalf("Get balance summary error: %v", err)
+		fmt.Printf("Get balance summary error: %v", err)
+		return
 	}
 
-	fmt.Println(resp)
+	for _, item := range resp.BalanceItems {
+		fmt.Println(item)
+	}
 
 }

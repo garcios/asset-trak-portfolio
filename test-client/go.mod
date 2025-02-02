@@ -3,6 +3,7 @@ module github.com/garcios/asset-trak-portfolio/test-client
 go 1.22.11
 
 require (
+	github.com/garcios/asset-trak-portfolio/currency-service v0.0.0-20250202033721-7e33460cfe2d
 	github.com/garcios/asset-trak-portfolio/transaction-service v0.0.0-20250201074710-58fffa88b64c
 	go-micro.dev/v4 v4.11.0
 )
@@ -12,7 +13,6 @@ require (
 	github.com/ProtonMail/go-crypto v0.0.0-20210428141323-04723f9f07d7 // indirect
 	github.com/acomagu/bufpipe v1.0.3 // indirect
 	github.com/bitly/go-simplejson v0.5.0 // indirect
-	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/emirpasic/gods v1.12.0 // indirect
 	github.com/evanphx/json-patch/v5 v5.5.0 // indirect
@@ -37,7 +37,6 @@ require (
 	github.com/oxtoacart/bpool v0.0.0-20190530202638-03653db5a59c // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/rogpeppe/go-internal v1.13.1 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/sergi/go-diff v1.1.0 // indirect
 	github.com/urfave/cli/v2 v2.25.7 // indirect

@@ -4,6 +4,7 @@ import (
 	"context"
 	pb "github.com/garcios/asset-trak-portfolio/currency-service/proto"
 	"github.com/garcios/asset-trak-portfolio/currency-service/service"
+	"log"
 	"time"
 )
 
@@ -22,6 +23,7 @@ func (h *Currency) GetExchangeRate(
 	in *pb.GetExchangeRateRequest,
 	out *pb.GetExchangeRateResponse,
 ) error {
+	log.Println("handler.GetExchangeRate...")
 	tradeDate, err := time.Parse("2006-01-02", in.GetTradeDate())
 	if err != nil {
 		return err
@@ -36,6 +38,8 @@ func (h *Currency) GetExchangeRate(
 	}
 
 	out.ExchangeRate = exchangeRate
+
+	log.Printf("out: %#v\n", out)
 
 	return nil
 }

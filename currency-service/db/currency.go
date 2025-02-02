@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/garcios/asset-trak-portfolio/currency-service/model"
+	"log"
 	"time"
 )
 
@@ -54,6 +55,7 @@ func (r *CurrencyRepository) GetExchangeRate(
 	toCurrency string,
 	tradeDate time.Time,
 ) (float64, error) {
+	log.Println("db.GetExchangeRate")
 	query := `SELECT exchange_rate
 	           FROM currency_rate
                 WHERE base_currency = ?
@@ -79,5 +81,5 @@ func (r *CurrencyRepository) GetExchangeRate(
 		return 0, fmt.Errorf("GetExchangeRate: %v", err)
 	}
 
-	return 0, nil
+	return exchangeRate, nil
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	pbc "github.com/garcios/asset-trak-portfolio/currency-service/proto"
 	"github.com/garcios/asset-trak-portfolio/transaction-service/handler"
 	"go-micro.dev/v4"
 	"go-micro.dev/v4/logger"
@@ -27,7 +28,8 @@ const (
 	tabName                      = "Combined"
 	filePath                     = "data/AllTradesReport.xlsx"
 	accountID                    = "eb08df3c-958d-4ae8-b3ae-41ec04418786"
-	serviceName                  = "transaction-service"
+	transactionserviceName       = "transaction-service"
+	currencyserviceName          = "currency-service"
 )
 
 func main() {
@@ -91,21 +93,23 @@ func main() {
 		log.Println("starting Transaction service...")
 	}
 
-	srv := micro.NewService(
-		micro.Name(serviceName),
+	transactionSrv := micro.NewService(
+		micro.Name(transactionserviceName),
 		micro.Version("latest"),
 	)
 
-	srv.Init()
+	transactionSrv.Init()
 
-	h := handler.New(srv.Client())
+	currencyService := pbc.NewCurrencyService(currencyserviceName, transactionSrv.Client())
 
-	err = pb.RegisterTransactionHandler(srv.Server(), h)
+	h := handler.New(currencyService, balanceRepo)
+
+	err = pb.RegisterTransactionHandler(transactionSrv.Server(), h)
 	if err != nil {
 		log.Fatalf("failed to register transaction handler: %v", err)
 	}
 
-	if err := srv.Run(); err != nil {
+	if err := transactionSrv.Run(); err != nil {
 		logger.Fatal(err)
 	}
 

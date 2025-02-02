@@ -77,3 +77,54 @@ func (r *AssetBalanceRepository) Truncate(ctx context.Context) error {
 
 	return nil
 }
+
+func (r *AssetBalanceRepository) GetBalanceSummary(
+	ctx context.Context,
+	accountID string,
+) ([]*model.BalanceSummary, error) {
+	query := `SELECT a.symbol, a.name, b.quantity, p.price, p.currency_code, a.market_code
+              FROM asset_balance b JOIN asset a ON b.asset_id = a.id
+              LEFT JOIN (
+                 SELECT asset_id, price, trade_date, currency_code,
+                        ROW_NUMBER() OVER (PARTITION BY asset_id ORDER BY trade_date DESC) as rn
+                 FROM asset_price WHERE trade_date <= NOW()) p
+                  ON p.asset_id = a.id AND p.rn = 1 
+              WHERE b.quantity > 0
+                AND b.account_id = ?`
+
+	stmt, err := r.dbGetter(ctx).Prepare(query)
+	if err != nil {
+		return nil, fmt.Errorf("GetBalanceSummary: %v", err)
+	}
+
+	defer stmt.Close()
+
+	rows, err := stmt.Query(accountID)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+
+		return nil, fmt.Errorf("GetBalanceSummary: %v", err)
+	}
+
+	summary := make([]*model.BalanceSummary, 0)
+	for rows.Next() {
+		var summaryItem model.BalanceSummary
+		if err := rows.Scan(
+			&summaryItem.AssetSymbol,
+			&summaryItem.AssetName,
+			&summaryItem.Quantity,
+			&summaryItem.Price,
+			&summaryItem.CurrencyCode,
+			&summaryItem.MarketCode,
+		); err != nil {
+			return nil, fmt.Errorf("GetBalanceSummary: %v", err)
+		}
+		summary = append(summary, &summaryItem)
+	}
+
+	return summary, nil
+
+}
