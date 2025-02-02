@@ -60,6 +60,14 @@ services via GraphQL.
 __gRPC Services__: They represent microservices that GraphQL API Gateway communicates with. The great thing about gRPC is 
 that it uses Protocol Buffers (protobuf) which make it very efficient and scalable, ideal for microservices communication.
 
+## Tech Stack
+- Golang
+- gRPC
+- go-micro
+- graphQL
+- mySQL database
+- React.js
+
 ## References
 - https://go.dev/doc/tutorial/database-access
 - https://github.com/go-sql-driver/mysql/
