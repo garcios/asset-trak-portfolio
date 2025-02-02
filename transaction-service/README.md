@@ -111,7 +111,7 @@ sequenceDiagram
     transaction-service->>Datastore: Get List of Asset Balances
     Datastore-->>transaction-service: Return List of Asset Balances 
     loop asset balances
-    transaction-service->>transaction-service: Convert foreign currency and compute total value for each asset
+    transaction-service->>transaction-service: Convert foreign currency and add to total value for each asset
     end
     transaction-service-->>client: Return Balance Summary
 ```
