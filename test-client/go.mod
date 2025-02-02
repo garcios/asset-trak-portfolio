@@ -4,7 +4,7 @@ go 1.22.11
 
 require (
 	github.com/garcios/asset-trak-portfolio/currency-service v0.0.0-20250202033721-7e33460cfe2d
-	github.com/garcios/asset-trak-portfolio/transaction-service v0.0.0-20250201074710-58fffa88b64c
+	github.com/garcios/asset-trak-portfolio/transaction-service v0.0.0-20250202055206-c15c3cf2a201
 	go-micro.dev/v4 v4.11.0
 )
 

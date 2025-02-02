@@ -12,7 +12,8 @@ message BalanceSummaryRequest {
 
 message BalanceSummaryResponse {
   string account_id = 1;
-  repeated BalanceItem balance_items= 2;
+  Money total_value = 2;
+  repeated BalanceItem balance_items= 3;
 }
 
 message BalanceItem {
@@ -22,6 +23,7 @@ message BalanceItem {
    double  quantity=4;
    Money value=5;
    double total_gain=6;
+   string market_code=7;
 }
 
 message Money {

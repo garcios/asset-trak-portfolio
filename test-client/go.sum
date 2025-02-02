@@ -129,6 +129,8 @@ github.com/garcios/asset-trak-portfolio/currency-service v0.0.0-20250202033721-7
 github.com/garcios/asset-trak-portfolio/currency-service v0.0.0-20250202033721-7e33460cfe2d/go.mod h1:RgLPBRikAQ8yRPsh72nodsoXDO8D6M1mBfgrIovzTM0=
 github.com/garcios/asset-trak-portfolio/transaction-service v0.0.0-20250201074710-58fffa88b64c h1:FT302ByVP7h/T7Xv0XW9w/gbTJY0gjes2pZoleJdTOA=
 github.com/garcios/asset-trak-portfolio/transaction-service v0.0.0-20250201074710-58fffa88b64c/go.mod h1:gIKx+CnanISutyqhWP+KrL1IXCcrybYp5T4SZSObCEY=
+github.com/garcios/asset-trak-portfolio/transaction-service v0.0.0-20250202055206-c15c3cf2a201 h1:P0BWOzmbF9Se9DIyZ8t3s+xTJVcLSIRTmMllRiU35mA=
+github.com/garcios/asset-trak-portfolio/transaction-service v0.0.0-20250202055206-c15c3cf2a201/go.mod h1:BMR1UIYQ6BrikTeBTqLVjmH8DBLK3pqPT2CZAv+DJXA=
 github.com/getkin/kin-openapi v0.13.0/go.mod h1:WGRs2ZMM1Q8LR1QBEwUxC6RJEfaBcD0s+pcEVXFuAjw=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
 github.com/gliderlabs/ssh v0.2.2 h1:6zsha5zo/TWhRhwqCD3+EarCAgZ2yN28ipRnGPnwkI0=

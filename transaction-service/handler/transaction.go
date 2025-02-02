@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	fromCurrency   = "USD"
-	targetCurrency = "AUD"
+	foreignCurrency = "USD"
+	targetCurrency  = "AUD"
 )
 
 func New(currencyService pbc.CurrencyService,
@@ -44,7 +44,7 @@ func (h *Transaction) GetBalanceSummary(
 	currencyRates, err := h.currencyService.GetExchangeRate(
 		context.Background(),
 		&pbc.GetExchangeRateRequest{
-			FromCurrency: fromCurrency,
+			FromCurrency: foreignCurrency,
 			ToCurrency:   targetCurrency,
 			TradeDate:    now.Format("2006-01-02"),
 		},
@@ -62,27 +62,36 @@ func (h *Transaction) GetBalanceSummary(
 	res.AccountId = req.GetAccountId()
 	res.BalanceItems = make([]*pb.BalanceItem, 0)
 
+	var totalValue float64
 	for _, s := range summaryItems {
 		value := s.Quantity * s.Price
-		if s.CurrencyCode == fromCurrency {
+		if s.CurrencyCode == foreignCurrency {
 			value = value * currencyRates.ExchangeRate
 		}
+
+		totalValue += value
 
 		protoBalanceItem := &pb.BalanceItem{
 			AssetSymbol: s.AssetSymbol,
 			AssetName:   s.AssetName,
 			Quantity:    s.Quantity,
 			Price: &pb.Money{
-				Amount:       value,
-				CurrencyCode: targetCurrency,
-			},
-			Value: &pb.Money{
 				Amount:       s.Price,
 				CurrencyCode: targetCurrency,
 			},
-			TotalGain: computeTotalGain(s.AssetSymbol),
+			Value: &pb.Money{
+				Amount:       value,
+				CurrencyCode: targetCurrency,
+			},
+			MarketCode: s.MarketCode,
+			TotalGain:  computeTotalGain(s.AssetSymbol),
 		}
 		res.BalanceItems = append(res.BalanceItems, protoBalanceItem)
+	}
+
+	res.TotalValue = &pb.Money{
+		Amount:       totalValue,
+		CurrencyCode: targetCurrency,
 	}
 
 	return nil
