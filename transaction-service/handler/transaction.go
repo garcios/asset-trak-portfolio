@@ -83,8 +83,8 @@ func (h *Transaction) GetBalanceSummary(
 				Amount:       value,
 				CurrencyCode: targetCurrency,
 			},
-			MarketCode: s.MarketCode,
 			TotalGain:  computeTotalGain(s.AssetSymbol),
+			MarketCode: s.MarketCode,
 		}
 		res.BalanceItems = append(res.BalanceItems, protoBalanceItem)
 	}

@@ -28,6 +28,9 @@ func main() {
 		return
 	}
 
+	fmt.Printf("Account ID: %v", resp.AccountId)
+	fmt.Printf("Total Value: %v", resp)
+
 	for _, item := range resp.BalanceItems {
 		fmt.Println(item)
 	}
