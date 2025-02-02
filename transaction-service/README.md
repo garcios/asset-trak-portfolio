@@ -99,6 +99,23 @@ outdated data to your users.
 
 ![cache-aside.png](cache-aside.png)
 
+## Sequence diagram for Balance Summary
+```mermaid
+sequenceDiagram
+    autonumber
+    client->>transaction-service: Get Balance Summary
+    transaction-service-->>currency-service: Get Exchange Rate(USD, AUD)
+    currency-service->>Datastore: Get Exchange Rate
+    Datastore-->>currency-service: Return Exchange Rate
+    currency-service-->>transaction-service: Return Exchange rate
+    transaction-service->>Datastore: Get List of Asset Balances
+    Datastore-->>transaction-service: Return List of Asset Balances 
+    loop asset balances
+    transaction-service->>transaction-service: Convert foreign currency and compute total value for each asset
+    end
+    transaction-service-->>client: Return Balance Summary
+```
+
 
 ## References
 - https://www.kelche.co/blog/go/excel/
