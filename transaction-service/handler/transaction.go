@@ -2,12 +2,17 @@ package handler
 
 import (
 	"context"
-	"fmt"
 	"github.com/garcios/asset-trak-portfolio/transaction-service/model"
 	"log"
+	"time"
 
 	pbc "github.com/garcios/asset-trak-portfolio/currency-service/proto"
 	pb "github.com/garcios/asset-trak-portfolio/transaction-service/proto"
+)
+
+const (
+	fromCurrency   = "USD"
+	targetCurrency = "AUD"
 )
 
 func New(currencyService pbc.CurrencyService,
@@ -33,14 +38,15 @@ func (h *Transaction) GetBalanceSummary(
 	req *pb.BalanceSummaryRequest,
 	res *pb.BalanceSummaryResponse,
 ) error {
-	fmt.Println("GetBalanceSummary...")
+	log.Println("GetBalanceSummary...")
+	now := time.Now()
 
 	currencyRates, err := h.currencyService.GetExchangeRate(
 		context.Background(),
 		&pbc.GetExchangeRateRequest{
-			FromCurrency: "USD",
-			ToCurrency:   "AUD",
-			TradeDate:    "2025-01-30",
+			FromCurrency: fromCurrency,
+			ToCurrency:   targetCurrency,
+			TradeDate:    now.Format("2006-01-02"),
 		},
 	)
 	if err != nil {
@@ -57,20 +63,32 @@ func (h *Transaction) GetBalanceSummary(
 	res.BalanceItems = make([]*pb.BalanceItem, 0)
 
 	for _, s := range summaryItems {
-		amount := s.Quantity * s.Price
-		if s.CurrencyCode == "USD" {
-			amount = amount * currencyRates.ExchangeRate
+		value := s.Quantity * s.Price
+		if s.CurrencyCode == fromCurrency {
+			value = value * currencyRates.ExchangeRate
 		}
 
 		protoBalanceItem := &pb.BalanceItem{
 			AssetSymbol: s.AssetSymbol,
-			Amount: &pb.Money{
-				Amount:       amount,
-				CurrencyCode: "AUD",
+			AssetName:   s.AssetName,
+			Quantity:    s.Quantity,
+			Price: &pb.Money{
+				Amount:       value,
+				CurrencyCode: targetCurrency,
 			},
+			Value: &pb.Money{
+				Amount:       s.Price,
+				CurrencyCode: targetCurrency,
+			},
+			TotalGain: computeTotalGain(s.AssetSymbol),
 		}
 		res.BalanceItems = append(res.BalanceItems, protoBalanceItem)
 	}
 
 	return nil
+}
+
+// TODO: will compute total gain for specific asset.
+func computeTotalGain(symbol string) float64 {
+	return 0
 }

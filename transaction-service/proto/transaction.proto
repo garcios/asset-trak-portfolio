@@ -19,7 +19,7 @@ message BalanceItem {
    string asset_symbol=1;
    string asset_name=2;
    Money price=3;
-   int64  quantity=4;
+   double  quantity=4;
    Money value=5;
    double total_gain=6;
 }
