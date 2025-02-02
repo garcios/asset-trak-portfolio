@@ -5,6 +5,11 @@
 go get -v github.com/garcios/asset-trak-portfolio/currency-service@main
 ```
 
+## Run the GraphQL Server
+```shell
+go run server.go
+```
+
 ## Open the graphQL playground
 ```shell
 http://localhost:8080/
@@ -38,7 +43,7 @@ query {
 }
 ```
 
-## Example Reponse
+## Example Response
 ```json
 {
   "data": {
