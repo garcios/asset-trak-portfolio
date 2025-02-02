@@ -13,12 +13,12 @@ const (
 
 func main() {
 	// Create a new service
-	service := micro.NewService(micro.Name("currency-client"))
-	service.Init()
+	currencyClient := micro.NewService(micro.Name("currency-client"))
+	currencyClient.Init()
 
-	currencyService := pb.NewCurrencyService(ServiceName, service.Client())
+	currencySrv := pb.NewCurrencyService(ServiceName, currencyClient.Client())
 
-	response, err := currencyService.GetExchangeRate(
+	response, err := currencySrv.GetExchangeRate(
 		context.Background(),
 		&pb.GetExchangeRateRequest{
 			FromCurrency: "USD",

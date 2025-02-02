@@ -13,16 +13,16 @@ const (
 
 func main() {
 	// Create a new service
-	service := micro.NewService(micro.Name("transaction-client"))
-	service.Init()
+	transactionClient := micro.NewService(micro.Name("transaction-client"))
+	transactionClient.Init()
 
-	transactionService := pb.NewTransactionService(ServiceName, service.Client())
+	transactionSrv := pb.NewTransactionService(ServiceName, transactionClient.Client())
 
 	req := &pb.BalanceSummaryRequest{
 		AccountId: "eb08df3c-958d-4ae8-b3ae-41ec04418786",
 	}
 
-	resp, err := transactionService.GetBalanceSummary(context.Background(), req)
+	resp, err := transactionSrv.GetBalanceSummary(context.Background(), req)
 	if err != nil {
 		fmt.Printf("Get balance summary error: %v", err)
 		return
