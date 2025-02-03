@@ -1,0 +1,26 @@
+GRAPHQL localhost:8080/query
+
+query {
+    getBalanceSummary(accountId: "eb08df3c-958d-4ae8-b3ae-41ec04418786") {
+        accountId
+        totalValue {
+            amount
+            currencyCode
+        }
+        balanceItems {
+            assetSymbol
+            assetName
+            price {
+                amount
+                currencyCode
+            }
+            quantity
+            value {
+                amount
+                currencyCode
+            }
+            totalGain
+            marketCode
+        }
+    }
+}
