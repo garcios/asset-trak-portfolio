@@ -2,7 +2,7 @@
 
 ## Dependencies
 ```shell
-go get -v github.com/garcios/asset-trak-portfolio/currency-service@main
+go get -v github.com/garcios/asset-trak-portfolio/transaction-service@main
 ```
 
 ## Run the GraphQL Server
