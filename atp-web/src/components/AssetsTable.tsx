@@ -28,13 +28,6 @@ const columns: readonly Column[] = [
     {
         id: 'price',
         label: 'Price',
-        minWidth: 170,
-        align: 'right',
-        format: (value: number) => value.toLocaleString('en-US', ),
-    },
-    {
-        id: 'price',
-        label: 'Price',
         minWidth: 100,
         align: 'right',
         format: (value: number) => value.toLocaleString('en-US', ),
@@ -44,7 +37,13 @@ const columns: readonly Column[] = [
         label: 'Currency',
         minWidth: 100,
         align: 'right',
-        format: (value: number) => value.toLocaleString('en-US'),
+        format: (value: number) => value.toLocaleString('en-US', ),
+    },
+    {
+        id: 'quantity',
+        label: 'Quantity',
+        minWidth: 100,
+        format: (value: number) => value.toLocaleString('en-US', ),
     },
     {
         id: 'value',
