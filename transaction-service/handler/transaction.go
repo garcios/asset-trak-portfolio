@@ -77,7 +77,7 @@ func (h *Transaction) GetBalanceSummary(
 			Quantity:    s.Quantity,
 			Price: &pb.Money{
 				Amount:       s.Price,
-				CurrencyCode: targetCurrency,
+				CurrencyCode: s.CurrencyCode,
 			},
 			Value: &pb.Money{
 				Amount:       value,

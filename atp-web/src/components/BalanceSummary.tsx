@@ -54,6 +54,7 @@ function BalanceSummary() {
             assetSymbol: item.assetSymbol,
             assetName: item.assetName,
             price: item.price.amount,
+            currency: item.price.currencyCode,
             quantity: item.quantity,
             value: item.value.amount,
             totalGain: 0,

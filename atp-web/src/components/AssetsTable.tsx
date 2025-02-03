@@ -9,7 +9,7 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 
 interface Column {
-    id: 'assetName' | 'assetSymbol' | 'price' | 'quantity' | 'value' | 'marketCode';
+    id: 'assetName' | 'assetSymbol' | 'price' | 'currency' | 'quantity' | 'value' | 'marketCode';
     label: string;
     minWidth?: number;
     align?: 'right';
@@ -30,26 +30,36 @@ const columns: readonly Column[] = [
         label: 'Price',
         minWidth: 170,
         align: 'right',
-        format: (value: number) => value.toLocaleString('en-US'),
+        format: (value: number) => value.toLocaleString('en-US', ),
     },
     {
-        id: 'quantity',
-        label: 'Quantity',
-        minWidth: 170,
+        id: 'price',
+        label: 'Price',
+        minWidth: 100,
+        align: 'right',
+        format: (value: number) => value.toLocaleString('en-US', ),
+    },
+    {
+        id: 'currency',
+        label: 'Currency',
+        minWidth: 100,
         align: 'right',
         format: (value: number) => value.toLocaleString('en-US'),
     },
     {
         id: 'value',
         label: 'Value',
-        minWidth: 170,
+        minWidth: 100,
         align: 'right',
-        format: (value: number) => value.toFixed(2),
+        format: (value: number) => value.toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'AUD',
+        }),
     },
     {
         id: 'marketCode',
         label: 'Market Code',
-        minWidth: 170,
+        minWidth: 100,
     },
 ];
 
@@ -57,6 +67,7 @@ interface BalanceItem {
     assetName: string;
     assetSymbol: string;
     price: number;
+    currency: string;
     quantity: number;
     value: number;
     totalGain: number;
