@@ -75,6 +75,14 @@ that it uses Protocol Buffers (protobuf) which make it very efficient and scalab
 - Vite https://vite.dev/
 - Material-UI https://mui.com/material-ui/
 
+### Development Tools
+- JetBrains Goland https://www.jetbrains.com/go/
+- Datagrip https://www.jetbrains.com/datagrip/
+- Jetbrains AI https://www.jetbrains.com/ai/
+- Podman https://podman.io/
+- Mermaid https://github.com/mermaid-js/mermaid
+
+
 ## References
 - https://go.dev/doc/tutorial/database-access
 - https://github.com/go-sql-driver/mysql/
