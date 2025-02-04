@@ -45,9 +45,11 @@ highlighted above have been fully implemented at this time.
 Below is a high level architecture diagram for this project.
 ```mermaid
 flowchart TD
-    A[Web Interface] -->|GraphQL Request| B[GraphQL API Gateway]
-    B -->|Query 1| C[gRPC Service 1]
-    B -->|Query 2| D[gRPC Service 2]
+    A[Web UI] -->|GraphQL Request| B[GraphQL API Gateway]
+    B -->|gRPC call| C[gRPC Service 1]
+    B -->|gRPC call| D[gRPC Service 2]
+    C -->|service to service via gRPC| D[gRPC Service 2]
+    C -->|service to service via gRPC| E[gRPC Service 3]
 ```
 
 __Web Interface__: This is the entry point in the flowchart. It is a user interface, typically a website or a web 
@@ -61,12 +63,16 @@ __gRPC Services__: They represent microservices that GraphQL API Gateway communi
 that it uses Protocol Buffers (protobuf) which make it very efficient and scalable, ideal for microservices communication.
 
 ## Tech Stack
+### Backend
 - Golang
 - gRPC
 - go-micro
 - graphQL
 - mySQL database
-- React.js
+
+### Frontend
+- React.js, Vite
+- Material-UI
 
 ## References
 - https://go.dev/doc/tutorial/database-access
