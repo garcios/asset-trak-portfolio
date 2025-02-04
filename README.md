@@ -64,19 +64,20 @@ that it uses Protocol Buffers (protobuf) which make it very efficient and scalab
 
 ## Tech Stack
 ### Backend
-- Golang
-- gRPC
-- go-micro
-- graphQL
-- mySQL database
+- Golang https://go.dev/
+- gRPC, protobuf https://grpc.io/
+- go-micro https://github.com/micro/go-micro
+- graphQL https://github.com/99designs/gqlgen
+- mySQL database https://www.mysql.com/
 
 ### Frontend
-- React.js, Vite
-- Material-UI
+- React.js https://react.dev/
+- Vite https://vite.dev/
+- Material-UI https://mui.com/material-ui/
 
 ## References
 - https://go.dev/doc/tutorial/database-access
 - https://github.com/go-sql-driver/mysql/
-- https://github.com/matthewmcfarlane/Shares-Portfolio-Tracker/tree/main
 - https://site.financialmodelingprep.com/developer/docs
+
 
