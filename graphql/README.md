@@ -59,7 +59,7 @@ query {
           "assetName": "Uber Technologies Inc",
           "price": {
             "amount": 66.85,
-            "currencyCode": "AUD"
+            "currencyCode": "USD"
           },
           "quantity": 52,
           "value": {
@@ -74,7 +74,7 @@ query {
           "assetName": "NVIDIA Corp",
           "price": {
             "amount": 120.07,
-            "currencyCode": "AUD"
+            "currencyCode": "USD"
           },
           "quantity": 45,
           "value": {
@@ -89,7 +89,7 @@ query {
           "assetName": "Alphabet Inc - Ordinary Shares - Class C",
           "price": {
             "amount": 205.6,
-            "currencyCode": "AUD"
+            "currencyCode": "USD"
           },
           "quantity": 5,
           "value": {
@@ -119,7 +119,7 @@ query {
           "assetName": "Microsoft Corporation",
           "price": {
             "amount": 415.06,
-            "currencyCode": "AUD"
+            "currencyCode": "USD"
           },
           "quantity": 49,
           "value": {
@@ -164,7 +164,7 @@ query {
           "assetName": "Fortinet Inc",
           "price": {
             "amount": 100.88,
-            "currencyCode": "AUD"
+            "currencyCode": "USD"
           },
           "quantity": 34,
           "value": {
@@ -179,7 +179,7 @@ query {
           "assetName": "Applied Materials Inc.",
           "price": {
             "amount": 180.35,
-            "currencyCode": "AUD"
+            "currencyCode": "USD"
           },
           "quantity": 15,
           "value": {
@@ -194,7 +194,7 @@ query {
           "assetName": "Broadcom Inc",
           "price": {
             "amount": 221.27,
-            "currencyCode": "AUD"
+            "currencyCode": "USD"
           },
           "quantity": 36,
           "value": {
@@ -209,7 +209,7 @@ query {
           "assetName": "Advanced Micro Devices Inc.",
           "price": {
             "amount": 115.95,
-            "currencyCode": "AUD"
+            "currencyCode": "USD"
           },
           "quantity": 39,
           "value": {
@@ -224,7 +224,7 @@ query {
           "assetName": "Mastercard Incorporated - Ordinary Shares - Class A",
           "price": {
             "amount": 555.43,
-            "currencyCode": "AUD"
+            "currencyCode": "USD"
           },
           "quantity": 7,
           "value": {
@@ -239,7 +239,7 @@ query {
           "assetName": "Alphabet Inc - Ordinary Shares - Class A",
           "price": {
             "amount": 204.02,
-            "currencyCode": "AUD"
+            "currencyCode": "USD"
           },
           "quantity": 115,
           "value": {
@@ -254,7 +254,7 @@ query {
           "assetName": "Amazon.com Inc.",
           "price": {
             "amount": 237.68,
-            "currencyCode": "AUD"
+            "currencyCode": "USD"
           },
           "quantity": 116,
           "value": {
@@ -269,7 +269,7 @@ query {
           "assetName": "Taiwan Semiconductor Manufacturing - ADR",
           "price": {
             "amount": 209.32,
-            "currencyCode": "AUD"
+            "currencyCode": "USD"
           },
           "quantity": 35,
           "value": {
