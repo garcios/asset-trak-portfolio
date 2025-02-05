@@ -1,3 +1,4 @@
+// Helper function to format currency
 const FormatCurrency = (amount: number, currencyCode: string): string => {
     return new Intl.NumberFormat("en-AU", {
         style: "currency",
@@ -6,4 +7,7 @@ const FormatCurrency = (amount: number, currencyCode: string): string => {
     }).format(amount);
 };
 
-export { FormatCurrency };
+// Helper function to format percentage
+const FormatPercentage = (percent: number) => `${percent.toFixed(2)}%`;
+
+export { FormatCurrency, FormatPercentage };

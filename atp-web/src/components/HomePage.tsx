@@ -1,19 +1,14 @@
 import React from "react";
 import { AppBar, Toolbar, Typography, TextField, Card, CardContent, List, ListItem, ListItemText } from "@mui/material";
-import Grid from '@mui/material/Grid2';// Import Grid2 from @mui/system"
+import Grid from '@mui/material/Grid2';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import BalanceSummary from "./BalanceSummary";
-import BalanceHeader from "./BalanceHeader";
+import PortfolioHighlightCard from "./PortfolioHighlightCard";
 
 // TypeScript interfaces for stock data
 interface StockData {
     time: string;
     price: number;
-}
-
-interface WatchlistStock {
-    symbol: string;
-    price: string;
 }
 
 // Sample stock price data for chart
@@ -24,14 +19,6 @@ const sampleStockData: StockData[] = [
     { time: "12 PM", price: 150 },
     { time: "1 PM", price: 110 },
     { time: "2 PM", price: 160 },
-];
-
-// Sample watchlist data
-const watchlistStocks: WatchlistStock[] = [
-    { symbol: "GOOGL", price: "$204.02" },
-    { symbol: "AMZN", price: "$237.68" },
-    { symbol: "MSFT", price: "415.06" },
-    { symbol: "AVGO", price: "$221.27" },
 ];
 
 const HomePage: React.FC = () => {
@@ -59,7 +46,7 @@ const HomePage: React.FC = () => {
                 <Grid size={{ xs: 12, md: 8 }}>
                     <Card>
                         <CardContent>
-                            <Typography variant="h6">Market Trends</Typography>
+                            <Typography variant="h6">Performance</Typography>
                             <ResponsiveContainer width="100%" height={300}>
                                 <LineChart data={sampleStockData}>
                                     <XAxis dataKey="time" />
@@ -76,14 +63,12 @@ const HomePage: React.FC = () => {
                 <Grid  size={{ xs: 12, md: 4 }}>
                     <Card>
                         <CardContent>
-                            <Typography variant="h6">Watchlist</Typography>
-                            <List>
-                                {watchlistStocks.map((stock, index) => (
-                                    <ListItem key={index}>
-                                        <ListItemText primary={stock.symbol} secondary={stock.price} />
-                                    </ListItem>
-                                ))}
-                            </List>
+                            <PortfolioHighlightCard
+                                capitalGain={{ value: 5000, percentage: 8.5 }}
+                                dividends={{ value: 1200, percentage: 2.5 }}
+                                currencyGain={{ value: -300, percentage: -0.8 }}
+                                totalReturn={{ value: 68000, percentage: 10.2 }}
+                            />
                         </CardContent>
                     </Card>
                 </Grid>
@@ -92,7 +77,9 @@ const HomePage: React.FC = () => {
                 <Grid size={{ xs: 12}}>
                     <Card>
                         <CardContent>
-                           <BalanceHeader/>
+                            <Typography variant="h5" component="div" align="left">
+                                Holdings
+                            </Typography>
                            <BalanceSummary/>
                         </CardContent>
                     </Card>
