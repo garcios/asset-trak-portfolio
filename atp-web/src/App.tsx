@@ -1,7 +1,6 @@
 import './App.css'
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
-import BalanceSummary from "./components/BalanceSummary.tsx";
-import MasterContainer from "./containers/MasterContainer.tsx";
+import HomePage from "./components/HomePage.tsx";
 
 const client = new ApolloClient({
     uri: "/query",
@@ -9,10 +8,9 @@ const client = new ApolloClient({
 });
 
 function App() {
-
     return (
         <ApolloProvider client={client}>
-            <MasterContainer/>
+            <HomePage/>
         </ApolloProvider>
     );
 }

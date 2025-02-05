@@ -5,10 +5,6 @@ const GET_BALANCE_SUMMARY = gql`
     query {
         getBalanceSummary(accountId: "eb08df3c-958d-4ae8-b3ae-41ec04418786") {
             accountId
-            totalValue {
-                amount
-                currencyCode
-            }
             balanceItems {
                 assetSymbol
                 assetName
@@ -64,9 +60,7 @@ function BalanceSummary() {
 
     return (
         <>
-
             <AssetsTable items={items} />
-
         </>
 
     );
