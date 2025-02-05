@@ -42,7 +42,7 @@ const HomePage: React.FC = () => {
             {/* Main Content Layout */}
             <Grid container spacing={2} sx={{ padding: 2 }}>
 
-                {/* Stock Market Overview (Left Panel) */}
+                {/* Portfolio Performance (Left Panel) */}
                 <Grid size={{ xs: 12, md: 8 }}>
                     <Card>
                         <CardContent>
@@ -59,7 +59,7 @@ const HomePage: React.FC = () => {
                     </Card>
                 </Grid>
 
-                {/* Watchlist (Right Panel) */}
+                {/* Highlights (Right Panel) */}
                 <Grid  size={{ xs: 12, md: 4 }}>
                     <Card>
                         <CardContent>
@@ -73,7 +73,7 @@ const HomePage: React.FC = () => {
                     </Card>
                 </Grid>
 
-                {/* News Section */}
+                {/* Holdings */}
                 <Grid size={{ xs: 12}}>
                     <Card>
                         <CardContent>
