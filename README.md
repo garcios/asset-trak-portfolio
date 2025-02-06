@@ -41,8 +41,7 @@ system. I developed this on macOS Sonoma environment.
 Please note that for this coding project, a good understanding of finance market concepts and Go language is required. 
 The data fetched by this project is strictly for informational purposes and should not be taken as investment advice.
 
->Note: This project started in 25th January 2025 and is currently ongoing and in the development phase. Therefore, please be advised that not all features 
-highlighted above have been fully implemented at this time.
+>### Note: This project began on January 25, 2025, and is currently in the development phase. As a result, some of the features mentioned above have not yet been fully implemented.
 
 ## High Level Architecture
 Below is a high level architecture diagram for this project.
