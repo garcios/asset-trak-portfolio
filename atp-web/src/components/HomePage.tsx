@@ -4,6 +4,7 @@ import Grid from '@mui/material/Grid2';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import BalanceSummary from "./BalanceSummary";
 import PortfolioHighlightCard from "./PortfolioHighlightCard";
+import TopNavBar from "./TopNavBar";
 
 // TypeScript interfaces for stock data
 interface StockData {
@@ -24,21 +25,6 @@ const sampleStockData: StockData[] = [
 const HomePage: React.FC = () => {
     return (
         <div>
-            {/* Top Navigation Bar */}
-            <AppBar position="static">
-                <Toolbar>
-                    <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                        Asset Performance Tracking
-                    </Typography>
-                    <TextField
-                        variant="outlined"
-                        size="small"
-                        placeholder="Search stocks..."
-                        sx={{ backgroundColor: "white", borderRadius: 1 }}
-                    />
-                </Toolbar>
-            </AppBar>
-
             {/* Main Content Layout */}
             <Grid container spacing={2} sx={{ padding: 2 }}>
 
@@ -64,10 +50,10 @@ const HomePage: React.FC = () => {
                     <Card>
                         <CardContent>
                             <PortfolioHighlightCard
-                                capitalGain={{ value: 5000, percentage: 8.5 }}
-                                dividends={{ value: 1200, percentage: 2.5 }}
-                                currencyGain={{ value: -300, percentage: -0.8 }}
-                                totalReturn={{ value: 68000, percentage: 10.2 }}
+                                capitalGain={{ value: 53421.81, percentage: 20.88 }}
+                                dividends={{ value: 3038.29, percentage: 1.19 }}
+                                currencyGain={{ value: 7079.06, percentage: 2.77 }}
+                                totalReturn={{ value: 63539.16, percentage: 24.84 }}
                             />
                         </CardContent>
                     </Card>

@@ -72,7 +72,7 @@ const PortfolioHighlightCard: React.FC<PortfolioHighlightProps> = ({
                         <Typography variant="body1" fontWeight="bold">
                             Portfolio Value
                         </Typography>
-                        <Typography variant="h6">{FormatCurrency(321568.65,"AUD")}</Typography>
+                        <Typography variant="h6">{FormatCurrency(316619.50,"AUD")}</Typography>
                     </Grid>
 
                     {/* Total Return */}

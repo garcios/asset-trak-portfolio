@@ -1,7 +1,7 @@
-# Asset Portfolio Tracking
+# Investment Portfolio Navigator
 
 ## Project Description
-The Asset Portfolio Tracking is a coding project aimed at providing individual investors or traders a way to 
+The Investment Portfolio Navigator is a coding project aimed at providing individual investors or traders a way to 
 efficiently monitor their stocks' performance. This project uses the Go programming language  its development, ensuring 
 a robust, scalable, and efficient solution.
 
@@ -32,13 +32,16 @@ react quickly to market changes.
 7. __Reports and Graphs__: Users can generate reports and charts to visualize the performance of their portfolio, making
 data analysis handy.
 
+8. __AI Generated Content__ : AI can generate concise summaries of the latest news and perform sentiment analysis to 
+provide insights into a company's public perception.
+
 The entire project runs on Golang which ensures a seamless development experience, and it can be used on any operating 
 system. I developed this on macOS Sonoma environment.
 
 Please note that for this coding project, a good understanding of finance market concepts and Go language is required. 
 The data fetched by this project is strictly for informational purposes and should not be taken as investment advice.
 
->Note: This project is currently ongoing and in the development phase. Therefore, please be advised that not all features 
+>Note: This project started in 25th January 2025 and is currently ongoing and in the development phase. Therefore, please be advised that not all features 
 highlighted above have been fully implemented at this time.
 
 ## High Level Architecture
@@ -69,6 +72,8 @@ that it uses Protocol Buffers (protobuf) which make it very efficient and scalab
 - go-micro https://github.com/micro/go-micro
 - graphQL https://github.com/99designs/gqlgen
 - mySQL database https://www.mysql.com/
+- Redis https://redis.io/
+- OpenAI API https://platform.openai.com/docs/overview
 
 ### Frontend
 - React.js https://react.dev/
