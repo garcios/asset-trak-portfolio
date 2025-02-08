@@ -88,6 +88,7 @@ that it uses Protocol Buffers (protobuf) which make it very efficient and scalab
 - Helm https://helm.sh/
 - Prometheus https://prometheus.io/
 - Grafana https://grafana.com/
+- Loki https://grafana.com/oss/loki/
 
 
 ### Development Tools
