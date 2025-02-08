@@ -70,8 +70,9 @@ currency-service/
 ├── README.md
 ```
 ## 5. Deploy to Minikube
-Load Your Local Image into Minikube.
+- Load Your Local Image into Minikube.
 Open podman desktop and push image to minikube.
+
 ![podman.png](podman.png)
 
 or you can use the following cli command:
@@ -79,7 +80,7 @@ or you can use the following cli command:
 minikube image tag docker.io/library/mysql:9.2 mysql:9.2 &&  minikube image push mysql:9.2
 ```
 
-Deploy Helm Chart
+- Deploy Helm Chart
 Run the following command to deploy the Helm chart:
 ```shell
 helm upgrade --install currency-service  ./currency-service 
@@ -89,7 +90,7 @@ Run the following command to test the rendered yaml:
 helm upgrade --install currency-service  ./currency-service --dry-run
 ```
 
-Check if the pods are running:
+- Check if the pods are running:
 ```shell
 kubectl get po
 ```
@@ -99,14 +100,14 @@ kubectl get svc
 ```
 
 ## 6. Expose and Test Your App
-Option 1: Port Forwarding
+- Option 1: Port Forwarding
 If your service is not exposed publicly:
 ```shell
 kubectl port-forward svc/atp-web 8080:80
 ```
 Now, you can access the app at http://localhost:8080.
 
-Option 2: Use Minikube IP
+- Option 2: Use Minikube IP
 Find the Minikube cluster IP:
 ```shell
 minikube ip
@@ -116,7 +117,7 @@ If using Ingress, edit your /etc/hosts file (Linux/macOS):
 echo "$(minikube ip) my-app.local" | sudo tee -a /etc/hosts
 ```
 
-If you want to open and access the database outside of the minikube.
+- If you want to open and access the database outside of the minikube.
 ## NodePort
 ```shell
 kubectl get svc
@@ -127,7 +128,8 @@ http://127.0.0.1:53838
 
 ```
 
-Open connection through port 53838
+- Open connection through port 53838
+
 ![connection.png](connection.png)
 
 ## 7. Execute a command in a pod
