@@ -5,6 +5,7 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"os"
+	"strconv"
 )
 
 var db *sql.DB
@@ -20,7 +21,25 @@ func Connect() (*sql.DB, error) {
 		return nil, fmt.Errorf("DBPASS environment variable not set")
 	}
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", user, pass, "127.0.0.1", 3306, "atp_db")
+	dbHost := os.Getenv("DBHOST")
+	if dbHost == "" {
+		dbHost = "127.0.0.1"
+	}
+
+	dbPort := 3306
+	dbPortStr := os.Getenv("DBPORT")
+	if dbPortStr != "" {
+		if port, err := strconv.ParseInt(dbPortStr, 10, 64); err == nil {
+			dbPort = int(port)
+		}
+	}
+
+	dbName := os.Getenv("DBNAME")
+	if dbName == "" {
+		dbName = "atp_db"
+	}
+
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", user, pass, dbHost, dbPort, dbName)
 
 	// initialize the connection pool
 	var err error
