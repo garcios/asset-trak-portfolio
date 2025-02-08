@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image:  {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: mysql-root-password
+            - name: MYSQL_DATABASE
+              value: "{{ .Values.mysqlDatabase }}"
+            - name: MYSQL_USER
+              value: "{{ .Values.mysqlUser }}"
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: mysql-user-password
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/mysql/conf.d
+      volumes:
+        - name: config-volume
+          configMap:
+            name: mysql-config

@@ -4,7 +4,7 @@ go 1.22.2
 
 require (
 	github.com/BurntSushi/toml v1.4.0
-	github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250201080249-aef32947c9eb
+	github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250208054937-2e9fc7410cd9
 	github.com/xuri/excelize/v2 v2.9.0
 	go-micro.dev/v4 v4.11.0
 	google.golang.org/protobuf v1.28.1

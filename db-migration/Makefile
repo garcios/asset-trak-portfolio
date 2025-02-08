@@ -1,4 +1,4 @@
-include .env
+include .env.minikube
 
 create_migration:
 	migrate create -ext=sql -dir=. -seq init

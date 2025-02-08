@@ -72,6 +72,7 @@ that it uses Protocol Buffers (protobuf) which make it very efficient and scalab
 - graphQL https://github.com/99designs/gqlgen
 - mySQL database https://www.mysql.com/
 - Redis https://redis.io/
+- NATS https://nats.io/
 - OpenAI API https://platform.openai.com/docs/overview
 
 ### Frontend
@@ -79,11 +80,21 @@ that it uses Protocol Buffers (protobuf) which make it very efficient and scalab
 - Vite https://vite.dev/
 - Material-UI https://mui.com/material-ui/
 
+### DevOps
+- Docker, Podman  https://podman.io/
+- Kubernetes https://kubernetes.io/
+- Minikube https://minikube.sigs.k8s.io/docs/
+- Podman desktop https://podman-desktop.io/
+- Helm https://helm.sh/
+- Prometheus https://prometheus.io/
+- Grafana https://grafana.com/
+
+
 ### Development Tools
 - JetBrains Goland https://www.jetbrains.com/go/
 - Datagrip https://www.jetbrains.com/datagrip/
 - Jetbrains AI https://www.jetbrains.com/ai/
-- Podman https://podman.io/
+- ChatGPT https://chatgpt.com/
 - Mermaid https://github.com/mermaid-js/mermaid
 
 
@@ -91,5 +102,6 @@ that it uses Protocol Buffers (protobuf) which make it very efficient and scalab
 - https://go.dev/doc/tutorial/database-access
 - https://github.com/go-sql-driver/mysql/
 - https://site.financialmodelingprep.com/developer/docs
+- https://community.veeam.com/kubernetes-korner-90/podman-desktop-and-minikube-a-great-combination-to-start-your-kubernetes-journey-6377
 
 

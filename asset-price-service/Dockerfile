@@ -12,15 +12,15 @@ COPY Makefile go.mod go.sum ./
 RUN go env -w GOPROXY=https://goproxy.io,direct/
 RUN make init && go mod download
 COPY . .
-RUN make proto tidy
+RUN make tidy
 
-RUN go build -o /go/src/app/service.currency  ./cmd/main.go
+RUN go build -o /go/src/app/service.assetprice  ./cmd/main.go
 
 # Deployment container
 FROM scratch
 
 COPY --from=builder /etc/ssl/certs /etc/ssl/certs
-COPY --from=builder /go/src/app/service.currency /app/service.currency
+COPY --from=builder /go/src/app/service.assetprice /app/service.assetprice
 COPY --from=builder /go/src/app/data /app/data
 
-ENTRYPOINT ["/app/service.currency"]
+ENTRYPOINT ["/app/service.assetprice"]

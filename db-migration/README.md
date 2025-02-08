@@ -79,5 +79,12 @@ podman port atp-db
 CREATE DATABASE atp_db;
 ```
 
+## db migrations in the minikube kubernetes cluster
+To run db migrations in the minikube kubernetes cluster, replace the .env values
+```shell
+make migrate_up
+```
+
+
 ## References
 - https://www.freecodecamp.org/news/database-migration-golang-migrate/

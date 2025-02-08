@@ -5,13 +5,13 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/garcios/asset-trak-portfolio/currency-service/db"
 	"github.com/garcios/asset-trak-portfolio/currency-service/handler"
+	pb "github.com/garcios/asset-trak-portfolio/currency-service/proto"
 	"github.com/garcios/asset-trak-portfolio/currency-service/service"
 	"github.com/garcios/asset-trak-portfolio/lib/mysql"
 	"go-micro.dev/v4"
 	"go-micro.dev/v4/logger"
 	"log"
-
-	pb "github.com/garcios/asset-trak-portfolio/currency-service/proto"
+	"os"
 )
 
 const (
@@ -26,7 +26,14 @@ func main() {
 
 	var cfg service.Config
 
-	_, err := toml.DecodeFile("config.toml", &cfg)
+	configDir := os.Getenv("CONFIG_DIR")
+	if configDir == "" {
+		configDir = "./"
+	}
+
+	configPath := configDir + "config.toml"
+
+	_, err := toml.DecodeFile(configPath, &cfg)
 	if err != nil {
 		log.Fatalf("failed to load config.toml: %s", err)
 	}

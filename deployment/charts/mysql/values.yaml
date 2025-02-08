@@ -1,0 +1,8 @@
+image:
+  repository: docker.io/library/mysql
+  tag: 9.2.0
+
+mysqlRootPassword: Pass123
+mysqlDatabase: atp_db
+mysqlUser: appuser
+mysqlPassword: Pass1234

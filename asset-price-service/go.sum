@@ -4,8 +4,8 @@ github.com/BurntSushi/toml v1.4.0 h1:kuoIxZQy2WRRk1pttg9asf+WVv6tWQuBNVmK8+nqPr0
 github.com/BurntSushi/toml v1.4.0/go.mod h1:ukJfTF/6rtPPRCnwkur4qwRxa8vTRFBF0uk2lLoLwho=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250127042553-3b73657032c9 h1:7/LQ0h2ZRk4Q9a124+i6mAHOTcemL5cSNhGAQvyp0u4=
-github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250127042553-3b73657032c9/go.mod h1:4xmAX1ph0mWdP7NEUzHBdEO3xLQlWrlWyuTB1DYW7us=
+github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250208054937-2e9fc7410cd9 h1:UDAWUb5hoQqPAft8OZxu3GF6VfKo/jRk1cN5UWMXqmM=
+github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250208054937-2e9fc7410cd9/go.mod h1:4xmAX1ph0mWdP7NEUzHBdEO3xLQlWrlWyuTB1DYW7us=
 github.com/go-sql-driver/mysql v1.8.1 h1:LedoTUt/eveggdHS9qUFC1EFSa8bU2+1pZjSRpvNJ1Y=
 github.com/go-sql-driver/mysql v1.8.1/go.mod h1:wEBSXgmK//2ZFJyE+qWnIsVGmvmEKlqwuVSjsCm7DZg=
 github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 h1:RWengNIwukTxcDr9M+97sNutRR1RKhG96O6jWumTTnw=

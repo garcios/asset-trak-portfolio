@@ -21,6 +21,6 @@ require (
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
-	github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250127042553-3b73657032c9
+	github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250208054937-2e9fc7410cd9
 	github.com/go-sql-driver/mysql v1.8.1 // indirect
 )

@@ -14,13 +14,13 @@ RUN make init && go mod download
 COPY . .
 RUN make proto tidy
 
-RUN go build -o /go/src/app/service.currency  ./cmd/main.go
+RUN go build -o /go/src/app/service.transaction  ./cmd/main.go
 
 # Deployment container
 FROM scratch
 
 COPY --from=builder /etc/ssl/certs /etc/ssl/certs
-COPY --from=builder /go/src/app/service.currency /app/service.currency
+COPY --from=builder /go/src/app/service.transaction /app/service.transaction
 COPY --from=builder /go/src/app/data /app/data
 
-ENTRYPOINT ["/app/service.currency"]
+ENTRYPOINT ["/app/service.transaction"]

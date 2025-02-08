@@ -1,0 +1,33 @@
+replicaCount: 1
+image:
+  repository: localhost/transaction-service
+  tag: "1.0"
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  port: 9100
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+environment:
+  - name: CONFIG_DIR
+    value: "/etc/config/"
+secrets:
+  enabled: true
+  name: transaction-service-secrets
+  data:
+    DBUSER: "root"
+    DBPASS: "Pass123"
+    DBHOST: "mysql"
+    DBPORT: "3306"
+    DBNAME: "atp_db"
+configmap:
+  enabled: true
+  name: transaction-service-config
+  data:
+    config.toml: |
+      [file_info]
+      path = "/app/data/currency_rates.xlsx"
+      skip_rows = 1

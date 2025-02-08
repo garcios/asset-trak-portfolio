@@ -7,6 +7,7 @@ import (
 	"github.com/garcios/asset-trak-portfolio/asset-price-service/service"
 	"github.com/garcios/asset-trak-portfolio/lib/mysql"
 	"log"
+	"os"
 )
 
 const (
@@ -19,8 +20,14 @@ func main() {
 	flag.Parse()
 
 	var cfg service.Config
+	configDir := os.Getenv("CONFIG_DIR")
+	if configDir == "" {
+		configDir = "./"
+	}
 
-	_, err := toml.DecodeFile("config.toml", &cfg)
+	configPath := configDir + "config.toml"
+
+	_, err := toml.DecodeFile(configPath, &cfg)
 	if err != nil {
 		log.Fatalf("failed to load config.toml: %s", err)
 	}

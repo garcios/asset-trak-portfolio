@@ -3,19 +3,19 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}
   labels:
-    app: currency-service
+    app: transaction-service
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: currency-service
+      app: transaction-service
   template:
     metadata:
       labels:
-        app: currency-service
+        app: transaction-service
     spec:
       containers:
-        - name: currency-service
+        - name: transaction-service
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
