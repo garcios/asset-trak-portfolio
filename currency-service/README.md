@@ -1,5 +1,16 @@
 # Currency Service
+The Currency Service Module is a critical component of `Investment Portfolio Navigator` application that ensures accurate 
+handling of multi-currency assets, real-time exchange rates, and currency conversions. It enables users to manage global
+investments efficiently by providing seamless currency-related functionalities.
 
+Key Features & Responsibilities:
+- Real-Time Exchange Rates: Fetches and updates live foreign exchange rates from trusted financial sources.
+- Historical Currency Data: Stores past exchange rates for performance analysis and backtesting.
+- Multi-Currency Portfolio Valuation: Converts portfolio holdings into a base currency for unified reporting.
+- Currency Conversion Engine: Supports automatic and manual currency conversions for transactions and asset valuation.
+
+By incorporating this module, the stock portfolio management application enhances accuracy, improves financial 
+insights, and helps users optimize their international investments.
 
 ## Install toml parser
 ```shell

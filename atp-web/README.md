@@ -1,4 +1,21 @@
 # Web application
+The Web UI serves as the primary interface for users to interact with the `Investment Portfolio Navigator` application. 
+It provides an intuitive, responsive, and visually appealing experience, allowing investors to monitor and manage their portfolios efficiently.
+
+__Key Features & Responsibilities__:
+- Dashboard & Portfolio Overview: Displays real-time portfolio performance, asset allocation, and key financial metrics.
+- Interactive Charts & Graphs: Visualizes stock trends, portfolio returns, and market movements with dynamic charts.
+- Transaction Management Interface: Allows users to add buy/sell transactions.
+- Asset & Market Data Insights: Provides real-time and historical price data, company fundamentals, and news feeds.
+- Transaction & Activity Log: Offers a detailed view of all transactions, dividends, fees, and corporate actions.
+- Risk & Performance Analytics: Features tools for risk assessment, profit/loss tracking, and investment strategy evaluation.
+- Customization & Personalization: Enables users to configure watchlists, alerts, themes, and display preferences.
+- Multi-Device & Cross-Platform Support: Ensures a seamless experience across desktops, tablets, and mobile devices.
+- Secure Authentication & User Management: Implements login, role-based access, and data security measures.
+
+By integrating the Web UI , the stock portfolio management application enhances usability, accessibility, and engagement, 
+helping investors make informed decisions and efficiently manage their investments.
+
 
 ## Create new project
 ```shell

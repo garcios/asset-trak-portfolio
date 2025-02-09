@@ -1,4 +1,22 @@
 # Transaction service
+The Transaction Service is a vital module in `Investment Portfolio Navigator` application that handles the recording, 
+processing, and reconciliation of all financial transactions related to buying, selling, and managing assets. 
+It ensures accurate tracking of investment activities and maintains a reliable transaction history.
+
+__Key Features & Responsibilities__:
+- Ingestor: Captures and records buy, sell, and other trade-related transactions.
+- Transaction History Management: Maintains a detailed log of all past transactions for auditing and reporting.
+- Asset Valuation: Computes the current market value of portfolio holdings based on the latest prices.
+- Corporate Actions Processing: Adjusts prices based on stock splits, dividends, and other corporate actions.
+- Multi-Currency Support: Processes transactions in different currencies with automatic conversion using real-time exchange rates.
+- Fees & Tax Calculations: Tracks brokerage fees, commissions, and applicable taxes for accurate cost analysis.
+- Portfolio Impact Analysis: Updates portfolio holdings, cash balances, and valuations after each transaction.
+
+
+By incorporating the Transaction Service, the `Investment Portfolio Navigator`  application ensures accurate, transparent, 
+and efficient handling of investment activities, helping users maintain precise financial records and optimize their 
+portfolio management strategies.
+
 
 ## Transaction Ingestor
 This program is ingesting data from Excel file with the following format:
