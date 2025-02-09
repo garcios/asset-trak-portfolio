@@ -11,6 +11,7 @@ __Key Features & Responsibilities__:
 - Configuration Management: Centralized handling of environment variables, database connections, and service configurations.
 - Security & Encryption: Implements encryption, hashing, and secure storage mechanisms for sensitive data.
 - Messaging & Event Handling: Provides common utilities for message queues, event-driven architecture, and notifications.
+- File Handling: Supports importing and exporting data in formats such as CSV, Excel, and JSON for reports, transaction records, and portfolio snapshots.
 
 By integrating Common Libraries, the `Investment Portfolio Navigator` application promotes code reusability, 
 enhances maintainability, and streamlines the development process while ensuring high performance and security standards.
