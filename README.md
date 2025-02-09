@@ -74,6 +74,7 @@ that it uses Protocol Buffers (protobuf) which make it very efficient and scalab
 - Redis https://redis.io/
 - NATS https://nats.io/
 - OpenAI API https://platform.openai.com/docs/overview
+- OpenID Connect https://openid.net/developers/how-connect-works/
 - Keycloak https://www.keycloak.org/
 
 ### Frontend
