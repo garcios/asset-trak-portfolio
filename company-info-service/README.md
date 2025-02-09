@@ -1,4 +1,14 @@
 # Company Information Service
+This service maintains and monitors key company information, including:
+- Valuation - Current market worth and financial metrics
+- Future Growth - Projected performance and industry trends
+- Past Performance - Historical financial and operational results
+- Financial Health - Stability, liquidity, and debt analysis
+- Dividend - Payout history and sustainability
+- Management - Leadership structure and governance
+- Ownership - Shareholder composition and insider activity
+- News and public sentiment - Media coverage and market perception
+
 
 ## AI Generated Content
 Here's an idea on how I will use Open AI and Redis to generate content for a company.
