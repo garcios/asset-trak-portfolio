@@ -1,4 +1,19 @@
-# GraphQL
+# GraphQL Gateway
+The GraphQL Gateway Component serves as a unified API layer that facilitates efficient data retrieval and interaction 
+between the frontend, backend services, and external data providers. It enhances flexibility, performance, and scalability 
+by aggregating multiple APIs into a single endpoint, optimizing data fetching for `Investment Portfolio Navigator`.
+
+__Key Features & Responsibilities__:
+- Unified API Endpoint: Provides a single GraphQL interface for querying multiple backend services (e.g., asset prices, transactions, user portfolios).
+- Efficient Data Fetching: Enables clients to request only the specific data they need, reducing over-fetching and under-fetching issues.
+- Real-Time Data Access: Supports live updates for stock prices, portfolio performance, and market news using GraphQL subscriptions.
+- Schema Stitching & Federation: Combines multiple microservices (e.g., asset price service, transaction service, currency service) into a cohesive API.
+- Authentication & Authorization: Implements secure access control to protect sensitive financial data.
+- Caching & Performance Optimization: Reduces response times by caching frequently requested data and optimizing query execution.
+- Error Handling & Logging: Provides detailed error messages and logging for debugging and monitoring API performance.
+
+By integrating the GraphQL Gateway Component, the `Investment Portfolio Navigator` application improves API efficiency, 
+enhances developer productivity, and delivers a seamless user experience with optimized data access and real-time insights.
 
 ## Dependencies
 ```shell
