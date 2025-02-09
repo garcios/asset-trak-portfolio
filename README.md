@@ -66,46 +66,46 @@ that it uses Protocol Buffers (protobuf) which make it very efficient and scalab
 
 ## Tech Stack
 ### Backend
-- Golang https://go.dev/
-- gRPC, protobuf https://grpc.io/
-- go-micro https://github.com/micro/go-micro
-- graphQL https://github.com/99designs/gqlgen
-- mySQL database https://www.mysql.com/
-- Redis https://redis.io/
-- NATS https://nats.io/
-- OpenAI API https://platform.openai.com/docs/overview
-- OpenID Connect https://openid.net/developers/how-connect-works/
-- Keycloak https://www.keycloak.org/
+- Golang <https://go.dev/>
+- gRPC, protobuf <https://grpc.io/>
+- go-micro <https://github.com/micro/go-micro>
+- graphQL <https://github.com/99designs/gqlgen>
+- mySQL database <https://www.mysql.com/>
+- Redis <https://redis.io/>
+- NATS <https://nats.io/>
+- OpenAI API <https://platform.openai.com/docs/overview>
+- OpenID Connect <https://openid.net/developers/how-connect-works/>
+- Keycloak <https://www.keycloak.org/>
 
 ### Frontend
-- React.js https://react.dev/
-- Vite https://vite.dev/
-- Material-UI https://mui.com/material-ui/
-- API Mocking for Javascript https://mswjs.io/
+- React.js <https://react.dev/>
+- Vite <https://vite.dev/>
+- Material-UI <https://mui.com/material-ui/>
+- API Mocking for Javascript <https://mswjs.io/>
 
 ### DevOps
-- Docker, Podman  https://podman.io/
-- Kubernetes https://kubernetes.io/
-- Minikube https://minikube.sigs.k8s.io/docs/
-- Podman desktop https://podman-desktop.io/
-- Helm https://helm.sh/
-- Prometheus https://prometheus.io/
-- Grafana https://grafana.com/
-- Loki https://grafana.com/oss/loki/
+- Docker, Podman  <https://podman.io/>
+- Kubernetes <https://kubernetes.io/>
+- Minikube <https://minikube.sigs.k8s.io/docs/>
+- Podman desktop <https://podman-desktop.io/>
+- Helm <https://helm.sh/>
+- Prometheus <https://prometheus.io/>
+- Grafana <https://grafana.com/>
+- Loki <https://grafana.com/oss/loki/>
 
 
 ### Development Tools
-- JetBrains Goland https://www.jetbrains.com/go/
-- Datagrip https://www.jetbrains.com/datagrip/
-- Jetbrains AI https://www.jetbrains.com/ai/
-- ChatGPT https://chatgpt.com/
-- Mermaid https://github.com/mermaid-js/mermaid
-- Github Project Planning Tool https://docs.github.com/en/issues/planning-and-tracking-with-projects/learning-about-projects/about-projects
+- JetBrains Goland <https://www.jetbrains.com/go/>
+- Datagrip <https://www.jetbrains.com/datagrip/>
+- Jetbrains AI <https://www.jetbrains.com/ai/>
+- ChatGPT <https://chatgpt.com/>
+- Mermaid <https://github.com/mermaid-js/mermaid>
+- Github Project Planning Tool <https://docs.github.com/en/issues/planning-and-tracking-with-projects/learning-about-projects/about-projects>
 
 ## References
-- https://go.dev/doc/tutorial/database-access
-- https://github.com/go-sql-driver/mysql/
-- https://site.financialmodelingprep.com/developer/docs
-- https://community.veeam.com/kubernetes-korner-90/podman-desktop-and-minikube-a-great-combination-to-start-your-kubernetes-journey-6377
+- <https://go.dev/doc/tutorial/database-access>
+- <https://github.com/go-sql-driver/mysql/>
+- <https://site.financialmodelingprep.com/developer/docs>
+- <https://community.veeam.com/kubernetes-korner-90/podman-desktop-and-minikube-a-great-combination-to-start-your-kubernetes-journey-6377>
 
 
