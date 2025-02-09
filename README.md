@@ -97,6 +97,7 @@ that it uses Protocol Buffers (protobuf) which make it very efficient and scalab
 - Jetbrains AI https://www.jetbrains.com/ai/
 - ChatGPT https://chatgpt.com/
 - Mermaid https://github.com/mermaid-js/mermaid
+- Github Project Planning Tool https://docs.github.com/en/issues/planning-and-tracking-with-projects/learning-about-projects/about-projects
 
 
 ## References
