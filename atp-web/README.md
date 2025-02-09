@@ -94,3 +94,14 @@ npm run dev
 ```shell
 npm install @mui/material @emotion/react @emotion/styled
 ```
+
+## Mock API
+Install msw dependency
+```shell
+npm install msw --save-dev
+```
+
+Use the following command to generate the `mockServiceWorker.js`
+```shell
+npx msw init public/
+```
