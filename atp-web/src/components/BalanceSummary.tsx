@@ -2,8 +2,8 @@ import { useQuery, gql } from "@apollo/client";
 import AssetsTable from "./AssetsTable";
 
 const GET_BALANCE_SUMMARY = gql`
-    query {
-        getBalanceSummary(accountId: "eb08df3c-958d-4ae8-b3ae-41ec04418786") {
+    query GetBalanceSummary($accountId: String!){
+        getBalanceSummary(accountId: $accountId) {
             accountId
             balanceItems {
                 assetSymbol
@@ -40,7 +40,9 @@ interface Money {
 }
 
 function BalanceSummary() {
-    const {loading, error, data} = useQuery(GET_BALANCE_SUMMARY);
+    const { data, loading, error } = useQuery(GET_BALANCE_SUMMARY, {
+        variables: { accountId: 'eb08df3c-958d-4ae8-b3ae-41ec04418786' }
+    });
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error.message}</p>;

@@ -80,6 +80,7 @@ that it uses Protocol Buffers (protobuf) which make it very efficient and scalab
 - React.js https://react.dev/
 - Vite https://vite.dev/
 - Material-UI https://mui.com/material-ui/
+- API Mocking for Javascript https://mswjs.io/
 
 ### DevOps
 - Docker, Podman  https://podman.io/
@@ -99,7 +100,6 @@ that it uses Protocol Buffers (protobuf) which make it very efficient and scalab
 - ChatGPT https://chatgpt.com/
 - Mermaid https://github.com/mermaid-js/mermaid
 - Github Project Planning Tool https://docs.github.com/en/issues/planning-and-tracking-with-projects/learning-about-projects/about-projects
-
 
 ## References
 - https://go.dev/doc/tutorial/database-access
