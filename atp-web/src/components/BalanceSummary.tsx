@@ -17,7 +17,26 @@ const GET_BALANCE_SUMMARY = gql`
                     amount
                     currencyCode
                 }
-                totalGain
+                capitalGain{
+                    amount
+                    currencyCode
+                    percentage
+                }
+                dividend {
+                    amount
+                    currencyCode
+                    percentage
+                }
+                currencyGain{
+                    amount
+                    currencyCode
+                    percentage
+                }
+                totalReturn{
+                    amount
+                    currencyCode
+                    percentage
+                }
                 marketCode
             }
         }
@@ -25,12 +44,25 @@ const GET_BALANCE_SUMMARY = gql`
 `;
 
 interface Item {
-    assetName: string;
     assetSymbol: string;
-    price: Money;
+    assetName: string;
+    price: number;
+    priceCurrencyCode: string;
     quantity: number;
-    value: Money;
-    totalGain: number;
+    value: number;
+    valueCurrencyCode: string;
+    capitalGain: number;
+    capitalGainCurrencyCode: string;
+    capitalGainPercentage: number;
+    dividend: number;
+    dividendCurrencyCode: string;
+    dividendPercentage: number;
+    currencyGain: number;
+    currencyGainCurrencyCode: string;
+    currencyGainPercentage: number;
+    totalReturn: number;
+    totalReturnCurrencyCode: string;
+    totalReturnPercentage: number;
     marketCode: string;
 }
 
@@ -38,6 +70,12 @@ interface Money {
     amount: number;
     currencyCode: string;
 }
+
+interface ValueWithPercentage {
+    value: Money;
+    percentage: number;
+}
+
 
 function BalanceSummary() {
     const { data, loading, error } = useQuery(GET_BALANCE_SUMMARY, {
@@ -51,11 +89,23 @@ function BalanceSummary() {
         return {
             assetSymbol: item.assetSymbol,
             assetName: item.assetName,
-            price: item.price.amount,
-            currency: item.price.currencyCode,
+            price: item.price,
+            priceCurrencyCode: item.priceCurrencyCode,
             quantity: item.quantity,
-            value: item.value.amount,
-            totalGain: 0,
+            value: item.value,
+            valueCurrencyCode: item.valueCurrencyCode,
+            capitalGain: item.capitalGain,
+            capitalGainCurrencyCode: item.capitalGainCurrencyCode,
+            capitalGainPercentage: item.capitalGainPercentage,
+            dividend: item.dividend,
+            dividendCurrencyCode: item.dividendCurrencyCode,
+            dividendPercentage: item.dividendPercentage,
+            currencyGain: item.currencyGain,
+            currencyGainCurrencyCode: item.currencyGainCurrencyCode,
+            currencyGainPercentage: item.currencyGainPercentage,
+            totalReturn: item.totalReturn,
+            totalReturnCurrencyCode: item.totalReturnCurrencyCode,
+            totalReturnPercentage: item.totalReturnPercentage,
             marketCode: item.marketCode,
         }
     }).sort((a: { value: number; }, b: { value: number; }) => b.value - a.value);

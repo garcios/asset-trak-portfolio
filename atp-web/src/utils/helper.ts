@@ -1,5 +1,8 @@
 // Helper function to format currency
 const FormatCurrency = (amount: number, currencyCode: string): string => {
+
+    console.log("amount:", amount, "currencyCode:", currencyCode);
+
     return new Intl.NumberFormat("en-AU", {
         style: "currency",
         currency: currencyCode,

@@ -29,13 +29,22 @@ const PortfolioHighlightCard: React.FC<PortfolioHighlightProps> = ({
     return (
         <Card>
             <CardContent>
-                <Typography variant="h6" fontWeight="bold" gutterBottom>
-                    Portfolio Highlights
+                <Typography variant="h6" fontWeight="bold" gutterBottom align="left">
+                    Summary
                 </Typography>
 
+
                 <Grid container spacing={2}>
+                    {/* Portfolio Value*/}
+                    <Grid size={{ xs: 2 }} >
+                        <Typography variant="body1" fontWeight="bold">
+                            Portfolio Value
+                        </Typography>
+                        <Typography variant="h4" fontWeight="bold">{FormatCurrency(316619.50,"AUD")} </Typography>
+                    </Grid>
+
                     {/* Capital Gain */}
-                    <Grid  size={{ xs: 6}}>
+                    <Grid  size={{ xs: 2}}>
                         <Typography variant="body1" fontWeight="bold">
                             Capital Gain
                         </Typography>
@@ -46,7 +55,7 @@ const PortfolioHighlightCard: React.FC<PortfolioHighlightProps> = ({
                     </Grid>
 
                     {/* Dividends */}
-                    <Grid size={{ xs: 6}}>
+                    <Grid size={{ xs: 2}}>
                         <Typography variant="body1" fontWeight="bold">
                             Dividends
                         </Typography>
@@ -57,7 +66,7 @@ const PortfolioHighlightCard: React.FC<PortfolioHighlightProps> = ({
                     </Grid>
 
                     {/* Currency Gain */}
-                    <Grid size={{ xs: 6 }} sx={{ mt: 2 }}>
+                    <Grid size={{ xs: 2 }} >
                         <Typography variant="body1" fontWeight="bold">
                             Currency Gain
                         </Typography>
@@ -67,40 +76,17 @@ const PortfolioHighlightCard: React.FC<PortfolioHighlightProps> = ({
                         </Typography>
                     </Grid>
 
-                    {/* Portfolio Value*/}
-                    <Grid size={{ xs: 6 }} sx={{ mt: 2 }}>
+                    {/* Total Return */}
+                    <Grid size={{ xs: 2 }} >
                         <Typography variant="body1" fontWeight="bold">
-                            Portfolio Value
+                            Total Return
                         </Typography>
-                        <Typography variant="h6">{FormatCurrency(316619.50,"AUD")}</Typography>
+                        <Typography variant="h6">{FormatCurrency(totalReturn.value,"AUD")}</Typography>
+                        <Typography variant="body2" color={getColor(totalReturn.percentage)}>
+                            {FormatPercentage(currencyGain.percentage)}
+                        </Typography>
                     </Grid>
 
-                    {/* Total Return */}
-                    <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
-                        <Paper
-                            sx={{
-                                backgroundColor: getColor(totalReturn.percentage),
-                                color: "white",
-                                padding: 2,
-                                borderRadius: 2,
-                                textAlign: "center",
-                                boxShadow: 3,
-                            }}
-                        >
-                            <Typography variant="h6" fontWeight="bold">
-                                Total Return
-                            </Typography>
-                            <Typography variant="h4" fontWeight="bold">
-                                {FormatCurrency(totalReturn.value,"AUD")}
-                            </Typography>
-                            <Box display="flex" justifyContent="center" alignItems="center">
-                                {totalReturn.percentage >= 0 ? <ArrowDropUpIcon fontSize="large" /> : <ArrowDropDownIcon fontSize="large" />}
-                                <Typography variant="h6" fontWeight="bold">
-                                    {FormatPercentage(totalReturn.percentage)}
-                                </Typography>
-                            </Box>
-                        </Paper>
-                    </Grid>
                 </Grid>
             </CardContent>
         </Card>
