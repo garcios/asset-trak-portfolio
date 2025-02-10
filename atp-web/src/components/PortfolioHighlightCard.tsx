@@ -83,7 +83,7 @@ const PortfolioHighlightCard: React.FC<PortfolioHighlightProps> = ({
                         </Typography>
                         <Typography variant="h6">{FormatCurrency(totalReturn.value,"AUD")}</Typography>
                         <Typography variant="body2" color={getColor(totalReturn.percentage)}>
-                            {FormatPercentage(currencyGain.percentage)}
+                            {FormatPercentage(totalReturn.percentage)}
                         </Typography>
                     </Grid>
 
