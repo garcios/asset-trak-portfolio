@@ -1,5 +1,14 @@
 import React from "react";
-import { AppBar, Toolbar, Typography, TextField, InputAdornment, IconButton, Box, Button } from "@mui/material";
+import {
+    AppBar,
+    Toolbar,
+    Typography,
+    TextField,
+    InputAdornment,
+    IconButton,
+    Box,
+    Grid2
+} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { NavLink } from "react-router-dom";
@@ -15,6 +24,7 @@ const navLinks = [
 
 const TopNavBar: React.FC = () => {
     return (
+        <Grid2 spacing={2} sx={{ padding: 2 }}>
         <AppBar position="static" color="default" elevation={1}>
             <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
                 {/* Left: Logo / App Name */}
@@ -63,6 +73,7 @@ const TopNavBar: React.FC = () => {
                 </Box>
             </Toolbar>
         </AppBar>
+        </Grid2>
     );
 };
 
