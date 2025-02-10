@@ -71,6 +71,7 @@ that it uses Protocol Buffers (protobuf) which make it very efficient and scalab
 - go-micro <https://github.com/micro/go-micro>
 - graphQL <https://github.com/99designs/gqlgen>
 - mySQL database <https://www.mysql.com/>
+- Golang Migrate <https://github.com/golang-migrate/migrate/blob/master/GETTING_STARTED.md>
 - Redis <https://redis.io/>
 - NATS <https://nats.io/>
 - OpenAI API <https://platform.openai.com/docs/overview>
