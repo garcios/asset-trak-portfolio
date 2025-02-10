@@ -110,4 +110,4 @@ npx msw init public/
 The initial screen, populated with mock data, appears as follows.
 > Please note that this is still in the early stages of development and will be updated as progress is made.
 
-![screenshot2.png](screenshot2.png)
+![screenshot4.png](screenshot4.png)
