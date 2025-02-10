@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -9,6 +8,7 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import {Typography, useTheme} from "@mui/material";
 import {FormatCurrency, FormatPercentage} from "../utils/helper";
+import React from "react";
 
 interface Column {
     id: 'assetName' |  'price' | 'currency' | 'quantity' | 'value' | 'capitalGain' | 'dividend' | 'currencyGain' | 'totalReturn';

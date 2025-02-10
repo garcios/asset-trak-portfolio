@@ -1,10 +1,8 @@
-import React from "react";
-import { AppBar, Toolbar, Typography, TextField, Card, CardContent, List, ListItem, ListItemText } from "@mui/material";
+import { Typography,  Card, CardContent} from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import BalanceSummary from "./BalanceSummary";
-import PortfolioHighlightCard from "./PortfolioHighlightCard";
-import TopNavBar from "./TopNavBar";
+import SummaryTotals from "./SummaryTotals";
 
 // TypeScript interfaces for stock data
 interface PerformanceData {
@@ -27,7 +25,7 @@ const samplePerformanceData: PerformanceData[] = [
     { date: "Jan 2025", value: 316000 },
 ];
 
-const HomePage: React.FC = () => {
+const Holdings  = () => {
     return (
         <div>
             {/* Main Content Layout */}
@@ -37,7 +35,7 @@ const HomePage: React.FC = () => {
                 <Grid  size={{ xs: 12 }}>
                     <Card>
                         <CardContent>
-                            <PortfolioHighlightCard
+                            <SummaryTotals
                                 capitalGain={{ value: 53421.81, percentage: 20.88 }}
                                 dividends={{ value: 3038.29, percentage: 1.19 }}
                                 currencyGain={{ value: 7079.06, percentage: 2.77 }}
@@ -82,4 +80,4 @@ const HomePage: React.FC = () => {
     );
 };
 
-export default HomePage;
+export default Holdings;

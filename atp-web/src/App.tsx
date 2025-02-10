@@ -1,12 +1,11 @@
-import './App.css'
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
-import HomePage from "./components/HomePage.tsx";
+import Holdings from "./components/Holdings";
 import TopNavBar from "./components/TopNavBar";
-import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Transactions from "./components/Transactions";
 import Watchlist from "./components/Watchlist";
 import News from "./components/News";
+import './App.css'
 
 const client = new ApolloClient({
     uri: "/query",
@@ -19,8 +18,8 @@ function App() {
             <Router>
                 <TopNavBar />
                 <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/holdings" element={<HomePage />} />
+                    <Route path="/" element={<Holdings />} />
+                    <Route path="/holdings" element={<Holdings />} />
                     <Route path="/transactions" element={<Transactions />} />
                     <Route path="/watchlist" element={<Watchlist />} />
                     <Route path="/news" element={<News />} />

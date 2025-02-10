@@ -1,4 +1,3 @@
-import React from "react";
 import {
     AppBar,
     Toolbar,
@@ -12,6 +11,7 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { NavLink } from "react-router-dom";
+import React from "react";
 
 // Define navigation links
 // Define navigation links

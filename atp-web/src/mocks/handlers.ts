@@ -1,5 +1,5 @@
 import {graphql, GraphQLResponseResolver, HttpResponse} from "msw";
-import getBalanceSummaryResolver from "./getBalanceSummaryResolver";
+import {getBalanceSummaryResolver, GetBalanceSummaryResponse} from "./getBalanceSummaryResolver";
 
 
 const handlers = [

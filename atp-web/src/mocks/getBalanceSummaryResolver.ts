@@ -434,4 +434,4 @@ const getBalanceSummaryResolver:GraphQLResponseResolver = ({query, variables}) =
     return HttpResponse.json(mockData)
 };
 
-export default getBalanceSummaryResolver;
+export  {getBalanceSummaryResolver, GetBalanceSummaryResponse};

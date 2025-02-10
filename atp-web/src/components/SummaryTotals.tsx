@@ -1,20 +1,17 @@
-import React from "react";
-import {Box, Card, CardContent, Typography, useTheme} from "@mui/material";
+import {Card, CardContent, Typography, useTheme} from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import {FormatCurrency, FormatPercentage} from "../utils/helper";
-import Paper from "@mui/material/Paper";
-import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import React from "react";
 
 // TypeScript interface for the component props
-interface PortfolioHighlightProps {
+interface SummaryTotalsProps {
     capitalGain: { value: number; percentage: number };
     dividends: { value: number; percentage: number };
     currencyGain: { value: number; percentage: number };
     totalReturn: { value: number; percentage: number };
 }
 
-const PortfolioHighlightCard: React.FC<PortfolioHighlightProps> = ({
+const SummaryTotals: React.FC<SummaryTotalsProps> = ({
                                                                        capitalGain,
                                                                        dividends,
                                                                        currencyGain,
@@ -94,4 +91,4 @@ const PortfolioHighlightCard: React.FC<PortfolioHighlightProps> = ({
 };
 
 
-export default PortfolioHighlightCard;
+export default SummaryTotals;
