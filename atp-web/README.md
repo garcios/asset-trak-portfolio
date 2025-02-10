@@ -105,3 +105,10 @@ Use the following command to generate the `mockServiceWorker.js`
 ```shell
 npx msw init public/
 ```
+
+## What it looks like
+The initial screen, populated with mock data, appears as follows.
+> Please note that this is still in the early stages of development and will be updated as progress is made.
+
+
+![screenshot.png](screenshot.png)
