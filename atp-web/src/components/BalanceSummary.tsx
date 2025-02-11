@@ -9,19 +9,19 @@ function BalanceSummary() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchCountries = async () => {
+        const fetchBalanceSummary = async () => {
             try {
                 const data = await GraphQLService.getBalanceSummaries('eb08df3c-958d-4ae8-b3ae-41ec04418786');
                 setLineItems(data.balanceItems);
             } catch (err) {
-                setError('Failed to load countries');
+                setError('Failed to load balance summary');
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchCountries().catch(
-            (err) => setError('Failed to load countries'))
+        fetchBalanceSummary().catch(
+            (err) => setError('Failed to balance summary'))
         return () => setLoading(true);
 
     }, []);
