@@ -1,9 +1,9 @@
-import {graphql, GraphQLResponseResolver, HttpResponse} from "msw";
-import {getBalanceSummaryResolver, GetBalanceSummaryResponse} from "./getBalanceSummaryResolver";
-
+import {graphql} from "msw";
+import {getBalanceSummaryResolver} from "./getBalanceSummaryResolver";
+import {BalanceSummaryResponse} from "../services/get-balance-summary";
 
 const handlers = [
-    graphql.query<GetBalanceSummaryResponse, { accountId: string }>(
+    graphql.query<BalanceSummaryResponse, { accountId: string }>(
         'GetBalanceSummary',
         getBalanceSummaryResolver,
     ),

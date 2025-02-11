@@ -26,25 +26,47 @@ npm install
 
 ## GraphQL client
 ```js
-import './App.css'
-import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
-import BalanceSummary from "./components/BalanceSummary.tsx";
+import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
 
 const client = new ApolloClient({
     uri: "/query",
     cache: new InMemoryCache(),
 });
 
-function App() {
+export default client;
 
+```
+
+```js
+import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import Holdings from "./components/Holdings";
+import TopNavBar from "./components/TopNavBar";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Transactions from "./components/Transactions";
+import Watchlist from "./components/Watchlist";
+import News from "./components/News";
+import './App.css'
+import client from "./services/apollo-client";
+
+function App() {
     return (
         <ApolloProvider client={client}>
-            <BalanceSummary/>
+            <Router>
+                <TopNavBar />
+                <Routes>
+                    <Route path="/" element={<Holdings />} />
+                    <Route path="/holdings" element={<Holdings />} />
+                    <Route path="/transactions" element={<Transactions />} />
+                    <Route path="/watchlist" element={<Watchlist />} />
+                    <Route path="/news" element={<News />} />
+                </Routes>
+            </Router>
         </ApolloProvider>
     );
 }
 
 export default App
+
 ```
 
 ## Setup Proxy in React Vite for CORS
@@ -107,7 +129,7 @@ npx msw init public/
 ```
 
 ## What it looks like
-The initial screen, populated with mock data, appears as follows.
+The initial screen, populated with mock data, appears as follows (Last updated on 10 Feb 2025).
 > Please note that this is still in the early stages of development and will be updated as progress is made.
 
 ![screenshot4.png](screenshot4.png)

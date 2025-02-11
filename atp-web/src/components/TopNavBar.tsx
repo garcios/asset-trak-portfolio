@@ -14,7 +14,6 @@ import { NavLink } from "react-router-dom";
 import React from "react";
 
 // Define navigation links
-// Define navigation links
 const navLinks = [
     { name: "Holdings", path: "/holdings" },
     { name: "Transactions", path: "/transactions" },

@@ -9,6 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import {Typography, useTheme} from "@mui/material";
 import {FormatCurrency, FormatPercentage} from "../utils/helper";
 import React from "react";
+import {LineItem} from "../services/get-balance-summary";
 
 interface Column {
     id: 'assetName' |  'price' | 'currency' | 'quantity' | 'value' | 'capitalGain' | 'dividend' | 'currencyGain' | 'totalReturn';
@@ -65,30 +66,7 @@ const columns: readonly Column[] = [
     },
 ];
 
-interface Money {
-    amount: number;
-    currencyCode: string;
-}
-
-interface ValueWithPercentage {
-    value: Money;
-    percentage: number;
-}
-
-interface BalanceItem {
-    assetSymbol: string;
-    assetName: string;
-    price: Money;
-    quantity: number;
-    value: Money;
-    capitalGain: ValueWithPercentage;
-    dividend: ValueWithPercentage;
-    currencyGain: ValueWithPercentage;
-    totalReturn: ValueWithPercentage;
-    marketCode: string;
-}
-
-export default function AssetsTable({ items }: { items: BalanceItem[] }) {
+export default function AssetsTable({ items }: { items: LineItem[] }) {
     const theme = useTheme();
 
     const [page, setPage] = React.useState(0);

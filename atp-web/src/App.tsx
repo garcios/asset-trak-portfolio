@@ -1,4 +1,4 @@
-import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import { ApolloProvider } from "@apollo/client";
 import Holdings from "./components/Holdings";
 import TopNavBar from "./components/TopNavBar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -6,11 +6,7 @@ import Transactions from "./components/Transactions";
 import Watchlist from "./components/Watchlist";
 import News from "./components/News";
 import './App.css'
-
-const client = new ApolloClient({
-    uri: "/query",
-    cache: new InMemoryCache(),
-});
+import client from "./services/apollo-client";
 
 function App() {
     return (
