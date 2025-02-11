@@ -2,19 +2,18 @@ import client from './apollo-client';
 import GET_BALANCE_SUMMARY, {BalanceSummaryResponse} from "./get-balance-summary";
 
 class GraphQLService {
-    async getBalanceSummaries(accountId:string): Promise<BalanceSummaryResponse> {
-        try {
-            const {data} = await client.query<BalanceSummaryResponse>({
-                query: GET_BALANCE_SUMMARY,
-                variables: {
-                    accountId: accountId
-                }
-            });
-            console.log('getBalanceSummaries:',data);
+    async fetchBalanceSummaries(accountId: string): Promise<BalanceSummaryResponse> {
+        const variables = { id: accountId };
 
-            return data;
+        try {
+            const { data: balanceSummary } = await client.query<BalanceSummaryResponse>({
+                query: GET_BALANCE_SUMMARY,
+                variables
+            });
+
+            return balanceSummary;
         } catch (error) {
-            console.error('Error fetching balance summaries:', error);
+            console.error(`Error fetching balance summaries for accountId: ${accountId}`, error);
             throw error;
         }
     }
