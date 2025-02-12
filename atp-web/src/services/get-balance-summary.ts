@@ -3,7 +3,7 @@ import {gql} from "@apollo/client";
 const GET_BALANCE_SUMMARY = gql`
     query GetBalanceSummary($accountId: String!){
         BalanceSummary(accountId: $accountId) {
-            BalanceItems {
+            balanceItems {
                 assetSymbol
                 assetName
                 price {
@@ -43,7 +43,7 @@ const GET_BALANCE_SUMMARY = gql`
 
 export interface BalanceSummaryResponse{
     balanceItems: LineItem[];
-};
+}
 
 export interface LineItem {
     assetSymbol: string;
@@ -56,17 +56,17 @@ export interface LineItem {
     currencyGain: ValueWithPercentage;
     totalReturn: ValueWithPercentage;
     marketCode: string;
-};
+}
 
 export interface Money {
     amount: number;
     currencyCode: string;
-};
+}
 
 export interface ValueWithPercentage {
     amount: number;
     currencyCode: string;
     percentage: number;
-};
+}
 
 export default GET_BALANCE_SUMMARY;

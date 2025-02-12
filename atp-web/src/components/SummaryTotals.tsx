@@ -1,23 +1,43 @@
 import {Card, CardContent, Typography, useTheme} from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import {FormatCurrency, FormatPercentage} from "../utils/helper";
-import React from "react";
+import React, {useEffect, useState} from "react";
+import {SummaryTotalsType} from "../services/get-summary-totals";
+import GraphQLService from "../services/graphql-service";
 
-// TypeScript interface for the component props
-interface SummaryTotalsProps {
-    capitalGain: { value: number; percentage: number };
-    dividends: { value: number; percentage: number };
-    currencyGain: { value: number; percentage: number };
-    totalReturn: { value: number; percentage: number };
-}
 
-const SummaryTotals: React.FC<SummaryTotalsProps> = ({
-                                                                       capitalGain,
-                                                                       dividends,
-                                                                       currencyGain,
-                                                                       totalReturn,
-                                                                   }) => {
+const FAILED_TO_LOAD_MESSAGE = 'Failed to load summary totals';
+
+
+const SummaryTotals: React.FC = () => {
     const theme = useTheme();
+
+
+    const [summaryTotals, setSummaryTotal] = useState<SummaryTotalsType>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+
+    const loadSummaryTotals = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const data = await GraphQLService.fetchSummaryTotals('eb08df3c-958d-4ae8-b3ae-41ec04418786');
+            setSummaryTotal(data.summaryTotals);
+        } catch (err) {
+            setError(FAILED_TO_LOAD_MESSAGE);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        loadSummaryTotals();
+    }, []);
+
+
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error: {error}</p>;
+
 
     // Function to determine color based on positive/negative value
     const getColor = (value: number) =>
@@ -37,7 +57,8 @@ const SummaryTotals: React.FC<SummaryTotalsProps> = ({
                         <Typography variant="body1" fontWeight="bold">
                             Portfolio Value
                         </Typography>
-                        <Typography variant="h4" fontWeight="bold">{FormatCurrency(316619.50,"AUD")} </Typography>
+                        <Typography variant="h4" fontWeight="bold">{FormatCurrency(summaryTotals.portfolioValue.amount,
+                            summaryTotals.portfolioValue.currencyCode)} </Typography>
                     </Grid>
 
                     {/* Capital Gain */}
@@ -45,9 +66,9 @@ const SummaryTotals: React.FC<SummaryTotalsProps> = ({
                         <Typography variant="body1" fontWeight="bold">
                             Capital Gain
                         </Typography>
-                        <Typography variant="h6">{FormatCurrency(capitalGain.value, "AUD")}</Typography>
-                        <Typography variant="body2" color={getColor(capitalGain.percentage)}>
-                            {FormatPercentage(capitalGain.percentage)}
+                        <Typography variant="h6">{FormatCurrency(summaryTotals.capitalGain.amount, "AUD")}</Typography>
+                        <Typography variant="body2" color={getColor(summaryTotals.capitalGain.percentage)}>
+                            {FormatPercentage(summaryTotals.capitalGain.percentage)}
                         </Typography>
                     </Grid>
 
@@ -56,9 +77,9 @@ const SummaryTotals: React.FC<SummaryTotalsProps> = ({
                         <Typography variant="body1" fontWeight="bold">
                             Dividends
                         </Typography>
-                        <Typography variant="h6">{FormatCurrency(dividends.value, "AUD")}</Typography>
-                        <Typography variant="body2" color={getColor(dividends.percentage)}>
-                            {FormatPercentage(dividends.percentage)}
+                        <Typography variant="h6">{FormatCurrency(summaryTotals.dividends.amount, "AUD")}</Typography>
+                        <Typography variant="body2" color={getColor(summaryTotals.dividends.percentage)}>
+                            {FormatPercentage(summaryTotals.dividends.percentage)}
                         </Typography>
                     </Grid>
 
@@ -67,9 +88,9 @@ const SummaryTotals: React.FC<SummaryTotalsProps> = ({
                         <Typography variant="body1" fontWeight="bold">
                             Currency Gain
                         </Typography>
-                        <Typography variant="h6">{FormatCurrency(currencyGain.value,"AUD")}</Typography>
-                        <Typography variant="body2" color={getColor(currencyGain.percentage)}>
-                            {FormatPercentage(currencyGain.percentage)}
+                        <Typography variant="h6">{FormatCurrency(summaryTotals.currencyGain.amount,"AUD")}</Typography>
+                        <Typography variant="body2" color={getColor(summaryTotals.currencyGain.percentage)}>
+                            {FormatPercentage(summaryTotals.currencyGain.percentage)}
                         </Typography>
                     </Grid>
 
@@ -78,9 +99,9 @@ const SummaryTotals: React.FC<SummaryTotalsProps> = ({
                         <Typography variant="body1" fontWeight="bold">
                             Total Return
                         </Typography>
-                        <Typography variant="h6">{FormatCurrency(totalReturn.value,"AUD")}</Typography>
-                        <Typography variant="body2" color={getColor(totalReturn.percentage)}>
-                            {FormatPercentage(totalReturn.percentage)}
+                        <Typography variant="h6">{FormatCurrency(summaryTotals.totalReturn.amount,"AUD")}</Typography>
+                        <Typography variant="body2" color={getColor(summaryTotals.totalReturn.percentage)}>
+                            {FormatPercentage(summaryTotals.totalReturn.percentage)}
                         </Typography>
                     </Grid>
 

@@ -35,12 +35,7 @@ const Holdings  = () => {
                 <Grid  size={{ xs: 12 }}>
                     <Card>
                         <CardContent>
-                            <SummaryTotals
-                                capitalGain={{ value: 53421.81, percentage: 20.88 }}
-                                dividends={{ value: 3038.29, percentage: 1.19 }}
-                                currencyGain={{ value: 7079.06, percentage: 2.77 }}
-                                totalReturn={{ value: 63539.16, percentage: 24.84 }}
-                            />
+                            <SummaryTotals/>
                         </CardContent>
                     </Card>
                 </Grid>

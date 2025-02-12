@@ -1,7 +1,7 @@
 # Investment Portfolio Navigator
 
 ## Project Description
-The `Investment Portfolio Navigator` is a coding project aimed at providing individual investors or traders a way to 
+The `Investment Portfolio Navigator` is a `side coding project` aimed at providing individual investors or traders a way to 
 efficiently monitor their stocks' performance. This project uses the Go programming language  its development, ensuring 
 a robust, scalable, and efficient solution.
 
