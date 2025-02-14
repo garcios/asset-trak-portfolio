@@ -1,9 +1,9 @@
 import {Card, CardContent, Typography, useTheme} from "@mui/material";
 import Grid from '@mui/material/Grid2';
-import {FormatCurrency, FormatPercentage} from "../utils/helper";
+import {FormatCurrency, FormatPercentage} from "../../utils/helper";
 import React, {useEffect, useState} from "react";
-import {SummaryTotalsType} from "../services/get-summary-totals";
-import GraphQLService from "../services/graphql-service";
+import {SummaryTotalsType} from "../../services/get-summary-totals";
+import GraphQLService from "../../services/graphql-service";
 
 
 const FAILED_TO_LOAD_MESSAGE = 'Failed to load summary totals';
@@ -11,7 +11,6 @@ const FAILED_TO_LOAD_MESSAGE = 'Failed to load summary totals';
 
 const SummaryTotals: React.FC = () => {
     const theme = useTheme();
-
 
     const [summaryTotals, setSummaryTotal] = useState<SummaryTotalsType>(null);
     const [loading, setLoading] = useState<boolean>(true);

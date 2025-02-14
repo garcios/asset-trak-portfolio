@@ -39,7 +39,7 @@ export default client;
 
 ```js
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
-import Holdings from "./components/Holdings";
+import HoldingsSummary from "./components/HoldingsSummary";
 import TopNavBar from "./components/TopNavBar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Transactions from "./components/Transactions";
@@ -54,8 +54,8 @@ function App() {
             <Router>
                 <TopNavBar />
                 <Routes>
-                    <Route path="/" element={<Holdings />} />
-                    <Route path="/holdings" element={<Holdings />} />
+                    <Route path="/" element={<HoldingsSummary />} />
+                    <Route path="/holdings" element={<HoldingsSummary />} />
                     <Route path="/transactions" element={<Transactions />} />
                     <Route path="/watchlist" element={<Watchlist />} />
                     <Route path="/news" element={<News />} />

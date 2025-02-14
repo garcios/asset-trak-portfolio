@@ -39,7 +39,7 @@ data analysis handy.
 8. __AI Generated Content__ : AI can generate concise summaries of the latest news and perform sentiment analysis to 
 provide insights into a company's public perception.
 
-The entire project runs on Golang which ensures a seamless development experience, and it can be used on any operating 
+The backed runs on Golang which ensures a seamless development experience, and it can be used on any operating 
 system. I developed this on macOS Sonoma environment.
 
 Please note that for this coding project, a good understanding of finance market concepts and Go language is required. 

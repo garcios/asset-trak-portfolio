@@ -1,11 +1,12 @@
 import AssetsTable from "./AssetsTable";
 import React, {useEffect, useState} from "react";
-import GraphQLService  from "../services/graphql-service";
-import {LineItem} from "../services/get-balance-summary";
+import GraphQLService  from "../../services/graphql-service";
+import {LineItem} from "../../services/get-balance-summary";
+import {Card, CardContent, Typography} from "@mui/material";
 
 const FAILED_TO_LOAD_MESSAGE = 'Failed to load balance summary';
 
-function BalanceSummary() {
+function HoldingsContainer() {
     const [lineItems, setLineItems] = useState<LineItem[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -32,8 +33,15 @@ function BalanceSummary() {
     if (error) return <p>Error: {error}</p>;
 
     return (
-      <AssetsTable items={lineItems} />
+        <Card>
+            <CardContent>
+                <Typography variant="h6" component="div" fontWeight="bold" gutterBottom align="left">
+                    Holdings
+                </Typography>
+                <AssetsTable items={lineItems} />
+            </CardContent>
+        </Card>
     );
 }
 
-export default BalanceSummary;
+export default HoldingsContainer;

@@ -7,9 +7,9 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import {Typography, useTheme} from "@mui/material";
-import {FormatCurrency, FormatPercentage} from "../utils/helper";
+import {FormatCurrency, FormatPercentage} from "../../utils/helper";
 import React from "react";
-import {LineItem} from "../services/get-balance-summary";
+import {LineItem} from "../../services/get-balance-summary";
 
 interface Column {
     id: 'assetName' |  'price' | 'currency' | 'quantity' | 'value' | 'capitalGain' | 'dividend' | 'currencyGain' | 'totalReturn';
