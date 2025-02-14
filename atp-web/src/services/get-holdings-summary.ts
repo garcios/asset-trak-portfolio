@@ -1,9 +1,9 @@
 import {gql} from "@apollo/client";
 
-const GET_BALANCE_SUMMARY = gql`
-    query GetBalanceSummary($accountId: String!){
-        BalanceSummary(accountId: $accountId) {
-            balanceItems {
+const GET_HOLDINGS_SUMMARY = gql`
+    query GetHoldingsSummary($accountId: String!){
+        HoldingsSummary(accountId: $accountId) {
+            holdings {
                 assetSymbol
                 assetName
                 price {
@@ -41,8 +41,8 @@ const GET_BALANCE_SUMMARY = gql`
     }
 `;
 
-export interface BalanceSummaryResponse{
-    balanceItems: InvestmentLineItem[];
+export interface HoldingsSummaryResponse {
+    holdings: InvestmentLineItem[];
 }
 
 export interface InvestmentLineItem {
@@ -69,4 +69,4 @@ export interface MoneyWithPercentage {
     percentage: number;
 }
 
-export default GET_BALANCE_SUMMARY;
+export default GET_HOLDINGS_SUMMARY;

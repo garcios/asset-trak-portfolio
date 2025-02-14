@@ -9,7 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import {Typography, useTheme} from "@mui/material";
 import {FormatCurrency, FormatPercentage} from "../../utils/helper";
 import React from "react";
-import {InvestmentLineItem} from "../../services/get-balance-summary";
+import {InvestmentLineItem} from "../../services/get-holdings-summary";
 
 interface Column {
     id: 'assetName' |  'price' | 'currency' | 'quantity' | 'value' | 'capitalGain' | 'dividend' | 'currencyGain' | 'totalReturn';

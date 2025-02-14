@@ -1,7 +1,7 @@
 import AssetsTable from "./AssetsTable";
 import React, {useEffect, useState} from "react";
 import GraphQLService  from "../../services/graphql-service";
-import {InvestmentLineItem} from "../../services/get-balance-summary";
+import {InvestmentLineItem} from "../../services/get-holdings-summary";
 import {Card, CardContent, Typography} from "@mui/material";
 
 const FAILED_TO_LOAD_MESSAGE = 'Failed to load balance summary';
@@ -15,8 +15,8 @@ function HoldingsContainer() {
         setLoading(true);
         setError(null);
         try {
-            const data = await GraphQLService.fetchBalanceSummaries('eb08df3c-958d-4ae8-b3ae-41ec04418786');
-            setLineItems(data.balanceItems);
+            const data = await GraphQLService.fetchHoldingsSummary('eb08df3c-958d-4ae8-b3ae-41ec04418786');
+            setLineItems(data.holdings);
         } catch (err) {
             setError(FAILED_TO_LOAD_MESSAGE);
         } finally {

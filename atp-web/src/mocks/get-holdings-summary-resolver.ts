@@ -1,8 +1,8 @@
 import {GraphQLResponseResolver, HttpResponse} from "msw";
 
-const getBalanceSummaryResolver:GraphQLResponseResolver = ({query, variables}) => {
+const getHoldingsSummaryResolver:GraphQLResponseResolver = ({query, variables}) => {
     const mockData = { data: {
-            balanceItems: [
+            holdings: [
                 {
                     assetSymbol: "IVV",
                     assetName: "iShares S&P 500 ETF Trust",
@@ -457,4 +457,4 @@ const getBalanceSummaryResolver:GraphQLResponseResolver = ({query, variables}) =
     return HttpResponse.json(mockData)
 };
 
-export  default getBalanceSummaryResolver;
+export  default getHoldingsSummaryResolver;
