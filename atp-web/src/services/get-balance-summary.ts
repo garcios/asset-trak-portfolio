@@ -42,19 +42,19 @@ const GET_BALANCE_SUMMARY = gql`
 `;
 
 export interface BalanceSummaryResponse{
-    balanceItems: LineItem[];
+    balanceItems: InvestmentLineItem[];
 }
 
-export interface LineItem {
+export interface InvestmentLineItem {
     assetSymbol: string;
     assetName: string;
     price: Money;
     quantity: number;
     value: Money;
-    capitalGain: ValueWithPercentage;
-    dividend: ValueWithPercentage;
-    currencyGain: ValueWithPercentage;
-    totalReturn: ValueWithPercentage;
+    capitalGain: MoneyWithPercentage;
+    dividend: MoneyWithPercentage;
+    currencyGain: MoneyWithPercentage;
+    totalReturn: MoneyWithPercentage;
     marketCode: string;
 }
 
@@ -63,7 +63,7 @@ export interface Money {
     currencyCode: string;
 }
 
-export interface ValueWithPercentage {
+export interface MoneyWithPercentage {
     amount: number;
     currencyCode: string;
     percentage: number;

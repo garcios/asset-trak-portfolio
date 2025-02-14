@@ -1,5 +1,5 @@
 import {gql} from "@apollo/client";
-import {Money, ValueWithPercentage} from "./get-balance-summary";
+import {Money, MoneyWithPercentage} from "./get-balance-summary";
 
 const GET_SUMMARY_TOTALS = gql`
     query GetSummaryTotals($accountId: String!){
@@ -38,10 +38,10 @@ export interface SummaryTotalsResponse {
 
 export interface SummaryTotalsType{
     portfolioValue: Money
-    capitalGain: ValueWithPercentage;
-    dividends: ValueWithPercentage;
-    currencyGain: ValueWithPercentage;
-    totalReturn: ValueWithPercentage;
+    capitalGain: MoneyWithPercentage;
+    dividends: MoneyWithPercentage;
+    currencyGain: MoneyWithPercentage;
+    totalReturn: MoneyWithPercentage;
 }
 
 export default GET_SUMMARY_TOTALS;

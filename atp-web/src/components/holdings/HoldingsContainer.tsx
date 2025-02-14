@@ -1,13 +1,13 @@
 import AssetsTable from "./AssetsTable";
 import React, {useEffect, useState} from "react";
 import GraphQLService  from "../../services/graphql-service";
-import {LineItem} from "../../services/get-balance-summary";
+import {InvestmentLineItem} from "../../services/get-balance-summary";
 import {Card, CardContent, Typography} from "@mui/material";
 
 const FAILED_TO_LOAD_MESSAGE = 'Failed to load balance summary';
 
 function HoldingsContainer() {
-    const [lineItems, setLineItems] = useState<LineItem[]>([]);
+    const [lineItems, setLineItems] = useState<InvestmentLineItem[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 

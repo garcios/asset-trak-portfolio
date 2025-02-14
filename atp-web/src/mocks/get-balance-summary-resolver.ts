@@ -10,20 +10,24 @@ const getBalanceSummaryResolver:GraphQLResponseResolver = ({query, variables}) =
                     quantity: 1442,
                     value: {amount: 92590.82, currencyCode: "AUD"},
                     capitalGain: {
-                        value: { amount: 18935.30, currencyCode: "AUD"},
-                        percentage: 25.71,
+                        amount: 18935.30,
+                        currencyCode: "AUD",
+                        percentage: 25.71
                     },
                     dividend:{
-                        value: { amount: 862.58, currencyCode: "AUD"},
-                        percentage: 1.17,
+                        amount: 862.58,
+                        currencyCode: "AUD",
+                        percentage: 1.17
                     },
                     currencyGain: {
-                        value: { amount: 0, currencyCode: "AUD"},
-                        percentage: 0,
+                        amount: 0,
+                        currencyCode: "AUD",
+                        percentage: 0
                     },
                     totalReturn: {
-                        value: { amount: 19797.88, currencyCode: "AUD"},
-                        percentage: 26.88,
+                        amount: 19797.88,
+                        currencyCode: "AUD",
+                        percentage: 26.88
                     },
                     marketCode: "ASX",
                 },
@@ -34,20 +38,24 @@ const getBalanceSummaryResolver:GraphQLResponseResolver = ({query, variables}) =
                     quantity: 116,
                     value: {amount: 42508.37, currencyCode: "AUD"},
                     capitalGain: {
-                        value: { amount: 10957.74, currencyCode: "AUD"},
-                        percentage: 36.78,
+                        amount: 10957.74,
+                        currencyCode: "AUD",
+                        percentage: 36.78
                     },
                     dividend:{
-                        value: { amount: 0, currencyCode: "AUD"},
-                        percentage: 0,
+                        amount: 0,
+                        currencyCode: "AUD",
+                        percentage: 0
                     },
                     currencyGain:{
-                        value: { amount: 1711.50, currencyCode: "AUD"},
-                        percentage: 5.75,
+                        amount: 1711.50,
+                        currencyCode: "AUD",
+                        percentage: 5.75
                     },
                     totalReturn: {
-                        value: { amount: 12669.24, currencyCode: "AUD"},
-                        percentage: 42.53,
+                        amount: 12669.24,
+                        currencyCode: "AUD",
+                        percentage: 42.53
                     },
                     marketCode: "NASDAQ",
                 },
@@ -58,20 +66,24 @@ const getBalanceSummaryResolver:GraphQLResponseResolver = ({query, variables}) =
                     quantity: 115,
                     value: {amount: 34068.23, currencyCode: "AUD"},
                     capitalGain: {
-                        value: { amount: 4393.17, currencyCode: "AUD"},
-                        percentage: 15.72,
+                        amount: 4393.17,
+                        currencyCode: "AUD",
+                        percentage: 15.72
                     },
                     dividend: {
-                        value: { amount: 69.28, currencyCode: "AUD"},
-                        percentage: 0.25,
+                        amount: 69.28,
+                        currencyCode: "AUD",
+                        percentage: 0.25
                     },
                     currencyGain: {
-                        value: { amount: 1703.98, currencyCode: "AUD"},
-                        percentage: 6.10,
+                        amount: 1703.98,
+                        currencyCode: "AUD",
+                        percentage: 6.10
                     },
                     totalReturn: {
-                        value: { amount: 6166.43, currencyCode: "AUD"},
-                        percentage: 22.06,
+                        amount: 6166.43,
+                        currencyCode: "AUD",
+                        percentage: 22.06
                     },
                     marketCode: "NASDAQ",
                 },
@@ -82,20 +94,24 @@ const getBalanceSummaryResolver:GraphQLResponseResolver = ({query, variables}) =
                     quantity: 49,
                     value: {amount: 32092.06, currencyCode: "AUD"},
                     capitalGain: {
-                        value: { amount: 282.99, currencyCode: "AUD"},
-                        percentage: 0.94,
+                        amount: 282.99,
+                        currencyCode: "AUD",
+                        percentage: 0.94
                     },
                     dividend: {
-                        value: { amount: 139.37, currencyCode: "AUD"},
-                        percentage: 0.46,
+                        amount: 139.37,
+                        currencyCode: "AUD",
+                        percentage: 0.46
                     },
                     currencyGain: {
-                        value: { amount: 1675.89, currencyCode: "AUD"},
-                        percentage: 5.57,
+                        amount: 1675.89,
+                        currencyCode: "AUD",
+                        percentage: 5.57
                     },
                     totalReturn: {
-                        value: { amount: 2098.25, currencyCode: "AUD"},
-                        percentage: 6.97,
+                        amount: 2098.25,
+                        currencyCode: "AUD",
+                        percentage: 6.97
                     },
                     marketCode: "NASDAQ",
                 },
@@ -106,20 +122,24 @@ const getBalanceSummaryResolver:GraphQLResponseResolver = ({query, variables}) =
                     quantity: 347,
                     value: {amount: 26424.05, currencyCode: "AUD"},
                     capitalGain: {
-                        value: { amount: 2905.20, currencyCode: "AUD"},
-                        percentage: 25.65,
+                        amount: 2905.20,
+                        currencyCode: "AUD",
+                        percentage: 25.65
                     },
                     dividend:{
-                        value: { amount: 1690.01, currencyCode: "AUD"},
-                        percentage: 1.17,
+                        amount: 1690.01,
+                        currencyCode: "AUD",
+                        percentage: 1.17
                     },
                     currencyGain: {
-                        value: { amount: 0, currencyCode: "AUD"},
-                        percentage: 0,
+                        amount: 0,
+                        currencyCode: "AUD",
+                        percentage: 0
                     },
                     totalReturn: {
-                        value: { amount: 4595.21, currencyCode: "AUD"},
-                        percentage: 26.82,
+                        amount: 4595.21,
+                        currencyCode: "AUD",
+                        percentage: 26.82
                     },
                     marketCode: "ASX",
                 },
@@ -130,20 +150,24 @@ const getBalanceSummaryResolver:GraphQLResponseResolver = ({query, variables}) =
                     quantity: 356,
                     value: {amount: 18220.08, currencyCode: "AUD"},
                     capitalGain: {
-                        value: { amount: 2452.72, currencyCode: "AUD"},
-                        percentage: 15.56,
+                        amount: 2452.72,
+                        currencyCode: "AUD",
+                        percentage: 15.56
                     },
                     dividend:{
-                        value: { amount: 9.82, currencyCode: "AUD"},
-                        percentage: 0.06,
+                        amount: 9.82,
+                        currencyCode: "AUD",
+                        percentage: 0.06
                     },
                     currencyGain: {
-                        value: { amount: 0, currencyCode: "AUD"},
-                        percentage: 0,
+                        amount: 0,
+                        currencyCode: "AUD",
+                        percentage: 0
                     },
                     totalReturn: {
-                        value: { amount: 2462.54, currencyCode: "AUD"},
-                        percentage: 15.62,
+                        amount: 2462.54,
+                        currencyCode: "AUD",
+                        percentage: 15.62
                     },
                     marketCode: "ASX",
                 },
@@ -154,20 +178,24 @@ const getBalanceSummaryResolver:GraphQLResponseResolver = ({query, variables}) =
                     quantity: 36,
                     value: {amount: 12939.47, currencyCode: "AUD"},
                     capitalGain: {
-                        value: { amount: 3381.19, currencyCode: "AUD"},
-                        percentage: 37.42,
+                        amount: 3381.19,
+                        currencyCode: "AUD",
+                        percentage: 37.42
                     },
                     dividend: {
-                        value: { amount: 69.63, currencyCode: "AUD"},
-                        percentage: 0.77,
+                        amount: 69.63,
+                        currencyCode: "AUD",
+                        percentage: 0.77
                     },
                     currencyGain: {
-                        value: { amount: 513.15, currencyCode: "AUD"},
-                        percentage: 5.68,
+                        amount: 513.15,
+                        currencyCode: "AUD",
+                        percentage: 5.68
                     },
                     totalReturn: {
-                        value: { amount: 3963.97, currencyCode: "AUD"},
-                        percentage: 43.87,
+                        amount: 3963.97,
+                        currencyCode: "AUD",
+                        percentage: 43.87
                     },
                     marketCode: "NASDAQ",
                 },
@@ -178,20 +206,24 @@ const getBalanceSummaryResolver:GraphQLResponseResolver = ({query, variables}) =
                     quantity: 35,
                     value: {amount: 11531.10, currencyCode: "AUD"},
                     capitalGain: {
-                        value: { amount: 2532.43, currencyCode: "AUD"},
-                        percentage: 29.82,
+                        amount: 2532.43,
+                        currencyCode: "AUD",
+                        percentage: 29.82
                     },
                     dividend: {
-                        value: { amount: 88.94, currencyCode: "AUD"},
-                        percentage: 1.05,
+                        amount: 88.94,
+                        currencyCode: "AUD",
+                        percentage: 1.05
                     },
                     currencyGain:{
-                        value: { amount: 498.43, currencyCode: "AUD"},
-                        percentage: 5.87,
+                        amount: 498.43,
+                        currencyCode: "AUD",
+                        percentage: 5.87
                     },
                     totalReturn:{
-                        value: { amount: 3119.80, currencyCode: "AUD"},
-                        percentage: 36.74,
+                        amount: 3119.80,
+                        currencyCode: "AUD",
+                        percentage: 36.74
                     },
                     marketCode: "NYSE",
                 },
@@ -202,20 +234,24 @@ const getBalanceSummaryResolver:GraphQLResponseResolver = ({query, variables}) =
                     quantity: 45,
                     value: {amount: 9317.17, currencyCode: "AUD"},
                     capitalGain: {
-                        value: { amount: 904.51, currencyCode: "AUD"},
-                        percentage: 11.24,
+                        amount: 904.51,
+                        currencyCode: "AUD",
+                        percentage: 11.24
                     },
                     dividend: {
-                        value: { amount: 0, currencyCode: "AUD"},
-                        percentage: 0.02,
+                        amount: 0,
+                        currencyCode: "AUD",
+                        percentage: 0.02
                     },
                     currencyGain: {
-                        value: { amount: 382.77, currencyCode: "AUD"},
-                        percentage: 4.76,
+                        amount: 382.77,
+                        currencyCode: "AUD",
+                        percentage: 4.76
                     },
                     totalReturn: {
-                        value: { amount: 1288.53, currencyCode: "AUD"},
-                        percentage: 16.02,
+                        amount: 1288.53,
+                        currencyCode: "AUD",
+                        percentage: 16.02
                     },
                     marketCode: "NASDAQ",
                 },
@@ -226,20 +262,24 @@ const getBalanceSummaryResolver:GraphQLResponseResolver = ({query, variables}) =
                     quantity: 39,
                     value: {amount: 6689.27, currencyCode: "AUD"},
                     capitalGain: {
-                        value: { amount: -2013.41, currencyCode: "AUD"},
-                        percentage: -23.96,
+                        amount: -2013.41,
+                        currencyCode: "AUD",
+                        percentage: -23.96
                     },
                     dividend:{
-                        value: { amount: 0, currencyCode: "AUD"},
-                        percentage:0,
+                        amount: 0,
+                        currencyCode: "AUD",
+                        percentage:0
                     },
                     currencyGain: {
-                        value: { amount: 310.67, currencyCode: "AUD"},
-                        percentage: 3.70,
+                        amount: 310.67,
+                        currencyCode: "AUD",
+                        percentage: 3.70
                     },
                     totalReturn: {
-                        value: { amount: -1702.74, currencyCode: "AUD"},
-                        percentage: -20.26,
+                        amount: -1702.74,
+                        currencyCode: "AUD",
+                        percentage: -20.26
                     },
                     marketCode: "NASDAQ",
                 },
@@ -250,20 +290,24 @@ const getBalanceSummaryResolver:GraphQLResponseResolver = ({query, variables}) =
                     quantity: 7,
                     value: {amount: 6281.69, currencyCode: "AUD"},
                     capitalGain: {
-                        value: { amount: 1599.11, currencyCode: "AUD"},
-                        percentage: 35.88,
+                        amount: 1599.11,
+                        currencyCode: "AUD",
+                        percentage: 35.88
                     },
                     dividend:{
-                        value: { amount: 29.74, currencyCode: "AUD"},
-                        percentage: 0.67,
+                        amount: 29.74,
+                        currencyCode: "AUD",
+                        percentage: 0.67
                     },
                     currencyGain: {
-                        value: { amount: 236.93, currencyCode: "AUD"},
-                        percentage: 5.32,
+                        amount: 236.93,
+                        currencyCode: "AUD",
+                        percentage: 5.32
                     },
                     totalReturn: {
-                        value: { amount: 1865.78, currencyCode: "AUD"},
-                        percentage: 41.87,
+                        amount: 1865.78,
+                        currencyCode: "AUD",
+                        percentage: 41.87
                     },
                     marketCode: "NYSE",
                 },
@@ -274,20 +318,24 @@ const getBalanceSummaryResolver:GraphQLResponseResolver = ({query, variables}) =
                     quantity: 52,
                     value: {amount: 6185.93, currencyCode: "AUD"},
                     capitalGain: {
-                        value: { amount: 1097.22, currencyCode: "AUD"},
-                        percentage: 21.39,
+                        amount: 1097.22,
+                        currencyCode: "AUD",
+                        percentage: 21.39
                     },
                     dividend:{
-                        value: { amount: 0, currencyCode: "AUD"},
-                        percentage: 0,
+                        amount: 0,
+                        currencyCode: "AUD",
+                        percentage: 0
                     },
                     currencyGain: {
-                        value: { amount: -29.90, currencyCode: "AUD"},
-                        percentage: -0.58,
+                        amount: -29.90,
+                        currencyCode: "AUD",
+                        percentage: -0.58
                     },
                     totalReturn: {
-                        value: { amount: 1067.32, currencyCode: "AUD"},
-                        percentage: 20.81,
+                        amount: 1067.32,
+                        currencyCode: "AUD",
+                        percentage: 20.81
                     },
                     marketCode: "NYSE",
                 },
@@ -298,20 +346,24 @@ const getBalanceSummaryResolver:GraphQLResponseResolver = ({query, variables}) =
                     quantity: 34,
                     value: {amount: 5837.09, currencyCode: "AUD"},
                     capitalGain: {
-                        value: { amount: 1751.43, currencyCode: "AUD"},
-                        percentage: 45.87,
+                        amount: 1751.43,
+                        currencyCode: "AUD",
+                        percentage: 45.87
                     },
                     dividend:{
-                        value: { amount: 0, currencyCode: "AUD"},
-                        percentage: 0,
+                        amount: 0,
+                        currencyCode: "AUD",
+                        percentage: 0
                     },
                     currencyGain: {
-                        value: { amount: 277.12, currencyCode: "AUD"},
-                        percentage: 7.26,
+                        amount: 277.12,
+                        currencyCode: "AUD",
+                        percentage: 7.26
                     },
                     totalReturn: {
-                        value: { amount: 2028.55, currencyCode: "AUD"},
-                        percentage: 53.13,
+                        amount: 2028.55,
+                        currencyCode: "AUD",
+                        percentage: 53.13
                     },
                     marketCode: "NASDAQ",
                 },
@@ -322,20 +374,24 @@ const getBalanceSummaryResolver:GraphQLResponseResolver = ({query, variables}) =
                     quantity: 15,
                     value: {amount: 4305.53, currencyCode: "AUD"},
                     capitalGain: {
-                        value: { amount: -95.22, currencyCode: "AUD"},
-                        percentage: -2.33,
+                        amount: -95.22,
+                        currencyCode: "AUD",
+                        percentage: -2.33
                     },
                     dividend:{
-                        value: { amount: 9.40, currencyCode: "AUD"},
-                        percentage: 0.23,
+                        amount: 9.40,
+                        currencyCode: "AUD",
+                        percentage: 0.23
                     },
                     currencyGain: {
-                        value: { amount: 315.70, currencyCode: "AUD"},
-                        percentage: 7.71,
+                        amount: 315.70,
+                        currencyCode: "AUD",
+                        percentage: 7.71
                     },
                     totalReturn: {
-                        value: { amount: 229.88, currencyCode: "AUD"},
-                        percentage: 5.62,
+                        amount: 229.88,
+                        currencyCode: "AUD",
+                        percentage: 5.62
                     },
                     marketCode: "NASDAQ",
                 },
@@ -346,20 +402,24 @@ const getBalanceSummaryResolver:GraphQLResponseResolver = ({query, variables}) =
                     quantity: 30,
                     value: {amount: 3723.00, currencyCode: "AUD"},
                     capitalGain: {
-                        value: { amount: 1102.21, currencyCode: "AUD"},
-                        percentage: 42.06,
+                        amount: 1102.21,
+                        currencyCode: "AUD",
+                        percentage: 42.06
                     },
                     dividend:{
-                        value: { amount: 6.88, currencyCode: "AUD"},
-                        percentage: 0.26,
+                        amount: 6.88,
+                        currencyCode: "AUD",
+                        percentage: 0.26
                     },
                     currencyGain: {
-                        value: { amount: 0, currencyCode: "AUD"},
-                        percentage: 0,
+                        amount: 0,
+                        currencyCode: "AUD",
+                        percentage: 0
                     },
                     totalReturn: {
-                        value: { amount: 1109.09, currencyCode: "AUD"},
-                        percentage: 42.32,
+                        amount: 1109.09,
+                        currencyCode: "AUD",
+                        percentage: 42.32
                     },
                     marketCode: "ASX",
                 },
@@ -370,20 +430,24 @@ const getBalanceSummaryResolver:GraphQLResponseResolver = ({query, variables}) =
                     quantity: 5,
                     value: {amount: 1492.11, currencyCode: "AUD"},
                     capitalGain: {
-                        value: { amount: 502.15, currencyCode: "AUD"},
-                        percentage: 28.05,
+                        amount: 502.15,
+                        currencyCode: "AUD",
+                        percentage: 28.05
                     },
                     dividend:{
-                        value: { amount: 4.57, currencyCode: "AUD"},
-                        percentage: 0.28,
+                        amount: 4.57,
+                        currencyCode: "AUD",
+                        percentage: 0.28
                     },
                     currencyGain: {
-                        value: { amount: 54.54, currencyCode: "AUD"},
-                        percentage: 3.31,
+                        amount: 54.54,
+                        currencyCode: "AUD",
+                        percentage: 3.31
                     },
                     totalReturn: {
-                        value: { amount: 561.26, currencyCode: "AUD"},
-                        percentage: 31.05,
+                        amount: 561.26,
+                        currencyCode: "AUD",
+                        percentage: 31.05
                     },
                     marketCode: "NASDAQ",
                 },

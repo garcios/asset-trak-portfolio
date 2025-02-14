@@ -9,7 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import {Typography, useTheme} from "@mui/material";
 import {FormatCurrency, FormatPercentage} from "../../utils/helper";
 import React from "react";
-import {LineItem} from "../../services/get-balance-summary";
+import {InvestmentLineItem} from "../../services/get-balance-summary";
 
 interface Column {
     id: 'assetName' |  'price' | 'currency' | 'quantity' | 'value' | 'capitalGain' | 'dividend' | 'currencyGain' | 'totalReturn';
@@ -66,7 +66,7 @@ const columns: readonly Column[] = [
     },
 ];
 
-export default function AssetsTable({ items }: { items: LineItem[] }) {
+export default function AssetsTable({ items }: { items: InvestmentLineItem[] }) {
     const theme = useTheme();
 
     const [page, setPage] = React.useState(0);
@@ -124,7 +124,7 @@ export default function AssetsTable({ items }: { items: LineItem[] }) {
                                         <TableCell key='capitalGain' align="left">
                                             <Typography
                                                 variant="body1"
-                                                color={getColor(row.capitalGain.value.amount)}>{FormatCurrency(row.capitalGain.value?.amount, row.capitalGain.value?.currencyCode)}
+                                                color={getColor(row.capitalGain.amount)}>{FormatCurrency(row.capitalGain?.amount, row.capitalGain?.currencyCode)}
                                             </Typography>
                                             <Typography
                                                 variant="body2"
@@ -134,7 +134,7 @@ export default function AssetsTable({ items }: { items: LineItem[] }) {
                                         <TableCell key='dividend' align="left">
                                             <Typography
                                                 variant="body1"
-                                                color={getColor(row.dividend.value.amount)}>{FormatCurrency(row.dividend.value?.amount, row.dividend.value?.currencyCode)}
+                                                color={getColor(row.dividend.amount)}>{FormatCurrency(row.dividend?.amount, row.dividend?.currencyCode)}
                                             </Typography>
                                             <Typography
                                                 variant="body2"
@@ -144,7 +144,7 @@ export default function AssetsTable({ items }: { items: LineItem[] }) {
                                         <TableCell key='currencyGain' align="left">
                                             <Typography
                                                 variant="body1"
-                                                color={getColor(row.currencyGain.value.amount)}>{FormatCurrency(row.currencyGain.value.amount, row.currencyGain.value.currencyCode)}
+                                                color={getColor(row.currencyGain.amount)}>{FormatCurrency(row.currencyGain.amount, row.currencyGain.currencyCode)}
                                             </Typography>
                                             <Typography
                                                 variant="body2"
@@ -154,7 +154,7 @@ export default function AssetsTable({ items }: { items: LineItem[] }) {
                                         <TableCell key='totalReturn' align="left">
                                             <Typography
                                                 variant="body1"
-                                                color={getColor(row.totalReturn.value.amount)}>{FormatCurrency(row.totalReturn.value.amount, row.totalReturn.value.currencyCode)}
+                                                color={getColor(row.totalReturn.amount)}>{FormatCurrency(row.totalReturn.amount, row.totalReturn.currencyCode)}
                                             </Typography>
                                             <Typography
                                                 variant="body2"
