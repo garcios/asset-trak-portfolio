@@ -13,7 +13,6 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	"github.com/garcios/asset-trak-portfolio/graphql/generated/modelsgen"
 	"github.com/garcios/asset-trak-portfolio/graphql/models"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
@@ -94,7 +93,7 @@ type ComplexityRoot struct {
 type QueryResolver interface {
 	GetHoldingsSummary(ctx context.Context, accountID string) ([]*models.Investment, error)
 	GetSummaryTotals(ctx context.Context, accountID string) (*models.SummaryTotals, error)
-	GetHistoricalValues(ctx context.Context, accountID string) ([]*modelsgen.PerformanceData, error)
+	GetHistoricalValues(ctx context.Context, accountID string) ([]*models.PerformanceData, error)
 }
 
 type executableSchema struct {
@@ -402,13 +401,6 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	{Name: "../schema/performance.graphql", Input: `
-type PerformanceData{
-    tradeDate: String!
-    amount: Float!
-    currencyCode: String!
-}
-`, BuiltIn: false},
 	{Name: "../schema/schema.graphql", Input: `
 type Money {
   amount: Float!
@@ -440,6 +432,12 @@ type SummaryTotals {
   dividends: MoneyWithPercentage!
   currencyGain: MoneyWithPercentage!
   totalReturn: MoneyWithPercentage!
+}
+
+type PerformanceData{
+  tradeDate: String!
+  amount: Float!
+  currencyCode: String!
 }
 
 type Query {
@@ -1351,7 +1349,7 @@ func (ec *executionContext) fieldContext_MoneyWithPercentage_percentage(_ contex
 	return fc, nil
 }
 
-func (ec *executionContext) _PerformanceData_tradeDate(ctx context.Context, field graphql.CollectedField, obj *modelsgen.PerformanceData) (ret graphql.Marshaler) {
+func (ec *executionContext) _PerformanceData_tradeDate(ctx context.Context, field graphql.CollectedField, obj *models.PerformanceData) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_PerformanceData_tradeDate(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -1395,7 +1393,7 @@ func (ec *executionContext) fieldContext_PerformanceData_tradeDate(_ context.Con
 	return fc, nil
 }
 
-func (ec *executionContext) _PerformanceData_amount(ctx context.Context, field graphql.CollectedField, obj *modelsgen.PerformanceData) (ret graphql.Marshaler) {
+func (ec *executionContext) _PerformanceData_amount(ctx context.Context, field graphql.CollectedField, obj *models.PerformanceData) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_PerformanceData_amount(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -1439,7 +1437,7 @@ func (ec *executionContext) fieldContext_PerformanceData_amount(_ context.Contex
 	return fc, nil
 }
 
-func (ec *executionContext) _PerformanceData_currencyCode(ctx context.Context, field graphql.CollectedField, obj *modelsgen.PerformanceData) (ret graphql.Marshaler) {
+func (ec *executionContext) _PerformanceData_currencyCode(ctx context.Context, field graphql.CollectedField, obj *models.PerformanceData) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_PerformanceData_currencyCode(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -1653,9 +1651,9 @@ func (ec *executionContext) _Query_getHistoricalValues(ctx context.Context, fiel
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*modelsgen.PerformanceData)
+	res := resTmp.([]*models.PerformanceData)
 	fc.Result = res
-	return ec.marshalNPerformanceData2ᚕᚖgithubᚗcomᚋgarciosᚋassetᚑtrakᚑportfolioᚋgraphqlᚋgeneratedᚋmodelsgenᚐPerformanceDataᚄ(ctx, field.Selections, res)
+	return ec.marshalNPerformanceData2ᚕᚖgithubᚗcomᚋgarciosᚋassetᚑtrakᚑportfolioᚋgraphqlᚋmodelsᚐPerformanceDataᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getHistoricalValues(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4217,7 +4215,7 @@ func (ec *executionContext) _MoneyWithPercentage(ctx context.Context, sel ast.Se
 
 var performanceDataImplementors = []string{"PerformanceData"}
 
-func (ec *executionContext) _PerformanceData(ctx context.Context, sel ast.SelectionSet, obj *modelsgen.PerformanceData) graphql.Marshaler {
+func (ec *executionContext) _PerformanceData(ctx context.Context, sel ast.SelectionSet, obj *models.PerformanceData) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, performanceDataImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -4878,7 +4876,7 @@ func (ec *executionContext) marshalNMoneyWithPercentage2ᚖgithubᚗcomᚋgarcio
 	return ec._MoneyWithPercentage(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNPerformanceData2ᚕᚖgithubᚗcomᚋgarciosᚋassetᚑtrakᚑportfolioᚋgraphqlᚋgeneratedᚋmodelsgenᚐPerformanceDataᚄ(ctx context.Context, sel ast.SelectionSet, v []*modelsgen.PerformanceData) graphql.Marshaler {
+func (ec *executionContext) marshalNPerformanceData2ᚕᚖgithubᚗcomᚋgarciosᚋassetᚑtrakᚑportfolioᚋgraphqlᚋmodelsᚐPerformanceDataᚄ(ctx context.Context, sel ast.SelectionSet, v []*models.PerformanceData) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -4902,7 +4900,7 @@ func (ec *executionContext) marshalNPerformanceData2ᚕᚖgithubᚗcomᚋgarcios
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNPerformanceData2ᚖgithubᚗcomᚋgarciosᚋassetᚑtrakᚑportfolioᚋgraphqlᚋgeneratedᚋmodelsgenᚐPerformanceData(ctx, sel, v[i])
+			ret[i] = ec.marshalNPerformanceData2ᚖgithubᚗcomᚋgarciosᚋassetᚑtrakᚑportfolioᚋgraphqlᚋmodelsᚐPerformanceData(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -4922,7 +4920,7 @@ func (ec *executionContext) marshalNPerformanceData2ᚕᚖgithubᚗcomᚋgarcios
 	return ret
 }
 
-func (ec *executionContext) marshalNPerformanceData2ᚖgithubᚗcomᚋgarciosᚋassetᚑtrakᚑportfolioᚋgraphqlᚋgeneratedᚋmodelsgenᚐPerformanceData(ctx context.Context, sel ast.SelectionSet, v *modelsgen.PerformanceData) graphql.Marshaler {
+func (ec *executionContext) marshalNPerformanceData2ᚖgithubᚗcomᚋgarciosᚋassetᚑtrakᚑportfolioᚋgraphqlᚋmodelsᚐPerformanceData(ctx context.Context, sel ast.SelectionSet, v *models.PerformanceData) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")

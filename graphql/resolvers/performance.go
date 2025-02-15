@@ -2,11 +2,11 @@ package resolvers
 
 import (
 	"context"
-	"github.com/garcios/asset-trak-portfolio/graphql/generated/modelsgen"
+	"github.com/garcios/asset-trak-portfolio/graphql/models"
 )
 
-func (r *queryResolver) GetHistoricalValues(ctx context.Context, accountID string) ([]*modelsgen.PerformanceData, error) {
-	performanceData := []*modelsgen.PerformanceData{
+func (r *queryResolver) GetHistoricalValues(ctx context.Context, accountID string) ([]*models.PerformanceData, error) {
+	performanceData := []*models.PerformanceData{
 		{
 			TradeDate:    "2021-01-01",
 			Amount:       100,

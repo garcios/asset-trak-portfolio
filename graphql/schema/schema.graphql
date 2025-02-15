@@ -31,6 +31,12 @@ type SummaryTotals {
   totalReturn: MoneyWithPercentage!
 }
 
+type PerformanceData{
+  tradeDate: String!
+  amount: Float!
+  currencyCode: String!
+}
+
 type Query {
   getHoldingsSummary(accountId: String!): [Investment!]!
   getSummaryTotals(accountId: String!): SummaryTotals!
