@@ -22,7 +22,7 @@ class GraphQLService {
     }
 
     async fetchSummaryTotals(accountId: string): Promise<SummaryTotalsResponse> {
-        const variables = { id: accountId };
+        const variables = { accountId: accountId };
 
         try {
             const { data: summaryTotals } = await client.query<SummaryTotalsResponse>({
@@ -38,7 +38,7 @@ class GraphQLService {
     }
 
     async fetchPerformanceNumbers(accountId: string): Promise<PerformanceDataResponse> {
-        const variables = { id: accountId };
+        const variables = { accountId: accountId };
 
         try {
             const { data: performanceNumbers } = await client.query<PerformanceDataResponse>({

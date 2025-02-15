@@ -26,6 +26,15 @@ type Investment {
   totalReturn: MoneyWithPercentage!
 }
 
+type SummaryTotals {
+  portfolioValue: Money!
+  capitalGain: MoneyWithPercentage!
+  dividends: MoneyWithPercentage!
+  currencyGain: MoneyWithPercentage!
+  totalReturn: MoneyWithPercentage!
+}
+
 type Query {
   getHoldingsSummary(accountId: String!): [Investment!]!
+  getSummaryTotals(accountId: String!): SummaryTotals!
 }

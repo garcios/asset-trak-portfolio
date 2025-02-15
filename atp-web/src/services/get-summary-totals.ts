@@ -3,7 +3,7 @@ import {Money, MoneyWithPercentage} from "./get-balance-summary";
 
 const GET_SUMMARY_TOTALS = gql`
     query GetSummaryTotals($accountId: String!){
-        summaryTotals(accountId: $accountId) {
+        getSummaryTotals(accountId: $accountId) {
             portfolioValue{
                   amount
                   currencyCode
@@ -33,7 +33,7 @@ const GET_SUMMARY_TOTALS = gql`
 `;
 
 export interface SummaryTotalsResponse {
-    summaryTotals: SummaryTotalsType
+    getSummaryTotals: SummaryTotalsType
 }
 
 export interface SummaryTotalsType{

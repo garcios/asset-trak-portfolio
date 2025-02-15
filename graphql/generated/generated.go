@@ -71,11 +71,21 @@ type ComplexityRoot struct {
 
 	Query struct {
 		GetHoldingsSummary func(childComplexity int, accountID string) int
+		GetSummaryTotals   func(childComplexity int, accountID string) int
+	}
+
+	SummaryTotals struct {
+		CapitalGain    func(childComplexity int) int
+		CurrencyGain   func(childComplexity int) int
+		Dividends      func(childComplexity int) int
+		PortfolioValue func(childComplexity int) int
+		TotalReturn    func(childComplexity int) int
 	}
 }
 
 type QueryResolver interface {
 	GetHoldingsSummary(ctx context.Context, accountID string) ([]*models.Investment, error)
+	GetSummaryTotals(ctx context.Context, accountID string) (*models.SummaryTotals, error)
 }
 
 type executableSchema struct {
@@ -214,6 +224,53 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetHoldingsSummary(childComplexity, args["accountId"].(string)), true
 
+	case "Query.getSummaryTotals":
+		if e.complexity.Query.GetSummaryTotals == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getSummaryTotals_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetSummaryTotals(childComplexity, args["accountId"].(string)), true
+
+	case "SummaryTotals.capitalGain":
+		if e.complexity.SummaryTotals.CapitalGain == nil {
+			break
+		}
+
+		return e.complexity.SummaryTotals.CapitalGain(childComplexity), true
+
+	case "SummaryTotals.currencyGain":
+		if e.complexity.SummaryTotals.CurrencyGain == nil {
+			break
+		}
+
+		return e.complexity.SummaryTotals.CurrencyGain(childComplexity), true
+
+	case "SummaryTotals.dividends":
+		if e.complexity.SummaryTotals.Dividends == nil {
+			break
+		}
+
+		return e.complexity.SummaryTotals.Dividends(childComplexity), true
+
+	case "SummaryTotals.portfolioValue":
+		if e.complexity.SummaryTotals.PortfolioValue == nil {
+			break
+		}
+
+		return e.complexity.SummaryTotals.PortfolioValue(childComplexity), true
+
+	case "SummaryTotals.totalReturn":
+		if e.complexity.SummaryTotals.TotalReturn == nil {
+			break
+		}
+
+		return e.complexity.SummaryTotals.TotalReturn(childComplexity), true
+
 	}
 	return 0, false
 }
@@ -331,8 +388,17 @@ type Investment {
   totalReturn: MoneyWithPercentage!
 }
 
+type SummaryTotals {
+  portfolioValue: Money!
+  capitalGain: MoneyWithPercentage!
+  dividends: MoneyWithPercentage!
+  currencyGain: MoneyWithPercentage!
+  totalReturn: MoneyWithPercentage!
+}
+
 type Query {
   getHoldingsSummary(accountId: String!): [Investment!]!
+  getSummaryTotals(accountId: String!): SummaryTotals!
 }
 `, BuiltIn: false},
 }
@@ -376,6 +442,29 @@ func (ec *executionContext) field_Query_getHoldingsSummary_args(ctx context.Cont
 	return args, nil
 }
 func (ec *executionContext) field_Query_getHoldingsSummary_argsAccountID(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (string, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("accountId"))
+	if tmp, ok := rawArgs["accountId"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_getSummaryTotals_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Query_getSummaryTotals_argsAccountID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["accountId"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Query_getSummaryTotals_argsAccountID(
 	ctx context.Context,
 	rawArgs map[string]any,
 ) (string, error) {
@@ -1269,6 +1358,73 @@ func (ec *executionContext) fieldContext_Query_getHoldingsSummary(ctx context.Co
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_getSummaryTotals(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getSummaryTotals(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetSummaryTotals(rctx, fc.Args["accountId"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*models.SummaryTotals)
+	fc.Result = res
+	return ec.marshalNSummaryTotals2ᚖgithubᚗcomᚋgarciosᚋassetᚑtrakᚑportfolioᚋgraphqlᚋmodelsᚐSummaryTotals(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_getSummaryTotals(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "portfolioValue":
+				return ec.fieldContext_SummaryTotals_portfolioValue(ctx, field)
+			case "capitalGain":
+				return ec.fieldContext_SummaryTotals_capitalGain(ctx, field)
+			case "dividends":
+				return ec.fieldContext_SummaryTotals_dividends(ctx, field)
+			case "currencyGain":
+				return ec.fieldContext_SummaryTotals_currencyGain(ctx, field)
+			case "totalReturn":
+				return ec.fieldContext_SummaryTotals_totalReturn(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type SummaryTotals", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_getSummaryTotals_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query___type(ctx, field)
 	if err != nil {
@@ -1395,6 +1551,264 @@ func (ec *executionContext) fieldContext_Query___schema(_ context.Context, field
 				return ec.fieldContext___Schema_directives(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Schema", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SummaryTotals_portfolioValue(ctx context.Context, field graphql.CollectedField, obj *models.SummaryTotals) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SummaryTotals_portfolioValue(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PortfolioValue, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*models.Money)
+	fc.Result = res
+	return ec.marshalNMoney2ᚖgithubᚗcomᚋgarciosᚋassetᚑtrakᚑportfolioᚋgraphqlᚋmodelsᚐMoney(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SummaryTotals_portfolioValue(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SummaryTotals",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "amount":
+				return ec.fieldContext_Money_amount(ctx, field)
+			case "currencyCode":
+				return ec.fieldContext_Money_currencyCode(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Money", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SummaryTotals_capitalGain(ctx context.Context, field graphql.CollectedField, obj *models.SummaryTotals) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SummaryTotals_capitalGain(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CapitalGain, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*models.MoneyWithPercentage)
+	fc.Result = res
+	return ec.marshalNMoneyWithPercentage2ᚖgithubᚗcomᚋgarciosᚋassetᚑtrakᚑportfolioᚋgraphqlᚋmodelsᚐMoneyWithPercentage(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SummaryTotals_capitalGain(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SummaryTotals",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "amount":
+				return ec.fieldContext_MoneyWithPercentage_amount(ctx, field)
+			case "currencyCode":
+				return ec.fieldContext_MoneyWithPercentage_currencyCode(ctx, field)
+			case "percentage":
+				return ec.fieldContext_MoneyWithPercentage_percentage(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MoneyWithPercentage", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SummaryTotals_dividends(ctx context.Context, field graphql.CollectedField, obj *models.SummaryTotals) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SummaryTotals_dividends(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Dividends, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*models.MoneyWithPercentage)
+	fc.Result = res
+	return ec.marshalNMoneyWithPercentage2ᚖgithubᚗcomᚋgarciosᚋassetᚑtrakᚑportfolioᚋgraphqlᚋmodelsᚐMoneyWithPercentage(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SummaryTotals_dividends(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SummaryTotals",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "amount":
+				return ec.fieldContext_MoneyWithPercentage_amount(ctx, field)
+			case "currencyCode":
+				return ec.fieldContext_MoneyWithPercentage_currencyCode(ctx, field)
+			case "percentage":
+				return ec.fieldContext_MoneyWithPercentage_percentage(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MoneyWithPercentage", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SummaryTotals_currencyGain(ctx context.Context, field graphql.CollectedField, obj *models.SummaryTotals) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SummaryTotals_currencyGain(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CurrencyGain, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*models.MoneyWithPercentage)
+	fc.Result = res
+	return ec.marshalNMoneyWithPercentage2ᚖgithubᚗcomᚋgarciosᚋassetᚑtrakᚑportfolioᚋgraphqlᚋmodelsᚐMoneyWithPercentage(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SummaryTotals_currencyGain(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SummaryTotals",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "amount":
+				return ec.fieldContext_MoneyWithPercentage_amount(ctx, field)
+			case "currencyCode":
+				return ec.fieldContext_MoneyWithPercentage_currencyCode(ctx, field)
+			case "percentage":
+				return ec.fieldContext_MoneyWithPercentage_percentage(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MoneyWithPercentage", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SummaryTotals_totalReturn(ctx context.Context, field graphql.CollectedField, obj *models.SummaryTotals) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SummaryTotals_totalReturn(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalReturn, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*models.MoneyWithPercentage)
+	fc.Result = res
+	return ec.marshalNMoneyWithPercentage2ᚖgithubᚗcomᚋgarciosᚋassetᚑtrakᚑportfolioᚋgraphqlᚋmodelsᚐMoneyWithPercentage(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SummaryTotals_totalReturn(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SummaryTotals",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "amount":
+				return ec.fieldContext_MoneyWithPercentage_amount(ctx, field)
+			case "currencyCode":
+				return ec.fieldContext_MoneyWithPercentage_currencyCode(ctx, field)
+			case "percentage":
+				return ec.fieldContext_MoneyWithPercentage_percentage(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MoneyWithPercentage", field.Name)
 		},
 	}
 	return fc, nil
@@ -3577,6 +3991,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "getSummaryTotals":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getSummaryTotals(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "__type":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___type(ctx, field)
@@ -3585,6 +4021,65 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___schema(ctx, field)
 			})
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var summaryTotalsImplementors = []string{"SummaryTotals"}
+
+func (ec *executionContext) _SummaryTotals(ctx context.Context, sel ast.SelectionSet, obj *models.SummaryTotals) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, summaryTotalsImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("SummaryTotals")
+		case "portfolioValue":
+			out.Values[i] = ec._SummaryTotals_portfolioValue(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "capitalGain":
+			out.Values[i] = ec._SummaryTotals_capitalGain(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "dividends":
+			out.Values[i] = ec._SummaryTotals_dividends(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "currencyGain":
+			out.Values[i] = ec._SummaryTotals_currencyGain(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "totalReturn":
+			out.Values[i] = ec._SummaryTotals_totalReturn(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -4060,6 +4555,20 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNSummaryTotals2githubᚗcomᚋgarciosᚋassetᚑtrakᚑportfolioᚋgraphqlᚋmodelsᚐSummaryTotals(ctx context.Context, sel ast.SelectionSet, v models.SummaryTotals) graphql.Marshaler {
+	return ec._SummaryTotals(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNSummaryTotals2ᚖgithubᚗcomᚋgarciosᚋassetᚑtrakᚑportfolioᚋgraphqlᚋmodelsᚐSummaryTotals(ctx context.Context, sel ast.SelectionSet, v *models.SummaryTotals) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._SummaryTotals(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {

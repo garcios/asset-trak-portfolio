@@ -27,3 +27,11 @@ type MoneyWithPercentage struct {
 	CurrencyCode string
 	Percentage   float64
 }
+
+type SummaryTotals struct {
+	PortfolioValue *Money               `json:"portfolioValue"`
+	CapitalGain    *MoneyWithPercentage `json:"capitalGain"`
+	Dividends      *MoneyWithPercentage `json:"dividends"`
+	CurrencyGain   *MoneyWithPercentage `json:"currencyGain"`
+	TotalReturn    *MoneyWithPercentage `json:"totalReturn"`
+}

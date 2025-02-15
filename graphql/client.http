@@ -1,3 +1,4 @@
+### Holdings Summary
 GRAPHQL localhost:8080/query
 
 query {
@@ -30,6 +31,38 @@ query {
             percentage
         }
         totalReturn {
+            amount
+            currencyCode
+            percentage
+        }
+    }
+}
+
+### Summary Totals
+GRAPHQL localhost:8080/query
+
+query {
+    getSummaryTotals(accountId: "eb08df3c-958d-4ae8-b3ae-41ec04418786") {
+        portfolioValue{
+            amount
+            currencyCode
+        }
+        capitalGain{
+            amount
+            currencyCode
+            percentage
+        }
+        dividends{
+            amount
+            currencyCode
+            percentage
+        }
+        currencyGain{
+            amount
+            currencyCode
+            percentage
+        }
+        totalReturn{
             amount
             currencyCode
             percentage
