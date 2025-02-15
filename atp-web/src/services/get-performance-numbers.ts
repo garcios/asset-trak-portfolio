@@ -2,20 +2,22 @@ import {gql} from "@apollo/client";
 
 const GET_PERFORMANCE_NUMBERS = gql`
     query GetPerformanceNumbers($accountId: String!){
-        dataItems(accountId: $accountId) {
-           date
-           value 
+        getHistoricalValues(accountId: $accountId) {
+            tradeDate
+            amount
+            currencyCode
         }
     }
 `;
 
 export interface PerformanceDataResponse{
-    dataItems: PerformanceData[];
+    getHistoricalValues: PerformanceData[];
 }
 
 export interface PerformanceData {
-    date: string;
-    value: number;
+    tradeDate: string;
+    amount: number;
+    currencyCode: string;
 }
 
 

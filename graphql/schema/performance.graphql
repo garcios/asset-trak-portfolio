@@ -1,0 +1,6 @@
+
+type PerformanceData{
+    tradeDate: String!
+    amount: Float!
+    currencyCode: String!
+}

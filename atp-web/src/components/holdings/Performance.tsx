@@ -16,7 +16,7 @@ const Performance: React.FC = () => {
         setError(null);
         try {
             const data = await GraphQLService.fetchPerformanceNumbers('eb08df3c-958d-4ae8-b3ae-41ec04418786');
-            setPerformanceNumbers(data.dataItems);
+            setPerformanceNumbers(data.getHistoricalValues);
         } catch (err) {
             setError(FAILED_TO_LOAD_MESSAGE);
         } finally {
@@ -39,10 +39,10 @@ const Performance: React.FC = () => {
                 <Typography variant="h6" fontWeight="bold" gutterBottom align="left">Performance</Typography>
                 <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={performanceNumbers}>
-                        <XAxis dataKey="date" />
-                        <YAxis dataKey="value" />
+                        <XAxis dataKey="tradeDate" />
+                        <YAxis dataKey="amount" />
                         <Tooltip />
-                        <Line type="monotone" dataKey="value" stroke="#1976d2" />
+                        <Line type="monotone" dataKey="amount" stroke="#1976d2" />
                     </LineChart>
                 </ResponsiveContainer>
             </CardContent>

@@ -1,6 +1,3 @@
-schema {
-  query: Query
-}
 
 type Money {
   amount: Float!
@@ -37,4 +34,5 @@ type SummaryTotals {
 type Query {
   getHoldingsSummary(accountId: String!): [Investment!]!
   getSummaryTotals(accountId: String!): SummaryTotals!
+  getHistoricalValues(accountId: String!): [PerformanceData!]!
 }
