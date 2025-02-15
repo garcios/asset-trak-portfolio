@@ -1,26 +1,38 @@
 GRAPHQL localhost:8080/query
 
 query {
-    getBalanceSummary(accountId: "eb08df3c-958d-4ae8-b3ae-41ec04418786") {
-        accountId
-        totalValue {
+    getHoldingsSummary(accountId: "eb08df3c-958d-4ae8-b3ae-41ec04418786") {
+        assetSymbol
+        assetName
+        marketCode
+        price {
             amount
             currencyCode
         }
-        balanceItems {
-            assetSymbol
-            assetName
-            price {
-                amount
-                currencyCode
-            }
-            quantity
-            value {
-                amount
-                currencyCode
-            }
-            totalGain
-            marketCode
+        quantity
+        value {
+            amount
+            currencyCode
+        }
+        capitalGain {
+            amount
+            currencyCode
+            percentage
+        }
+        dividend {
+            amount
+            currencyCode
+            percentage
+        }
+        currencyGain {
+            amount
+            currencyCode
+            percentage
+        }
+        totalReturn {
+            amount
+            currencyCode
+            percentage
         }
     }
 }

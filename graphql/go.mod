@@ -7,7 +7,6 @@ toolchain go1.22.11
 require (
 	github.com/99designs/gqlgen v0.17.64
 	github.com/garcios/asset-trak-portfolio/transaction-service v0.0.0-20250202071411-83a801ba9d2e
-	github.com/vektah/gqlparser/v2 v2.5.22
 	go-micro.dev/v4 v4.11.0
 )
 
@@ -50,6 +49,7 @@ require (
 	github.com/sergi/go-diff v1.3.1 // indirect
 	github.com/sosodev/duration v1.3.1 // indirect
 	github.com/urfave/cli/v2 v2.27.5 // indirect
+	github.com/vektah/gqlparser/v2 v2.5.22 // indirect
 	github.com/xanzy/ssh-agent v0.3.0 // indirect
 	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
 	golang.org/x/crypto v0.31.0 // indirect

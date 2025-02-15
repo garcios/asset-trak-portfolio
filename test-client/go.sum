@@ -127,8 +127,12 @@ github.com/fsnotify/fsnotify v1.6.0 h1:n+5WquG0fcWoWp6xPWfHdbskMCQaFnG6PfBrh1Ky4
 github.com/fsnotify/fsnotify v1.6.0/go.mod h1:sl3t1tCWJFWoRz9R8WJCbQihKKwmorjAbSClcnxKAGw=
 github.com/garcios/asset-trak-portfolio/currency-service v0.0.0-20250202033721-7e33460cfe2d h1:DZj5yhSG2bk+upgzx7/ptz9ipyc55OPn/1ULm8PXZMM=
 github.com/garcios/asset-trak-portfolio/currency-service v0.0.0-20250202033721-7e33460cfe2d/go.mod h1:RgLPBRikAQ8yRPsh72nodsoXDO8D6M1mBfgrIovzTM0=
+github.com/garcios/asset-trak-portfolio/currency-service v0.0.0-20250214102920-035938d3d46b h1:GTqFLw9f4QF//NzewaVyRl50zk9NH9FGLSUNfNKB8dw=
+github.com/garcios/asset-trak-portfolio/currency-service v0.0.0-20250214102920-035938d3d46b/go.mod h1:yXLfx8is7Va4873S7lSMmlwpreLZ0xf949PwNQqeQjQ=
 github.com/garcios/asset-trak-portfolio/transaction-service v0.0.0-20250202060248-747061cc786e h1:H/X2UU2fOv7TkG+17kYUh/1Zf1gSUVFGcpMUFdG6wiw=
 github.com/garcios/asset-trak-portfolio/transaction-service v0.0.0-20250202060248-747061cc786e/go.mod h1:BMR1UIYQ6BrikTeBTqLVjmH8DBLK3pqPT2CZAv+DJXA=
+github.com/garcios/asset-trak-portfolio/transaction-service v0.0.0-20250214102920-035938d3d46b h1:mSmQjaXxnPhzw7dPhpDTDvOgacuNFXyTjhpTojkR1co=
+github.com/garcios/asset-trak-portfolio/transaction-service v0.0.0-20250214102920-035938d3d46b/go.mod h1:WEXKfG92CVKHhT9MtQ2DzTulXx9QU36u8Z9x76bLjhM=
 github.com/getkin/kin-openapi v0.13.0/go.mod h1:WGRs2ZMM1Q8LR1QBEwUxC6RJEfaBcD0s+pcEVXFuAjw=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
 github.com/gliderlabs/ssh v0.2.2 h1:6zsha5zo/TWhRhwqCD3+EarCAgZ2yN28ipRnGPnwkI0=

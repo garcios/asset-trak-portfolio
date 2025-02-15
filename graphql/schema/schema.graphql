@@ -1,0 +1,31 @@
+schema {
+  query: Query
+}
+
+type Money {
+  amount: Float!
+  currencyCode: String!
+}
+
+type MoneyWithPercentage {
+  amount: Float!
+  currencyCode: String!
+  percentage: Float!
+}
+
+type Investment {
+  assetSymbol: String!
+  assetName: String!
+  marketCode: String!
+  price: Money!
+  quantity: Float!
+  value: Money!
+  capitalGain: MoneyWithPercentage!
+  dividend: MoneyWithPercentage!
+  currencyGain: MoneyWithPercentage!
+  totalReturn: MoneyWithPercentage!
+}
+
+type Query {
+  getHoldingsSummary(accountId: String!): [Investment!]!
+}

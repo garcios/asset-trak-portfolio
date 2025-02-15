@@ -318,3 +318,4 @@ query {
 
 ## References
 - https://gqlgen.com/getting-started/
+- https://dev.to/mikeyglitz/bringing-it-all-together-integrating-graphql-with-gin-in-go-49b9

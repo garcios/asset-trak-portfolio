@@ -8,13 +8,13 @@ tidy:
 	go mod tidy
 
 truncate:
-	go run cmd/main.go -processor=truncate
+	DBUSER=root DBPASS=Pass123 go run cmd/main.go -processor=truncate
 
 ingest_currency_rates:
-	go run cmd/main.go -processor=currencyRateIngestor
+	DBUSER=root DBPASS=Pass123 go run cmd/main.go -processor=currencyRateIngestor
 
-run_server:
-	go run cmd/main.go
+run:
+	DBUSER=root DBPASS=Pass123 go run cmd/main.go
 
 proto:
 	protoc --proto_path=. --micro_out=. --go_out=. proto/currency.proto
