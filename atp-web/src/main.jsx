@@ -4,11 +4,11 @@ import './index.css'
 import App from './App.tsx'
 import worker from "./mocks/browser";
 
-console.log('Vite mode:', import.meta.env.MODE);
+console.log('Vite mode:', process.env.NODE_ENV);
 
 // Start the worker in mock
-if (import.meta.env.MODE === "development") {
-    console.log("development environment");
+if (process.env.NODE_ENV === "mock") {
+    console.log("mock environment");
     await worker.start();
 }
 

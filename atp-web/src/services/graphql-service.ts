@@ -1,11 +1,12 @@
 import client from './apollo-client';
-import GET_HOLDINGS_SUMMARY, {HoldingsSummaryResponse} from "./get-holdings-summary";
+import GET_HOLDINGS_SUMMARY, {HoldingsSummaryResponse, InvestmentLineItem} from "./get-holdings-summary";
 import GET_SUMMARY_TOTALS, {SummaryTotalsResponse} from "./get-summary-totals";
 import GET_PERFORMANCE_NUMBERS, {PerformanceDataResponse} from "./get-performance-numbers";
 
 class GraphQLService {
     async fetchHoldingsSummary(accountId: string): Promise<HoldingsSummaryResponse> {
-        const variables = { id: accountId };
+        const variables = { accountId: accountId };
+        console.log('fetchHoldingsSummary->variables:', variables);
 
         try {
             const { data: holdingsSummary } = await client.query<HoldingsSummaryResponse>({

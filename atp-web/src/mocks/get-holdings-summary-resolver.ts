@@ -2,7 +2,7 @@ import {GraphQLResponseResolver, HttpResponse} from "msw";
 
 const getHoldingsSummaryResolver:GraphQLResponseResolver = ({query, variables}) => {
     const mockData = { data: {
-            holdings: [
+            getHoldingsSummary: [
                 {
                     assetSymbol: "IVV",
                     assetName: "iShares S&P 500 ETF Trust",
