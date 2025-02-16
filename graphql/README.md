@@ -23,6 +23,7 @@ go get github.com/gin-gonic/gin
 
 ```shell
 go get -v github.com/garcios/asset-trak-portfolio/transaction-service@main
+go get -v github.com/garcios/asset-trak-portfolio/lib@main
 ```
 
 ## Run the GraphQL Server

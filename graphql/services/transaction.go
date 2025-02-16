@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"fmt"
+	"github.com/garcios/asset-trak-portfolio/lib/retryable"
 	pb "github.com/garcios/asset-trak-portfolio/transaction-service/proto"
 	"go-micro.dev/v4"
 	"go-micro.dev/v4/client"
@@ -19,7 +20,7 @@ type TransactionService struct {
 func NewTransactionService() ITransactionService {
 	// Define a custom client wrapper to leverage retry on error
 	customRetryWrapper := func(c client.Client) client.Client {
-		return &retryableClient{c}
+		return &retryable.RetryableClient{Client: c}
 	}
 
 	serviceClient := micro.NewService(
