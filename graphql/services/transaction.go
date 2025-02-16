@@ -17,7 +17,7 @@ type TransactionService struct {
 }
 
 func NewTransactionService() ITransactionService {
-	// Define a custom client wrapper to leverage RetryOnError
+	// Define a custom client wrapper to leverage retry on error
 	customRetryWrapper := func(c client.Client) client.Client {
 		return &retryableClient{c}
 	}
