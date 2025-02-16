@@ -2,11 +2,10 @@ package resolvers
 
 import (
 	"context"
-	"fmt"
 	"github.com/garcios/asset-trak-portfolio/graphql/generated"
+	"github.com/garcios/asset-trak-portfolio/graphql/middlewares"
 	"github.com/garcios/asset-trak-portfolio/graphql/models"
 	pb "github.com/garcios/asset-trak-portfolio/transaction-service/proto"
-	"go-micro.dev/v4"
 )
 
 type queryResolver struct{ *Resolver }
@@ -16,18 +15,10 @@ func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
 // GetHoldingsSummary is the resolver for the getBalanceSummary field.
 func (r *queryResolver) GetHoldingsSummary(ctx context.Context, accountID string) ([]*models.Investment, error) {
-	resolverClient := micro.NewService(micro.Name("transaction-resolver.client"))
-	resolverClient.Init()
-
-	transactionSrv := pb.NewTransactionService("transaction-service", resolverClient.Client())
-
-	req := &pb.BalanceSummaryRequest{
-		AccountId: accountID,
-	}
-
-	resp, err := transactionSrv.GetBalanceSummary(context.Background(), req)
+	svcs := middlewares.GetServices(ctx)
+	resp, err := svcs.TransactionService.GetHoldingsSummary(ctx, accountID)
 	if err != nil {
-		return nil, fmt.Errorf("get balance summary error: %w", err)
+		return nil, err
 	}
 
 	investments := make([]*models.Investment, 0, len(resp.BalanceItems))

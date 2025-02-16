@@ -16,6 +16,11 @@ By integrating the GraphQL Gateway Component, the `Investment Portfolio Navigato
 enhances developer productivity, and delivers a seamless user experience with optimized data access and real-time insights.
 
 ## Dependencies
+Install Gin
+```shell
+go get github.com/gin-gonic/gin
+```
+
 ```shell
 go get -v github.com/garcios/asset-trak-portfolio/transaction-service@main
 ```

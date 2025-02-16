@@ -1,14 +1,16 @@
 package main
 
 import (
+	"fmt"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/garcios/asset-trak-portfolio/graphql/generated"
+	"github.com/garcios/asset-trak-portfolio/graphql/middlewares"
 	"github.com/garcios/asset-trak-portfolio/graphql/resolvers"
+	"github.com/gin-gonic/gin"
 
 	"log"
-	"net/http"
 	"os"
 )
 
@@ -20,17 +22,41 @@ func main() {
 		port = defaultPort
 	}
 
-	srv := handler.New(generated.NewExecutableSchema(
+	r := gin.Default()
+	r.Use(middlewares.Services())
+
+	r.POST("/query", graphqlHandler())
+	r.GET("/", playgroundHandler())
+
+	err := r.Run(fmt.Sprintf(":%s", port))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("🚀 GraphQL Gateway running on :8080")
+
+}
+
+func graphqlHandler() gin.HandlerFunc {
+	h := handler.New(generated.NewExecutableSchema(
 		generated.Config{
 			Resolvers: &resolvers.Resolver{},
 		}))
 
-	srv.AddTransport(transport.GET{})
-	srv.AddTransport(transport.POST{})
+	// Server setup:
+	h.AddTransport(transport.Options{})
+	h.AddTransport(transport.GET{})
+	h.AddTransport(transport.POST{})
 
-	http.Handle("/", playground.Handler("GraphQL Playground", "/query"))
-	http.Handle("/query", srv)
+	return func(c *gin.Context) {
+		h.ServeHTTP(c.Writer, c.Request)
+	}
+}
 
-	log.Println("🚀 GraphQL Gateway running on :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+func playgroundHandler() gin.HandlerFunc {
+	h := playground.Handler("GraphQL Playground", "/query")
+
+	return func(c *gin.Context) {
+		h.ServeHTTP(c.Writer, c.Request)
+	}
 }
