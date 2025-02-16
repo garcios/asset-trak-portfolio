@@ -17,7 +17,7 @@ const (
 
 // RetryableClient implements a client with custom retry logic
 type RetryableClient struct {
-	client.Client
+	Client client.Client
 }
 
 func (r *RetryableClient) Call(
