@@ -1,8 +1,8 @@
 # Investment Portfolio Navigator
 
-> Initial web ui (last updated on 10 Feb 2025)
+> Initial web ui (last updated on 17 Feb 2025)
 
-![webui.png](webui.png)
+![webui-2.png](webui-2.png)
 
 ## Project Description
 The `Investment Portfolio Navigator` is a `side coding project` aimed at providing individual investors or traders a way to 
@@ -98,7 +98,7 @@ that it uses Protocol Buffers (protobuf) which make it very efficient and scalab
 - Prometheus <https://prometheus.io/>
 - Grafana <https://grafana.com/>
 - Loki <https://grafana.com/oss/loki/>
-
+- Hashicorp Vault <https://www.hashicorp.com/en/products/vault>
 
 ### Development Tools
 - JetBrains Goland <https://www.jetbrains.com/go/>
@@ -113,5 +113,5 @@ that it uses Protocol Buffers (protobuf) which make it very efficient and scalab
 - <https://github.com/go-sql-driver/mysql/>
 - <https://site.financialmodelingprep.com/developer/docs>
 - <https://community.veeam.com/kubernetes-korner-90/podman-desktop-and-minikube-a-great-combination-to-start-your-kubernetes-journey-6377>
-
+- https://medium.com/@muppedaanvesh/a-hand-on-guide-to-vault-in-kubernetes-%EF%B8%8F-1daf73f331bd
 

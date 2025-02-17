@@ -138,7 +138,7 @@ npm run mock
 ```
 
 ## What it looks like
-The initial screen, populated with mock data, appears as follows (Last updated on 10 Feb 2025).
+The initial screen, populated with mock data, appears as follows (Last updated on 17 Feb 2025).
 > Please note that this is still in the early stages of development and will be updated as progress is made.
 
-![screenshot4.png](screenshot4.png)
+![webui-2.png](../webui-2.png)
