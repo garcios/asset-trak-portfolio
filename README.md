@@ -51,7 +51,7 @@ The data fetched by this project is strictly for informational purposes and shou
 Below is a high level architecture diagram for this project.
 ```mermaid
 C4Container
-    title C4 Container Diagram for gRPC and GraphQL Architecture
+    title C4 Container Diagram for Investment Portfolio Navigator
 
     Person(web_ui, "Web UI", "User interacts via web interface")
 
@@ -69,12 +69,21 @@ C4Container
         Container(service3, "gRPC Service 3", "Handles auxiliary tasks")
     }
 
+    Container_Boundary(database, "Database Layer") {
+        ContainerDb(mysql, "MySQL", "Relational Database", "Stores structured data")
+        ContainerDb(redis, "Redis", "In-Memory Data Store", "Caches frequently accessed data")
+    }
+
     Rel(web_ui, graphql_gateway, "Sends GraphQL Request")
     Rel(graphql_gateway, keycloak, "Verifies JWT")
     Rel(graphql_gateway, service1, "Makes gRPC call")
     Rel(graphql_gateway, service2, "Makes gRPC call")
     Rel(service1, service2, "Inter-service communication via gRPC")
     Rel(service1, service3, "Inter-service communication via gRPC")
+    Rel(service1, mysql, "Reads/Writes data")
+    Rel(service2, mysql, "Reads/Writes data")
+    Rel(service2, redis, "Caches data")
+    Rel(service3, redis, "Reads cached data")
 ```
 
 __Web Interface__: This is the entry point in the flowchart. It is a user interface, typically a website or a web 
