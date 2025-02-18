@@ -50,12 +50,31 @@ The data fetched by this project is strictly for informational purposes and shou
 ## High Level Architecture
 Below is a high level architecture diagram for this project.
 ```mermaid
-flowchart TD
-    A[Web UI] -->|GraphQL Request| B[GraphQL API Gateway]
-    B -->|gRPC call| C[gRPC Service 1]
-    B -->|gRPC call| D[gRPC Service 2]
-    C -->|service to service via gRPC| D[gRPC Service 2]
-    C -->|service to service via gRPC| E[gRPC Service 3]
+C4Container
+    title C4 Container Diagram for gRPC and GraphQL Architecture
+
+    Person(web_ui, "Web UI", "User interacts via web interface")
+
+    Container_Boundary(api_gateway, "API Gateway Layer") {
+        Container(graphql_gateway, "GraphQL API Gateway", "Handles GraphQL requests and forwards them appropriately")
+    }
+
+    Container_Boundary(auth, "Authentication Layer") {
+        Container(keycloak, "Keycloak", "Handles JWT verification and authentication")
+    }
+
+    Container_Boundary(services, "gRPC Services Layer") {
+        Container(service1, "gRPC Service 1", "Handles specific business logic")
+        Container(service2, "gRPC Service 2", "Handles additional processing")
+        Container(service3, "gRPC Service 3", "Handles auxiliary tasks")
+    }
+
+    Rel(web_ui, graphql_gateway, "Sends GraphQL Request")
+    Rel(graphql_gateway, keycloak, "Verifies JWT")
+    Rel(graphql_gateway, service1, "Makes gRPC call")
+    Rel(graphql_gateway, service2, "Makes gRPC call")
+    Rel(service1, service2, "Inter-service communication via gRPC")
+    Rel(service1, service3, "Inter-service communication via gRPC")
 ```
 
 __Web Interface__: This is the entry point in the flowchart. It is a user interface, typically a website or a web 
