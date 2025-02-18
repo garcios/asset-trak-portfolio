@@ -68,6 +68,26 @@ services via GraphQL.
 __gRPC Services__: They represent microservices that GraphQL API Gateway communicates with. The great thing about gRPC is 
 that it uses Protocol Buffers (protobuf) which make it very efficient and scalable, ideal for microservices communication.
 
+## Authentication and Authorization 
+For this project, I'll be using Keycloak as Auth provider.
+```mermaid
+sequenceDiagram
+    participant Client as Client (Web UI)
+    participant GraphQL as GraphQL API Gateway
+    participant Keycloak as Keycloak (OIDC / OAuth2)
+    participant Service as Protected Microservice
+    participant DB as Database
+
+    Client->>GraphQL: GraphQL Query with JWT
+    GraphQL->>Keycloak: Verify JWT Token
+    Keycloak-->>GraphQL: Token Valid / Invalid
+    GraphQL->>Service: Authorized Request
+    Service->>DB: Fetch Data
+    DB-->>Service: Data Response
+    Service-->>GraphQL: Response Data
+    GraphQL-->>Client: GraphQL Response
+```
+
 ## Tech Stack
 ### Backend
 - Golang <https://go.dev/>
