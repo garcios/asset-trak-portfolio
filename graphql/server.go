@@ -22,8 +22,16 @@ func main() {
 		port = defaultPort
 	}
 
+	// Initialize Keycloak OIDC Provider
+	//middlewares.InitKeycloak()
+
 	r := gin.Default()
+
 	r.Use(middlewares.Services())
+
+	// TODO: properly implement protected and unprotected queries
+	//protected := r.Group("/protected")
+	//protected.Use(middlewares.AuthMiddleware())
 
 	r.POST("/query", graphqlHandler())
 	r.GET("/", playgroundHandler())

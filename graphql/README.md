@@ -21,6 +21,13 @@ Install Gin
 go get github.com/gin-gonic/gin
 ```
 
+Install OIDC and env
+```shell
+go get github.com/coreos/go-oidc
+go get github.com/joho/godotenv
+```
+
+
 ```shell
 go get -v github.com/garcios/asset-trak-portfolio/transaction-service@main
 go get -v github.com/garcios/asset-trak-portfolio/lib@main
