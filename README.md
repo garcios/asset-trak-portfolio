@@ -74,6 +74,10 @@ C4Container
         ContainerDb(redis, "Redis", "In-Memory Data Store", "Caches frequently accessed data")
     }
 
+    Container_Boundary(external_services, "External Services Layer") {
+        Container_Ext(external_api1, "External API 1", "REST API", "Third-party service for finanncial data")
+    }
+
     Rel(web_ui, graphql_gateway, "Sends GraphQL Request")
     Rel(graphql_gateway, keycloak, "Verifies JWT")
     Rel(graphql_gateway, service1, "Makes gRPC call")
@@ -84,6 +88,7 @@ C4Container
     Rel(service2, mysql, "Reads/Writes data")
     Rel(service2, redis, "Caches data")
     Rel(service3, redis, "Reads cached data")
+    Rel(service1, external_api1, "Calls External API for financial data", "REST API")
 ```
 
 __Web Interface__: This is the entry point in the flowchart. It is a user interface, typically a website or a web 
