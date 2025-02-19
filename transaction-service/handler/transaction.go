@@ -30,15 +30,23 @@ type Transaction struct {
 }
 
 type BalanceSummaryManager interface {
-	GetBalanceSummary(ctx context.Context, accountID string) ([]*model.BalanceSummary, error)
+	GetHoldings(ctx context.Context, accountID string) ([]*model.BalanceSummary, error)
 }
 
-func (h *Transaction) GetBalanceSummary(
+func (h *Transaction) GetSummaryTotals(
 	ctx context.Context,
-	req *pb.BalanceSummaryRequest,
-	res *pb.BalanceSummaryResponse,
+	request *pb.SummaryTotalsRequest,
+	response *pb.SummaryTotalsResponse) error {
+
+	return nil
+}
+
+func (h *Transaction) GetHoldings(
+	ctx context.Context,
+	req *pb.HoldingsRequest,
+	res *pb.HoldingsResponse,
 ) error {
-	log.Println("GetBalanceSummary...")
+	log.Println("GetHoldings...")
 	now := time.Now()
 
 	currencyRates, err := h.currencyService.GetExchangeRate(
@@ -54,26 +62,27 @@ func (h *Transaction) GetBalanceSummary(
 		return err
 	}
 
-	summaryItems, err := h.balanceSummaryManager.GetBalanceSummary(ctx, req.GetAccountId())
+	summaryItems, err := h.balanceSummaryManager.GetHoldings(ctx, req.GetAccountId())
 	if err != nil {
 		return err
 	}
 
-	res.AccountId = req.GetAccountId()
-	res.BalanceItems = make([]*pb.BalanceItem, 0)
+	res.Investments = make([]*pb.Investment, 0)
 
-	var totalValue float64
 	for _, s := range summaryItems {
 		value := s.Quantity * s.Price
 		if s.CurrencyCode == foreignCurrency {
 			value = value * currencyRates.ExchangeRate
 		}
 
-		totalValue += value
+		capitalReturn := computeCapitalReturn(s.AssetSymbol)
+		dividendReturn := computeDividendReturn(s.AssetSymbol)
+		currencyReturn := computeCurrencyReturn(s.AssetSymbol)
 
-		protoBalanceItem := &pb.BalanceItem{
+		investment := &pb.Investment{
 			AssetSymbol: s.AssetSymbol,
 			AssetName:   s.AssetName,
+			MarketCode:  s.MarketCode,
 			Quantity:    s.Quantity,
 			Price: &pb.Money{
 				Amount:       s.Price,
@@ -83,21 +92,48 @@ func (h *Transaction) GetBalanceSummary(
 				Amount:       value,
 				CurrencyCode: targetCurrency,
 			},
-			TotalGain:  computeTotalGain(s.AssetSymbol),
-			MarketCode: s.MarketCode,
+			CapitalReturn:  capitalReturn,
+			DividendReturn: dividendReturn,
+			CurrencyReturn: currencyReturn,
+			TotalReturn:    computeTotalReturn(capitalReturn, dividendReturn, currencyReturn),
 		}
-		res.BalanceItems = append(res.BalanceItems, protoBalanceItem)
-	}
-
-	res.TotalValue = &pb.Money{
-		Amount:       totalValue,
-		CurrencyCode: targetCurrency,
+		res.Investments = append(res.Investments, investment)
 	}
 
 	return nil
 }
 
 // TODO: will compute total gain for specific asset.
-func computeTotalGain(symbol string) float64 {
-	return 0
+func computeCapitalReturn(symbol string) *pb.InvestmentReturn {
+	return &pb.InvestmentReturn{
+		Amount:           0,
+		CurrencyCode:     targetCurrency,
+		ReturnPercentage: 0,
+	}
+}
+
+// TODO: will compute total gain for specific asset.
+func computeDividendReturn(symbol string) *pb.InvestmentReturn {
+	return &pb.InvestmentReturn{
+		Amount:           0,
+		CurrencyCode:     targetCurrency,
+		ReturnPercentage: 0,
+	}
+}
+
+// TODO: will compute total gain for specific asset.
+func computeCurrencyReturn(symbol string) *pb.InvestmentReturn {
+	return &pb.InvestmentReturn{
+		Amount:           0,
+		CurrencyCode:     targetCurrency,
+		ReturnPercentage: 0,
+	}
+}
+
+func computeTotalReturn(capital, dividend, currency *pb.InvestmentReturn) *pb.InvestmentReturn {
+	return &pb.InvestmentReturn{
+		Amount:           capital.Amount + dividend.Amount + currency.Amount,
+		CurrencyCode:     targetCurrency,
+		ReturnPercentage: capital.ReturnPercentage + dividend.ReturnPercentage + currency.ReturnPercentage,
+	}
 }

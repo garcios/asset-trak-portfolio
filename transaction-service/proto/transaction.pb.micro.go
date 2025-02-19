@@ -36,7 +36,8 @@ func NewTransactionEndpoints() []*api.Endpoint {
 // Client API for Transaction service
 
 type TransactionService interface {
-	GetBalanceSummary(ctx context.Context, in *BalanceSummaryRequest, opts ...client.CallOption) (*BalanceSummaryResponse, error)
+	GetHoldings(ctx context.Context, in *HoldingsRequest, opts ...client.CallOption) (*HoldingsResponse, error)
+	GetSummaryTotals(ctx context.Context, in *SummaryTotalsRequest, opts ...client.CallOption) (*SummaryTotalsResponse, error)
 }
 
 type transactionService struct {
@@ -51,9 +52,19 @@ func NewTransactionService(name string, c client.Client) TransactionService {
 	}
 }
 
-func (c *transactionService) GetBalanceSummary(ctx context.Context, in *BalanceSummaryRequest, opts ...client.CallOption) (*BalanceSummaryResponse, error) {
-	req := c.c.NewRequest(c.name, "Transaction.GetBalanceSummary", in)
-	out := new(BalanceSummaryResponse)
+func (c *transactionService) GetHoldings(ctx context.Context, in *HoldingsRequest, opts ...client.CallOption) (*HoldingsResponse, error) {
+	req := c.c.NewRequest(c.name, "Transaction.GetHoldings", in)
+	out := new(HoldingsResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *transactionService) GetSummaryTotals(ctx context.Context, in *SummaryTotalsRequest, opts ...client.CallOption) (*SummaryTotalsResponse, error) {
+	req := c.c.NewRequest(c.name, "Transaction.GetSummaryTotals", in)
+	out := new(SummaryTotalsResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -64,12 +75,14 @@ func (c *transactionService) GetBalanceSummary(ctx context.Context, in *BalanceS
 // Server API for Transaction service
 
 type TransactionHandler interface {
-	GetBalanceSummary(context.Context, *BalanceSummaryRequest, *BalanceSummaryResponse) error
+	GetHoldings(context.Context, *HoldingsRequest, *HoldingsResponse) error
+	GetSummaryTotals(context.Context, *SummaryTotalsRequest, *SummaryTotalsResponse) error
 }
 
 func RegisterTransactionHandler(s server.Server, hdlr TransactionHandler, opts ...server.HandlerOption) error {
 	type transaction interface {
-		GetBalanceSummary(ctx context.Context, in *BalanceSummaryRequest, out *BalanceSummaryResponse) error
+		GetHoldings(ctx context.Context, in *HoldingsRequest, out *HoldingsResponse) error
+		GetSummaryTotals(ctx context.Context, in *SummaryTotalsRequest, out *SummaryTotalsResponse) error
 	}
 	type Transaction struct {
 		transaction
@@ -82,6 +95,10 @@ type transactionHandler struct {
 	TransactionHandler
 }
 
-func (h *transactionHandler) GetBalanceSummary(ctx context.Context, in *BalanceSummaryRequest, out *BalanceSummaryResponse) error {
-	return h.TransactionHandler.GetBalanceSummary(ctx, in, out)
+func (h *transactionHandler) GetHoldings(ctx context.Context, in *HoldingsRequest, out *HoldingsResponse) error {
+	return h.TransactionHandler.GetHoldings(ctx, in, out)
+}
+
+func (h *transactionHandler) GetSummaryTotals(ctx context.Context, in *SummaryTotalsRequest, out *SummaryTotalsResponse) error {
+	return h.TransactionHandler.GetSummaryTotals(ctx, in, out)
 }

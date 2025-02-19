@@ -3,30 +3,51 @@ syntax = "proto3";
 option go_package = "./proto";
 
 service Transaction {
-  rpc GetBalanceSummary(BalanceSummaryRequest) returns (BalanceSummaryResponse) {}
+  rpc GetHoldings(HoldingsRequest) returns (HoldingsResponse) {}
+  rpc GetSummaryTotals(SummaryTotalsRequest) returns (SummaryTotalsResponse) {}
 }
 
-message BalanceSummaryRequest {
+message HoldingsRequest {
   string account_id = 1;
 }
 
-message BalanceSummaryResponse {
-  string account_id = 1;
-  Money total_value = 2;
-  repeated BalanceItem balance_items= 3;
+message HoldingsResponse {
+  repeated Investment investments= 3;
 }
 
-message BalanceItem {
+message Investment {
    string asset_symbol=1;
    string asset_name=2;
-   Money price=3;
-   double  quantity=4;
-   Money value=5;
-   double total_gain=6;
-   string market_code=7;
+   string market_code=3;
+   Money price=4;
+   double  quantity=5;
+   Money value=6;
+   InvestmentReturn capital_return = 7;
+   InvestmentReturn dividend_return = 8;
+   InvestmentReturn currency_return = 9;
+   InvestmentReturn total_return = 10;
 }
 
 message Money {
   double amount=1;
   string currency_code=2;
+}
+
+message InvestmentReturn {
+  double amount=1;
+  string currency_code=2;
+  double return_percentage=3;
+}
+
+
+message SummaryTotalsRequest {
+  string account_id = 1;
+}
+
+message SummaryTotalsResponse{
+  Money portfolio_value = 1;
+  InvestmentReturn capital_return = 2;
+  InvestmentReturn dividend_return = 3;
+  InvestmentReturn currency_return = 4;
+  InvestmentReturn total_return = 5;
 }

@@ -78,7 +78,7 @@ func (r *AssetBalanceRepository) Truncate(ctx context.Context) error {
 	return nil
 }
 
-func (r *AssetBalanceRepository) GetBalanceSummary(
+func (r *AssetBalanceRepository) GetHoldings(
 	ctx context.Context,
 	accountID string,
 ) ([]*model.BalanceSummary, error) {
@@ -94,7 +94,7 @@ func (r *AssetBalanceRepository) GetBalanceSummary(
 
 	stmt, err := r.dbGetter(ctx).Prepare(query)
 	if err != nil {
-		return nil, fmt.Errorf("GetBalanceSummary: %v", err)
+		return nil, fmt.Errorf("GetHoldings: %v", err)
 	}
 
 	defer stmt.Close()
@@ -106,7 +106,7 @@ func (r *AssetBalanceRepository) GetBalanceSummary(
 			return nil, nil
 		}
 
-		return nil, fmt.Errorf("GetBalanceSummary: %v", err)
+		return nil, fmt.Errorf("GetHoldings: %v", err)
 	}
 
 	summary := make([]*model.BalanceSummary, 0)
@@ -120,7 +120,7 @@ func (r *AssetBalanceRepository) GetBalanceSummary(
 			&summaryItem.CurrencyCode,
 			&summaryItem.MarketCode,
 		); err != nil {
-			return nil, fmt.Errorf("GetBalanceSummary: %v", err)
+			return nil, fmt.Errorf("GetHoldings: %v", err)
 		}
 		summary = append(summary, &summaryItem)
 	}
