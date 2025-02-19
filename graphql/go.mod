@@ -6,7 +6,11 @@ toolchain go1.22.11
 
 require (
 	github.com/99designs/gqlgen v0.17.64
-	github.com/garcios/asset-trak-portfolio/transaction-service v0.0.0-20250202071411-83a801ba9d2e
+	github.com/coreos/go-oidc v2.3.0+incompatible
+	github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250216092010-574d6d593f34
+	github.com/gin-gonic/gin v1.10.0
+	github.com/joho/godotenv v1.5.1
+	github.com/vektah/gqlparser/v2 v2.5.22
 	go-micro.dev/v4 v4.11.0
 )
 
@@ -21,16 +25,14 @@ require (
 	github.com/bytedance/sonic/loader v0.1.1 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
 	github.com/cloudwego/iasm v0.2.0 // indirect
-	github.com/coreos/go-oidc v2.3.0+incompatible // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.5 // indirect
 	github.com/emirpasic/gods v1.12.0 // indirect
 	github.com/evanphx/json-patch/v5 v5.5.0 // indirect
 	github.com/felixge/httpsnoop v1.0.1 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
-	github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250216092010-574d6d593f34 // indirect
+	github.com/garcios/asset-trak-portfolio/transaction-service v0.0.0-20250219081058-73f15705eeac // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
-	github.com/gin-gonic/gin v1.10.0 // indirect
 	github.com/go-acme/lego/v4 v4.4.0 // indirect
 	github.com/go-git/gcfg v1.5.0 // indirect
 	github.com/go-git/go-billy/v5 v5.3.1 // indirect
@@ -50,7 +52,6 @@ require (
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
-	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kevinburke/ssh_config v0.0.0-20201106050909-4977a11b4351 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.7 // indirect
@@ -73,7 +74,6 @@ require (
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
 	github.com/urfave/cli/v2 v2.27.5 // indirect
-	github.com/vektah/gqlparser/v2 v2.5.22 // indirect
 	github.com/xanzy/ssh-agent v0.3.0 // indirect
 	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
 	golang.org/x/arch v0.8.0 // indirect

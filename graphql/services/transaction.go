@@ -43,7 +43,7 @@ func (t TransactionService) GetHoldingsSummary(
 		AccountId: accountID,
 	}
 
-	resp, err := t.grpcTransactionService.GetBalanceSummary(ctx, req)
+	resp, err := t.grpcTransactionService.GetHoldings(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("get balance summary error: %w", err)
 	}
