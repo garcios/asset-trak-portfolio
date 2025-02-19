@@ -16,7 +16,7 @@ Here are the features it offers:
 
 1. __Data Sourcing__: Ingest financial data, the Data Sourcing component is a crucial part of the Stock Portfolio 
 Performance Tracker project. This component is responsible for fetching real-time and historical stock data from various 
-trusted financial market data sources. It manages the efficient retrieval, processing, and storing of stock data.
+trusted financial market data sources. It manages the efficient retrieval, processing, and storing of market data.
 
 2. __Portfolio Creation__: Create multiple portfolios, each with a different set of stocks. The users can manage their 
 portfolios easily by adding or removing stocks as and when needed.
@@ -100,8 +100,19 @@ __GraphQL API Gateway__: This is the central node that routes incoming GraphQL r
 This architecture effectively decouples the frontend from backend services and enables a unified way of accessing various 
 services via GraphQL.
 
+__Authentication service__: This is responsible for verifying the identity of users, applications, or systems before 
+granting access to resources. It ensures that only authorized entities can interact with the system, protecting sensitive
+data and functionality.
+
 __gRPC Services__: They represent microservices that GraphQL API Gateway communicates with. The great thing about gRPC is 
 that it uses Protocol Buffers (protobuf) which make it very efficient and scalable, ideal for microservices communication.
+
+__Databases__: They manage both permanent and temporary data storage, ensuring efficient retrieval, organization, and 
+persistence.
+
+__External Services__ : They represent third-party services, external APIs, and other systems outside the application’s 
+core infrastructure. 
+
 
 ## Authentication and Authorization 
 For this project, I'll be using Keycloak as Auth provider.
