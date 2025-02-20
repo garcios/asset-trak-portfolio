@@ -64,9 +64,10 @@ C4Container
     }
 
     Container_Boundary(services, "gRPC Services Layer") {
-        Container(service1, "gRPC Service 1", "Handles specific business logic")
-        Container(service2, "gRPC Service 2", "Handles additional processing")
-        Container(service3, "gRPC Service 3", "Handles auxiliary tasks")
+        Container(transactionSvc, "Transaction Service", "Handles transactions")
+        Container(assetSvc, "Asset Service", "Handles asset information")
+        Container(currencySvc, "Currency Service", "Handles currency rates")
+        Container(assetPriceSvc, "Asset Price Service", "Handles asset prices")
     }
 
     Container_Boundary(database, "Database Layer") {
@@ -75,22 +76,24 @@ C4Container
     }
 
     Container_Boundary(external_services, "External Services Layer") {
-        Container_Ext(external_api1, "Financial API", "REST API", "Third-party service for financial data")
-        Container_Ext(external_api2, "Open API LLM", "REST API", "Third-party service for AI generated content")
+        Container_Ext(external_api_finance, "Financial API", "REST API", "Third-party service for financial data")
+        Container_Ext(external_api_openai, "Open API LLM", "REST API", "Third-party service for AI generated content")
     }
 
     Rel(web_ui, graphql_gateway, "Sends GraphQL Request")
     Rel(graphql_gateway, keycloak, "Verifies JWT")
-    Rel(graphql_gateway, service1, "Makes gRPC call")
-    Rel(graphql_gateway, service2, "Makes gRPC call")
-    Rel(service1, service2, "Inter-service communication via gRPC")
-    Rel(service1, service3, "Inter-service communication via gRPC")
-    Rel(service1, mysql, "Reads/Writes data")
-    Rel(service2, mysql, "Reads/Writes data")
-    Rel(service2, redis, "Caches data")
-    Rel(service3, redis, "Reads cached data")
-    Rel(service1, external_api1, "Calls External API for financial data", "REST API")
-    Rel(service2, external_api2, "Calls External API for AI generated content", "REST API")
+    Rel(graphql_gateway, transactionSvc, "Makes gRPC call")
+    Rel(graphql_gateway, assetSvc, "Makes gRPC call")
+    Rel(transactionSvc, assetSvc, "Inter-service communication via gRPC")
+    Rel(transactionSvc, assetPriceSvc, "Inter-service communication via gRPC")
+    Rel(transactionSvc, currencySvc, "Inter-service communication via gRPC")
+    Rel(transactionSvc, mysql, "Reads/Writes data")
+    Rel(transactionSvc, redis, "Reads cached data")
+    Rel(assetSvc, mysql, "Reads/Writes data")
+    Rel(assetSvc, redis, "Caches data")
+    Rel(assetPriceSvc, external_api_finance, "Calls External API for financial data", "REST API")
+    Rel(currencySvc, external_api_finance, "Calls External API for financial data", "REST API")
+    Rel(assetSvc, external_api_openai, "Calls External API for AI generated content", "REST API")
 ```
 
 __Web Interface__: This is the entry point in the flowchart. It is a user interface, typically a website or a web 
