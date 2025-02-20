@@ -7,7 +7,8 @@ toolchain go1.22.11
 require (
 	github.com/99designs/gqlgen v0.17.64
 	github.com/coreos/go-oidc v2.3.0+incompatible
-	github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250216092010-574d6d593f34
+	github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250220083717-194a5b98632c
+	github.com/garcios/asset-trak-portfolio/transaction-service v0.0.0-20250220074743-76b245d49aa2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/joho/godotenv v1.5.1
 	github.com/vektah/gqlparser/v2 v2.5.22
@@ -31,7 +32,6 @@ require (
 	github.com/felixge/httpsnoop v1.0.1 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
-	github.com/garcios/asset-trak-portfolio/transaction-service v0.0.0-20250219081058-73f15705eeac // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-acme/lego/v4 v4.4.0 // indirect
 	github.com/go-git/gcfg v1.5.0 // indirect

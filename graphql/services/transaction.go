@@ -3,14 +3,15 @@ package services
 import (
 	"context"
 	"fmt"
-	"github.com/garcios/asset-trak-portfolio/lib/retryable"
+	lib "github.com/garcios/asset-trak-portfolio/lib/retryable"
 	pb "github.com/garcios/asset-trak-portfolio/transaction-service/proto"
 	"go-micro.dev/v4"
 	"go-micro.dev/v4/client"
+	"time"
 )
 
 type ITransactionService interface {
-	GetHoldingsSummary(ctx context.Context, accountID string) (*pb.BalanceSummaryResponse, error)
+	GetHoldingsSummary(ctx context.Context, accountID string) (*pb.HoldingsResponse, error)
 }
 
 type TransactionService struct {
@@ -20,7 +21,11 @@ type TransactionService struct {
 func NewTransactionService() ITransactionService {
 	// Define a custom client wrapper to leverage retry on error
 	customRetryWrapper := func(c client.Client) client.Client {
-		return &retryable.RetryableClient{Client: c}
+		return &lib.RetryableClient{
+			Client:     c,
+			MaxRetries: 3,
+			RetryDelay: 1 * time.Second,
+		}
 	}
 
 	serviceClient := micro.NewService(
@@ -37,15 +42,15 @@ func NewTransactionService() ITransactionService {
 func (t TransactionService) GetHoldingsSummary(
 	ctx context.Context,
 	accountID string,
-) (*pb.BalanceSummaryResponse, error) {
+) (*pb.HoldingsResponse, error) {
 
-	req := &pb.BalanceSummaryRequest{
+	req := &pb.HoldingsRequest{
 		AccountId: accountID,
 	}
 
 	resp, err := t.grpcTransactionService.GetHoldings(ctx, req)
 	if err != nil {
-		return nil, fmt.Errorf("get balance summary error: %w", err)
+		return nil, fmt.Errorf("get holdings summary error: %w", err)
 	}
 
 	return resp, nil

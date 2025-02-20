@@ -12,8 +12,8 @@ truncate:
 ingest_asset_prices:
 	DBUSER=root DBPASS=Pass123 go run cmd/main.go -processor=assetPriceIngestor
 
-run_server:
-	go run cmd/main.go
+run:
+	DBUSER=root DBPASS=Pass123 go run cmd/main.go
 
 docker:
 	podman build -t asset-price-service:1.0 .

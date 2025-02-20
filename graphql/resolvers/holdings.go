@@ -21,9 +21,9 @@ func (r *queryResolver) GetHoldingsSummary(ctx context.Context, accountID string
 		return nil, err
 	}
 
-	investments := make([]*models.Investment, 0, len(resp.BalanceItems))
+	investments := make([]*models.Investment, 0, len(resp.Investments))
 
-	for _, item := range resp.BalanceItems {
+	for _, item := range resp.Investments {
 		investments = append(investments, &models.Investment{
 			AssetSymbol: item.AssetSymbol,
 			AssetName:   item.AssetName,
@@ -32,24 +32,24 @@ func (r *queryResolver) GetHoldingsSummary(ctx context.Context, accountID string
 			Quantity:    item.Quantity,
 			Value:       toMoney(item.Value),
 			CapitalGain: &models.MoneyWithPercentage{
-				Amount:       0,
-				CurrencyCode: "AUD",
-				Percentage:   0,
+				Amount:       item.CapitalReturn.Amount,
+				CurrencyCode: item.CapitalReturn.CurrencyCode,
+				Percentage:   item.CapitalReturn.ReturnPercentage,
 			},
 			Dividend: &models.MoneyWithPercentage{
-				Amount:       0,
-				CurrencyCode: "AUD",
-				Percentage:   0,
+				Amount:       item.DividendReturn.Amount,
+				CurrencyCode: item.DividendReturn.CurrencyCode,
+				Percentage:   item.DividendReturn.ReturnPercentage,
 			},
 			CurrencyGain: &models.MoneyWithPercentage{
-				Amount:       0,
-				CurrencyCode: "AUD",
-				Percentage:   0,
+				Amount:       item.CurrencyReturn.Amount,
+				CurrencyCode: item.CurrencyReturn.CurrencyCode,
+				Percentage:   item.CurrencyReturn.ReturnPercentage,
 			},
 			TotalReturn: &models.MoneyWithPercentage{
-				Amount:       0,
-				CurrencyCode: "AUD",
-				Percentage:   0,
+				Amount:       item.TotalReturn.Amount,
+				CurrencyCode: item.TotalReturn.CurrencyCode,
+				Percentage:   item.TotalReturn.ReturnPercentage,
 			},
 		})
 	}
