@@ -17,7 +17,37 @@ const (
 
 // RetryableClient implements a client with custom retry logic
 type RetryableClient struct {
-	Client client.Client
+	Client     client.Client
+	MaxRetries int
+	RetryDelay time.Duration
+}
+
+func (r *RetryableClient) Init(option ...client.Option) error {
+	return r.Client.Init(option...)
+}
+
+func (r *RetryableClient) Options() client.Options {
+	return r.Client.Options()
+}
+
+func (r *RetryableClient) NewMessage(topic string, msg interface{}, opts ...client.MessageOption) client.Message {
+	return r.Client.NewMessage(topic, msg, opts...)
+}
+
+func (r *RetryableClient) NewRequest(service, endpoint string, req interface{}, reqOpts ...client.RequestOption) client.Request {
+	return r.Client.NewRequest(service, endpoint, req, reqOpts...)
+}
+
+func (r *RetryableClient) Stream(ctx context.Context, req client.Request, opts ...client.CallOption) (client.Stream, error) {
+	return r.Client.Stream(ctx, req, opts...)
+}
+
+func (r *RetryableClient) Publish(ctx context.Context, msg client.Message, opts ...client.PublishOption) error {
+	return r.Client.Publish(ctx, msg, opts...)
+}
+
+func (r *RetryableClient) String() string {
+	return r.Client.String()
 }
 
 func (r *RetryableClient) Call(
@@ -27,6 +57,13 @@ func (r *RetryableClient) Call(
 	opts ...client.CallOption,
 ) error {
 	var retryCount int
+	if r.MaxRetries == 0 {
+		r.MaxRetries = defaultRetryCount
+	}
+
+	if r.RetryDelay == 0 {
+		r.RetryDelay = retryDelay
+	}
 
 	// Retry loop
 	for {
@@ -39,7 +76,7 @@ func (r *RetryableClient) Call(
 		// Increment retry count
 		retryCount++
 
-		if retryCount > defaultRetryCount { //exceed retry count
+		if retryCount > r.MaxRetries { //exceed retry count
 			return err
 		}
 
@@ -50,7 +87,7 @@ func (r *RetryableClient) Call(
 		}
 
 		// Perform retry with delay
-		time.Sleep(retryDelay)
+		time.Sleep(r.RetryDelay)
 		fmt.Printf("Retrying request: %+v (attempt: %d)\n", req, retryCount)
 	}
 }
