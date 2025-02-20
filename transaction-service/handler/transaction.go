@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/garcios/asset-trak-portfolio/transaction-service/model"
 	"log"
+	"sort"
 	"time"
 
 	pbc "github.com/garcios/asset-trak-portfolio/currency-service/proto"
@@ -99,6 +100,11 @@ func (h *Transaction) GetHoldings(
 		}
 		res.Investments = append(res.Investments, investment)
 	}
+
+	// Sort the investments by Value.Amount in descending order
+	sort.Slice(res.Investments, func(i, j int) bool {
+		return res.Investments[i].Value.Amount > res.Investments[j].Value.Amount
+	})
 
 	return nil
 }

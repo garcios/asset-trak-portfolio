@@ -143,8 +143,8 @@ github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMo
 github.com/fsnotify/fsnotify v1.4.9/go.mod h1:znqG4EE+3YCdAaPaxE2ZRY/06pZUdp0tY4IgpuI1SZQ=
 github.com/fsnotify/fsnotify v1.6.0 h1:n+5WquG0fcWoWp6xPWfHdbskMCQaFnG6PfBrh1Ky4HY=
 github.com/fsnotify/fsnotify v1.6.0/go.mod h1:sl3t1tCWJFWoRz9R8WJCbQihKKwmorjAbSClcnxKAGw=
-github.com/garcios/asset-trak-portfolio/currency-service v0.0.0-20250202033721-7e33460cfe2d h1:DZj5yhSG2bk+upgzx7/ptz9ipyc55OPn/1ULm8PXZMM=
-github.com/garcios/asset-trak-portfolio/currency-service v0.0.0-20250202033721-7e33460cfe2d/go.mod h1:RgLPBRikAQ8yRPsh72nodsoXDO8D6M1mBfgrIovzTM0=
+github.com/garcios/asset-trak-portfolio/currency-service v0.0.0-20250220073347-2ce3c59d9302 h1:2KU8OIyUgZrg2dYY8n7fxOW1kemrrDBu7nxjCN7wOao=
+github.com/garcios/asset-trak-portfolio/currency-service v0.0.0-20250220073347-2ce3c59d9302/go.mod h1:yXLfx8is7Va4873S7lSMmlwpreLZ0xf949PwNQqeQjQ=
 github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250219102033-647378d197c2 h1:hVaEFIDds5oj98Tu9T3m7xE3LBNb9LaPl1twRV0gMZ0=
 github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250219102033-647378d197c2/go.mod h1:vpDoVqiZepkGkeOWFhQAA0R+464TC0kU4kj9mc49nL0=
 github.com/getkin/kin-openapi v0.13.0/go.mod h1:WGRs2ZMM1Q8LR1QBEwUxC6RJEfaBcD0s+pcEVXFuAjw=
