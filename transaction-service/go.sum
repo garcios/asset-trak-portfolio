@@ -145,8 +145,8 @@ github.com/fsnotify/fsnotify v1.6.0 h1:n+5WquG0fcWoWp6xPWfHdbskMCQaFnG6PfBrh1Ky4
 github.com/fsnotify/fsnotify v1.6.0/go.mod h1:sl3t1tCWJFWoRz9R8WJCbQihKKwmorjAbSClcnxKAGw=
 github.com/garcios/asset-trak-portfolio/currency-service v0.0.0-20250202033721-7e33460cfe2d h1:DZj5yhSG2bk+upgzx7/ptz9ipyc55OPn/1ULm8PXZMM=
 github.com/garcios/asset-trak-portfolio/currency-service v0.0.0-20250202033721-7e33460cfe2d/go.mod h1:RgLPBRikAQ8yRPsh72nodsoXDO8D6M1mBfgrIovzTM0=
-github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250208054937-2e9fc7410cd9 h1:UDAWUb5hoQqPAft8OZxu3GF6VfKo/jRk1cN5UWMXqmM=
-github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250208054937-2e9fc7410cd9/go.mod h1:4xmAX1ph0mWdP7NEUzHBdEO3xLQlWrlWyuTB1DYW7us=
+github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250219102033-647378d197c2 h1:hVaEFIDds5oj98Tu9T3m7xE3LBNb9LaPl1twRV0gMZ0=
+github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250219102033-647378d197c2/go.mod h1:vpDoVqiZepkGkeOWFhQAA0R+464TC0kU4kj9mc49nL0=
 github.com/getkin/kin-openapi v0.13.0/go.mod h1:WGRs2ZMM1Q8LR1QBEwUxC6RJEfaBcD0s+pcEVXFuAjw=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
 github.com/gliderlabs/ssh v0.2.2 h1:6zsha5zo/TWhRhwqCD3+EarCAgZ2yN28ipRnGPnwkI0=

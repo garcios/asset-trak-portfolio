@@ -5,7 +5,7 @@ go 1.22.2
 require (
 	github.com/Thiht/transactor v1.1.0
 	github.com/garcios/asset-trak-portfolio/currency-service v0.0.0-20250202033721-7e33460cfe2d
-	github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250208054937-2e9fc7410cd9
+	github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250219102033-647378d197c2
 	github.com/go-micro/plugins/v4/client/grpc v1.2.1
 	github.com/go-micro/plugins/v4/registry/etcd v1.2.0
 	github.com/google/uuid v1.6.0
