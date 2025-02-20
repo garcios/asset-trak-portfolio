@@ -15,8 +15,11 @@ ingest_asset_prices:
 run:
 	DBUSER=root DBPASS=Pass123 go run cmd/main.go
 
+proto:
+	protoc --proto_path=. --micro_out=. --go_out=. proto/asset_price.proto
+
 docker:
 	podman build -t asset-price-service:1.0 .
 
-.PHONY: init tidy ingest_asset_prices run_server truncate docker
+.PHONY: init tidy ingest_asset_prices run_server truncate proto docker
 
