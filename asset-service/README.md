@@ -1,5 +1,5 @@
-# Company Information Service
-This service maintains and monitors key company information, including:
+# Asset Service
+This service maintains and monitors key asset information, including:
 - Valuation - Current market worth and financial metrics
 - Future Growth - Projected performance and industry trends
 - Past Performance - Historical financial and operational results

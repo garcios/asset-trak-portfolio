@@ -1,4 +1,4 @@
-module github.com/garcios/asset-trak-portfolio/company-info-service
+module github.com/garcios/asset-trak-portfolio/asset-service
 
 go 1.22.11
 
