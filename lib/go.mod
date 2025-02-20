@@ -2,6 +2,8 @@ module github.com/garcios/asset-trak-portfolio/lib
 
 go 1.22.2
 
+toolchain go1.22.11
+
 require (
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/xuri/excelize/v2 v2.9.0
