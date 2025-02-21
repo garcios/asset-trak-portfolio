@@ -77,7 +77,7 @@ C4Container
     }
 
     Container_Boundary(external_services, "External Services Layer") {
-        Container_Ext(external_api_openai, "Open API LLM", "REST API", "Third-party service for AI generated content")
+        Container_Ext(external_api_openai, "OpenAI LLM", "REST API", "Third-party service for AI generated content")
         Container_Ext(external_api_finance, "Financial API", "REST API", "Third-party service for financial data")
     }
 
