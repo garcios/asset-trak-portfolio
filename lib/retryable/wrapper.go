@@ -24,8 +24,8 @@ func CreateRetryableClient(
 	customRetryWrapper := func(c client.Client) client.Client {
 		return &RetryableClient{
 			Client:     c,
-			MaxRetries: 3,
-			RetryDelay: 1 * time.Second,
+			MaxRetries: retryOpts.MaxRetries,
+			RetryDelay: retryOpts.RetryDelay,
 		}
 	}
 
