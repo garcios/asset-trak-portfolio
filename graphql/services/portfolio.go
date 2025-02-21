@@ -5,8 +5,6 @@ import (
 	"fmt"
 	lib "github.com/garcios/asset-trak-portfolio/lib/retryable"
 	pb "github.com/garcios/asset-trak-portfolio/portfolio-service/proto"
-	"go-micro.dev/v4"
-	"go-micro.dev/v4/client"
 	"time"
 )
 
@@ -19,19 +17,12 @@ type PortfolioService struct {
 }
 
 func NewPortfolioService() IPortfolioService {
-	// Define a custom client wrapper to leverage retry on error
-	customRetryWrapper := func(c client.Client) client.Client {
-		return &lib.RetryableClient{
-			Client:     c,
-			MaxRetries: 3,
-			RetryDelay: 1 * time.Second,
-		}
-	}
-
-	serviceClient := micro.NewService(
-		micro.Name("portfolio-service.client"),
-		micro.WrapClient(customRetryWrapper),
+	serviceClient := lib.CreateRetryableClient(
+		"portfolio-service.client",
+		lib.WithMaxRetries(3),
+		lib.WithRetryDelay(1*time.Second),
 	)
+
 	serviceClient.Init()
 
 	return &PortfolioService{

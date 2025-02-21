@@ -6,6 +6,7 @@ toolchain go1.22.11
 
 replace (
 	github.com/garcios/asset-trak-portfolio/portfolio-service => /Users/oscargarcia/workspace/asset-trak-portfolio/portfolio-service
+	github.com/garcios/asset-trak-portfolio/lib => /Users/oscargarcia/workspace/asset-trak-portfolio/lib
 )
 
 require (

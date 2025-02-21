@@ -47,9 +47,9 @@ go get -v github.com/garcios/asset-trak-portfolio/portfolio-service@main
 go get -v github.com/garcios/asset-trak-portfolio/currency-service@main
 ```
 
-## How to test transaction service
+## How to test portfolio service
 ```shell
-go run transaction-client/main.go
+go run portfolio-client/main.go
 ```
 
 

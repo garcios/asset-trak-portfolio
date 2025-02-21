@@ -3,8 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
+	lib "github.com/garcios/asset-trak-portfolio/lib/retryable"
 	pb "github.com/garcios/asset-trak-portfolio/portfolio-service/proto"
-	"go-micro.dev/v4"
+	"time"
 )
 
 const (
@@ -12,11 +13,15 @@ const (
 )
 
 func main() {
-	// Create a new service
-	portfolioClient := micro.NewService(micro.Name("transaction-client"))
+	// Create a new client service
+	portfolioClient := lib.CreateRetryableClient(
+		"portfolio-client",
+		lib.WithMaxRetries(3),             // optional
+		lib.WithRetryDelay(2*time.Second), // optional
+	)
 	portfolioClient.Init()
 
-	transactionSrv := pb.NewTransactionService(ServiceName, portfolioClient.Client())
+	transactionSrv := pb.NewPortfolioService(ServiceName, portfolioClient.Client())
 
 	req := &pb.HoldingsRequest{
 		AccountId: "eb08df3c-958d-4ae8-b3ae-41ec04418786",

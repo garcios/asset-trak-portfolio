@@ -4,8 +4,11 @@ go 1.22.11
 
 replace github.com/garcios/asset-trak-portfolio/portfolio-service => /Users/oscargarcia/workspace/asset-trak-portfolio/portfolio-service
 
+replace github.com/garcios/asset-trak-portfolio/lib => /Users/oscargarcia/workspace/asset-trak-portfolio/lib
+
 require (
-	github.com/garcios/asset-trak-portfolio/currency-service v0.0.0-20250220073347-2ce3c59d9302
+	github.com/garcios/asset-trak-portfolio/currency-service v0.0.0-20250220104703-94ec53071ea7
+	github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250219102033-647378d197c2
 	github.com/garcios/asset-trak-portfolio/portfolio-service v0.0.0-20250214102920-035938d3d46b
 	go-micro.dev/v4 v4.11.0
 )

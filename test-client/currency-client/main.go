@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	pb "github.com/garcios/asset-trak-portfolio/currency-service/proto"
-	"go-micro.dev/v4"
+	lib "github.com/garcios/asset-trak-portfolio/lib/retryable"
 )
 
 const (
@@ -12,8 +12,11 @@ const (
 )
 
 func main() {
-	// Create a new service
-	currencyClient := micro.NewService(micro.Name("currency-client"))
+	// Create a new client service
+	currencyClient := lib.CreateRetryableClient(
+		"currency-client",
+	)
+
 	currencyClient.Init()
 
 	currencySrv := pb.NewCurrencyService(ServiceName, currencyClient.Client())
