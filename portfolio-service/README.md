@@ -1,5 +1,5 @@
-# Transaction service
-The Transaction Service is a vital module in `Investment Portfolio Navigator` application that handles the recording, 
+# Portfolio service
+The Portfolio Service is a vital module in `Investment Portfolio Navigator` application that handles the recording, 
 processing, and reconciliation of all financial transactions related to buying, selling, and managing assets. 
 It ensures accurate tracking of investment activities and maintains a reliable transaction history.
 
@@ -13,7 +13,7 @@ __Key Features & Responsibilities__:
 - Portfolio Impact Analysis: Updates portfolio holdings, cash balances, and valuations after each transaction.
 
 
-By incorporating the Transaction Service, the `Investment Portfolio Navigator`  application ensures accurate, transparent, 
+By incorporating the Portfolio Service, the `Investment Portfolio Navigator`  application ensures accurate, transparent, 
 and efficient handling of investment activities, helping users maintain precise financial records and optimize their 
 portfolio management strategies.
 
