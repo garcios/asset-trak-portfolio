@@ -5,7 +5,7 @@ import (
 	"github.com/garcios/asset-trak-portfolio/graphql/generated"
 	"github.com/garcios/asset-trak-portfolio/graphql/middlewares"
 	"github.com/garcios/asset-trak-portfolio/graphql/models"
-	pb "github.com/garcios/asset-trak-portfolio/transaction-service/proto"
+	pb "github.com/garcios/asset-trak-portfolio/portfolio-service/proto"
 )
 
 type queryResolver struct{ *Resolver }
@@ -16,7 +16,7 @@ func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 // GetHoldingsSummary is the resolver for the getBalanceSummary field.
 func (r *queryResolver) GetHoldingsSummary(ctx context.Context, accountID string) ([]*models.Investment, error) {
 	svcs := middlewares.GetServices(ctx)
-	resp, err := svcs.TransactionService.GetHoldingsSummary(ctx, accountID)
+	resp, err := svcs.PortfolioService.GetHoldingsSummary(ctx, accountID)
 	if err != nil {
 		return nil, err
 	}

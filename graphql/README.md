@@ -29,7 +29,7 @@ go get github.com/joho/godotenv
 
 
 ```shell
-go get -v github.com/garcios/asset-trak-portfolio/transaction-service@main
+go get -v github.com/garcios/asset-trak-portfolio/portfolio-service@main
 go get -v github.com/garcios/asset-trak-portfolio/lib@main
 ```
 

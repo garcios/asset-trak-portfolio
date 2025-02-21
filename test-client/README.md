@@ -43,7 +43,7 @@ __Benefits of a Test Client__:
 
 ## Dependencies
 ```shell
-go get -v github.com/garcios/asset-trak-portfolio/transaction-service@main
+go get -v github.com/garcios/asset-trak-portfolio/portfolio-service@main
 go get -v github.com/garcios/asset-trak-portfolio/currency-service@main
 ```
 

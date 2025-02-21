@@ -1,5 +1,5 @@
 package services
 
 type Services struct {
-	TransactionService ITransactionService
+	PortfolioService IPortfolioService
 }

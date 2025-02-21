@@ -1,0 +1,8 @@
+[file_info]
+path = "data/prices.xlsx"
+skip_rows = 1
+
+
+[asset]
+symbols = ["IVV","NDQ","STW","WTC","AMZN","GOOGL","GOOG","MSFT","AVGO","TSM","NVDA","AMD","MA","UBER","FTNT","AMAT"]
+

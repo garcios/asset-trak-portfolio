@@ -15,7 +15,7 @@ type contextKey struct {
 func Services() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		svcs := services.Services{
-			TransactionService: services.NewTransactionService(),
+			PortfolioService: services.NewPortfolioService(),
 		}
 
 		// Enhance the context with the services

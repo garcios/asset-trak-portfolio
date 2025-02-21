@@ -64,10 +64,11 @@ C4Container
     }
 
     Container_Boundary(services, "gRPC Services Layer") {
-        Container(transactionSvc, "Transaction Service", "Handles transactions")
+        Container(portfolioSvc, "Portfolio Service", "Handles portfolio management")
         Container(assetSvc, "Asset Service", "Handles asset information")
         Container(currencySvc, "Currency Service", "Handles currency rates")
         Container(assetPriceSvc, "Asset Price Service", "Handles asset prices")
+        Container(ingestionSvc, "Ingestion Service", "Handles market data ingestion")
     }
 
     Container_Boundary(database, "Database Layer") {
@@ -82,17 +83,19 @@ C4Container
 
     Rel(web_ui, graphql_gateway, "Sends GraphQL Request")
     Rel(graphql_gateway, keycloak, "Verifies JWT")
-    Rel(graphql_gateway, transactionSvc, "Makes gRPC call")
+    Rel(graphql_gateway, portfolioSvc, "Makes gRPC call")
     Rel(graphql_gateway, assetSvc, "Makes gRPC call")
-    Rel(transactionSvc, assetSvc, "Inter-service communication via gRPC")
-    Rel(transactionSvc, assetPriceSvc, "Inter-service communication via gRPC")
-    Rel(transactionSvc, currencySvc, "Inter-service communication via gRPC")
-    Rel(transactionSvc, mysql, "Reads/Writes data")
-    Rel(transactionSvc, redis, "Reads cached data")
+    Rel(portfolioSvc, assetSvc, "Inter-service communication via gRPC")
+    Rel(portfolioSvc, assetPriceSvc, "Inter-service communication via gRPC")
+    Rel(portfolioSvc, currencySvc, "Inter-service communication via gRPC")
+    Rel(portfolioSvc, mysql, "Reads/Writes data")
+    Rel(portfolioSvc, redis, "Reads cached data")
+    Rel(ingestionSvc, mysql, "Writes data")
+    Rel(ingestionSvc, redis, "Write cached data")
     Rel(assetSvc, mysql, "Reads/Writes data")
     Rel(assetSvc, redis, "Caches data")
-    Rel(assetPriceSvc, external_api_finance, "Calls External API for financial data", "REST API")
-    Rel(currencySvc, external_api_finance, "Calls External API for financial data", "REST API")
+    Rel(ingestionSvc, external_api_finance, "Calls External API for financial data", "REST API")
+    Rel(ingestionSvc, external_api_finance, "Calls External API for financial data", "REST API")
     Rel(assetSvc, external_api_openai, "Calls External API for AI generated content", "REST API")
 ```
 

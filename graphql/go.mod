@@ -4,11 +4,15 @@ go 1.22.5
 
 toolchain go1.22.11
 
+replace (
+	github.com/garcios/asset-trak-portfolio/portfolio-service => /Users/oscargarcia/workspace/asset-trak-portfolio/portfolio-service
+)
+
 require (
 	github.com/99designs/gqlgen v0.17.64
 	github.com/coreos/go-oidc v2.3.0+incompatible
 	github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250220083717-194a5b98632c
-	github.com/garcios/asset-trak-portfolio/transaction-service v0.0.0-20250220074743-76b245d49aa2
+	github.com/garcios/asset-trak-portfolio/portfolio-service v0.0.0-20250220074743-76b245d49aa2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/joho/godotenv v1.5.1
 	github.com/vektah/gqlparser/v2 v2.5.22

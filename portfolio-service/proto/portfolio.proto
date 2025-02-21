@@ -1,0 +1,105 @@
+syntax = "proto3";
+
+option go_package = "./proto";
+
+service Portfolio {
+  // GetHoldings fetches the detailed holdings information for a user or account.
+  // This may include assets, quantities, and related metadata.
+  rpc GetHoldings(HoldingsRequest) returns (HoldingsResponse);
+
+  // GetSummaryTotals provides a summarized view of the totals for a user or account.
+  // This typically includes aggregated financial data such as total value, profits, or losses.
+  rpc GetSummaryTotals(SummaryTotalsRequest) returns (SummaryTotalsResponse);
+}
+
+// Represents the request to retrieve holdings for a specific account.
+message HoldingsRequest {
+  // The unique identifier of the account for which the holdings are to be retrieved.
+  string account_id = 1;
+}
+
+// Holds the response for the holdings-related request.
+message HoldingsResponse {
+  // A list of investments held in the account.
+  repeated Investment investments= 3;
+}
+
+// Represents an individual investment within a portfolio or account.
+message Investment {
+   // The symbol of the asset (e.g., "AAPL" for Apple stock).
+   string asset_symbol=1;
+
+  // The full name of the asset (e.g., "Apple Inc.").
+   string asset_name=2;
+
+  // The market or exchange code where the asset is traded (e.g., "NASDAQ").
+  string market_code=3;
+
+  // The current price of the asset.
+  Money price=4;
+
+  // The quantity of the asset held in the portfolio.
+  double  quantity=5;
+
+  // The total value of the investment, calculated as price * quantity.
+  Money value=6;
+
+  // The return on the investment due to price appreciation or depreciation.
+  InvestmentReturn capital_return = 7;
+
+  // The return on the investment from dividends paid by the asset.
+  InvestmentReturn dividend_return = 8;
+
+  // The return on the investment due to currency fluctuations (if applicable).
+  InvestmentReturn currency_return = 9;
+
+  // The total return on the investment, combining capital, dividend, and currency returns.
+  InvestmentReturn total_return = 10;
+}
+
+// Represents an amount of money with its associated currency.
+message Money {
+  // The monetary amount (e.g., 100.0).
+  double amount=1;
+
+  // The ISO currency code (e.g., "USD" for United States Dollar).
+  string currency_code=2;
+}
+
+// Represents the return on an investment in terms of monetary value
+// and the percentage of the original investment value.
+message InvestmentReturn {
+  // The monetary return amount (e.g., 50.0 for $50).
+  double amount=1;
+
+  // The ISO currency code (e.g., "USD").
+  string currency_code=2;
+
+  // The return expressed as a percentage of the original investment value.
+  double return_percentage=3;
+}
+
+// Represents the request to retrieve summary totals for a specific account.
+message SummaryTotalsRequest {
+  // The unique identifier of the account for which the summary totals are requested.
+  string account_id = 1;
+}
+
+// Holds the response for summary totals, including the overall portfolio value
+// and different types of returns.
+message SummaryTotalsResponse{
+  // The total value of the portfolio.
+  Money portfolio_value = 1;
+
+  // The total capital return across all investments in the portfolio.
+  InvestmentReturn capital_return = 2;
+
+  // The total dividend return across all investments in the portfolio.
+  InvestmentReturn dividend_return = 3;
+
+  // The total currency return due to exchange rate fluctuations.
+  InvestmentReturn currency_return = 4;
+
+  // The overall total return, combining capital, dividend, and currency returns.
+  InvestmentReturn total_return = 5;
+}

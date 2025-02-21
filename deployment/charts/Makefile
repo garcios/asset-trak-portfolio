@@ -18,13 +18,13 @@ aps-rm:
 	helm uninstall  asset-price-service
 
 ts-i:
-	helm upgrade --install transaction-service  ./transaction-service
+	helm upgrade --install portfolio-service  ./portfolio-service
 
 ts-dry:
-	helm upgrade --install transaction-service  ./transaction-service --dry-run
+	helm upgrade --install portfolio-service  ./portfolio-service --dry-run
 
 ts-rm:
-	helm uninstall  transaction-service
+	helm uninstall  portfolio-service
 
 .PHONY: cs-i cs-dry cs-rm  aps-i aps-dry aps-rm  ts-i ts-dry ts-rm
 
