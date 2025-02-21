@@ -77,8 +77,8 @@ C4Container
     }
 
     Container_Boundary(external_services, "External Services Layer") {
-        Container_Ext(external_api_finance, "Financial API", "REST API", "Third-party service for financial data")
         Container_Ext(external_api_openai, "Open API LLM", "REST API", "Third-party service for AI generated content")
+        Container_Ext(external_api_finance, "Financial API", "REST API", "Third-party service for financial data")
     }
 
     Rel(web_ui, graphql_gateway, "Sends GraphQL Request")
@@ -90,13 +90,14 @@ C4Container
     Rel(portfolioSvc, currencySvc, "Inter-service communication via gRPC")
     Rel(portfolioSvc, mysql, "Reads/Writes data")
     Rel(portfolioSvc, redis, "Reads cached data")
+    Rel(assetPriceSvc, mysql, "Reads/Writes data")
+    Rel(assetPriceSvc, redis, "Reads cached data")
     Rel(ingestionSvc, mysql, "Writes data")
     Rel(ingestionSvc, redis, "Write cached data")
     Rel(assetSvc, mysql, "Reads/Writes data")
     Rel(assetSvc, redis, "Caches data")
-    Rel(ingestionSvc, external_api_finance, "Calls External API for financial data", "REST API")
-    Rel(ingestionSvc, external_api_finance, "Calls External API for financial data", "REST API")
     Rel(assetSvc, external_api_openai, "Calls External API for AI generated content", "REST API")
+    Rel(ingestionSvc, external_api_finance, "Calls External API for market data", "REST API")
 ```
 
 __Web Interface__: This is the entry point in the flowchart. It is a user interface, typically a website or a web 
