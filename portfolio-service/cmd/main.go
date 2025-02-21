@@ -51,14 +51,14 @@ func main() {
 	accountRepo := db.NewAccountRepository(conn)
 	assetRepo := db.NewAssetRepository(conn)
 	transactionRepo := db.NewTransactionRepository(dbGetter)
-	balanceRepo := db.NewAssetBalanceRepository(dbGetter)
+	portfolioRepo := db.NewAssetBalanceRepository(dbGetter)
 
 	assetIngestor := service.NewAssetIngestor(assetRepo)
 	transactionIngestor := service.NewTransactionIngestor(
 		transactionRepo,
 		accountRepo,
 		assetRepo,
-		balanceRepo,
+		portfolioRepo,
 		transactor,
 	)
 
@@ -102,7 +102,7 @@ func main() {
 
 	currencyService := pbc.NewCurrencyService(currencyServiceName, transactionSrv.Client())
 
-	h := handler.New(currencyService, balanceRepo)
+	h := handler.New(currencyService, portfolioRepo, transactionRepo)
 
 	err = pb.RegisterPortfolioHandler(transactionSrv.Server(), h)
 	if err != nil {

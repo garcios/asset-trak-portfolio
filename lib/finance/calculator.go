@@ -1,11 +1,14 @@
 package finance
 
+import "fmt"
+
 // Trade represents a stock purchase transaction
 type Trade struct {
-	Ticker     string  // Stock symbol (e.g., AMZN, GOOGL)
+	AssetID    string  // Asset ID
 	Quantity   int     // Number of shares bought
 	Price      float64 // Price per share
 	Commission float64 // Trade commission
+	TradeType  string  // Trade type e.g. BUY or SELL
 }
 
 // CalculateAveragePrice computes the weighted average cost per share
@@ -14,8 +17,30 @@ func CalculateAveragePrice(trades []*Trade) float64 {
 	var totalShares int
 
 	for _, trade := range trades {
-		totalCost += float64(trade.Quantity)*trade.Price + trade.Commission
-		totalShares += trade.Quantity
+		// Handle BUY transactions
+		if trade.Quantity > 0 {
+			totalCost += float64(trade.Quantity)*trade.Price + trade.Commission
+			totalShares += trade.Quantity
+		}
+
+		// Handle SELL transactions
+		if trade.Quantity < 0 {
+			// Ensure we only offset the cost for the shares being sold (reducing total cost proportionally)
+			sellQuantity := -trade.Quantity // Convert to positive quantity for logic
+			if sellQuantity > totalShares {
+				// Avoid selling more shares than owned
+				fmt.Println("SELL transaction exceeds currently owned shares")
+				return 0
+			}
+
+			// Reduce the total cost proportionally to the shares being sold
+			averagePricePerShare := totalCost / float64(totalShares)
+			totalCost -= float64(sellQuantity) * averagePricePerShare
+
+			// Decrease the total shares owned
+			totalShares -= sellQuantity
+		}
+
 	}
 
 	if totalShares == 0 {
@@ -32,11 +57,14 @@ func CalculateProfitLoss(totalShares int, totalCost, currentPrice float64) float
 }
 
 // CalculateTotalCost computes the total cost of all trades including commissions
-func CalculateTotalCost(trades []Trade) float64 {
+func CalculateTotalCost(trades []*Trade) float64 {
 	var totalCost float64
 
 	for _, trade := range trades {
-		totalCost += float64(trade.Quantity)*trade.Price + trade.Commission
+		// Ignore SELL transactions (Quantity < 0)
+		if trade.Quantity > 0 {
+			totalCost += float64(trade.Quantity)*trade.Price + trade.Commission
+		}
 	}
 
 	return totalCost
@@ -82,10 +110,10 @@ func CalculatePercentageReturn(totalShares int, totalCost, currentPrice float64)
 }
 
 // CalculateTotalValue computes the current total portfolio value based on market prices
-func CalculateTotalValue(trades []Trade, stockPrices map[string]float64) float64 {
+func CalculateTotalValue(trades []*Trade, stockPrices map[string]float64) float64 {
 	var totalValue float64
 	for _, trade := range trades {
-		if currentPrice, exists := stockPrices[trade.Ticker]; exists {
+		if currentPrice, exists := stockPrices[trade.AssetID]; exists {
 			totalValue += float64(trade.Quantity) * currentPrice
 		}
 	}
@@ -93,13 +121,13 @@ func CalculateTotalValue(trades []Trade, stockPrices map[string]float64) float64
 }
 
 // CalculatePortfolioReturn computes the total return percentage of the portfolio
-func CalculatePortfolioReturn(trades []Trade, stockPrices map[string]float64) float64 {
-	totalCost := CalculateTotalCost(trades)
-	totalValue := CalculateTotalValue(trades, stockPrices)
-
+func CalculatePortfolioReturn(totalCost, totalValue float64) (float64, float64) {
 	if totalCost == 0 {
-		return 0 // Avoid division by zero
+		return 0, 0 // Avoid division by zero
 	}
 
-	return ((totalValue - totalCost) / totalCost) * 100
+	valueChange := totalValue - totalCost
+	pctChange := ((valueChange) / totalCost) * 100
+
+	return valueChange, pctChange
 }

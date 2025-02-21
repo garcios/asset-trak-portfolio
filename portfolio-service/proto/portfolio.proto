@@ -36,25 +36,31 @@ message Investment {
   string market_code=3;
 
   // The current price of the asset.
-  Money price=4;
+  Money current_price=4;
+
+  // The average price of the asset.
+  Money average_price=5;
 
   // The quantity of the asset held in the portfolio.
-  double  quantity=5;
+  double  quantity=6;
 
   // The total value of the investment, calculated as price * quantity.
-  Money value=6;
+  Money total_value=7;
+
+  // The total cost of all trades including commissions.
+  Money total_cost=8;
 
   // The return on the investment due to price appreciation or depreciation.
-  InvestmentReturn capital_return = 7;
+  InvestmentReturn capital_return = 9;
 
   // The return on the investment from dividends paid by the asset.
-  InvestmentReturn dividend_return = 8;
+  InvestmentReturn dividend_return = 10;
 
   // The return on the investment due to currency fluctuations (if applicable).
-  InvestmentReturn currency_return = 9;
+  InvestmentReturn currency_return = 11;
 
   // The total return on the investment, combining capital, dividend, and currency returns.
-  InvestmentReturn total_return = 10;
+  InvestmentReturn total_return = 12;
 }
 
 // Represents an amount of money with its associated currency.

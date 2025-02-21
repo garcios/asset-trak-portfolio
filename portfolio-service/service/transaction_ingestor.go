@@ -181,7 +181,7 @@ func (ingestor *TransactionIngestor) mapColumnsToTransaction(row []string) (*mod
 		TransactionType: getStringValue(row[4]),
 		TransactionDate: transactionDate,
 		Quantity:        quantity,
-		Price:           price,
+		TradePrice:      price,
 		CurrencyCode:    row[7],
 	}, nil
 }

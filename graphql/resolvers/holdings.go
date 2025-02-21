@@ -28,9 +28,9 @@ func (r *queryResolver) GetHoldingsSummary(ctx context.Context, accountID string
 			AssetSymbol: item.AssetSymbol,
 			AssetName:   item.AssetName,
 			MarketCode:  item.MarketCode,
-			Price:       toMoney(item.Price),
+			Price:       toMoney(item.CurrentPrice),
 			Quantity:    item.Quantity,
-			Value:       toMoney(item.Value),
+			Value:       toMoney(item.TotalValue),
 			CapitalGain: &models.MoneyWithPercentage{
 				Amount:       item.CapitalReturn.Amount,
 				CurrencyCode: item.CapitalReturn.CurrencyCode,

@@ -2,6 +2,10 @@ module github.com/garcios/asset-trak-portfolio/portfolio-service
 
 go 1.22.2
 
+replace (
+	github.com/garcios/asset-trak-portfolio/lib => /Users/oscargarcia/workspace/asset-trak-portfolio/lib
+)
+
 require (
 	github.com/Thiht/transactor v1.1.0
 	github.com/garcios/asset-trak-portfolio/currency-service v0.0.0-20250220073347-2ce3c59d9302

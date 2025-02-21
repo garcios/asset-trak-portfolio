@@ -9,6 +9,7 @@ type Transaction struct {
 	TransactionType string
 	TransactionDate *time.Time
 	Quantity        float64
-	Price           float64
+	TradePrice      float64
+	TradeCommission float64
 	CurrencyCode    string
 }

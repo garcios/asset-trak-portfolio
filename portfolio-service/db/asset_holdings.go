@@ -82,7 +82,7 @@ func (r *AssetBalanceRepository) GetHoldings(
 	ctx context.Context,
 	accountID string,
 ) ([]*model.BalanceSummary, error) {
-	query := `SELECT a.symbol, a.name, b.quantity, p.price, p.currency_code, a.market_code
+	query := `SELECT a.symbol, a.id, a.name, b.quantity, p.price, p.currency_code, a.market_code
               FROM asset_balance b JOIN asset a ON b.asset_id = a.id
               LEFT JOIN (
                  SELECT asset_id, price, trade_date, currency_code,
@@ -114,6 +114,7 @@ func (r *AssetBalanceRepository) GetHoldings(
 		var summaryItem model.BalanceSummary
 		if err := rows.Scan(
 			&summaryItem.AssetSymbol,
+			&summaryItem.AssetID,
 			&summaryItem.AssetName,
 			&summaryItem.Quantity,
 			&summaryItem.Price,
