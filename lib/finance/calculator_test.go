@@ -172,3 +172,111 @@ func TestConvertCurrency(t *testing.T) {
 		})
 	}
 }
+
+func TestCalculateTotalCurrencyGainPercentage(t *testing.T) {
+	tests := []struct {
+		name        string
+		investments []*Investment
+		expected    float64
+	}{
+		{
+			name: "Positive and negative gains cancel out",
+			investments: []*Investment{
+				{AssetID: "A", TotalValue: 100, CurrencyGain: 10},  // 10% gain
+				{AssetID: "B", TotalValue: 200, CurrencyGain: -10}, // -5% loss
+			},
+			expected: 0.0, // Gains cancel each other out
+		},
+		{
+			name: "All positive gains",
+			investments: []*Investment{
+				{AssetID: "A", TotalValue: 150, CurrencyGain: 15}, // 10% gain
+				{AssetID: "B", TotalValue: 200, CurrencyGain: 20}, // 10% gain
+			},
+			expected: 10.0, // Overall gain is 10%
+		},
+		{
+			name: "All negative gains",
+			investments: []*Investment{
+				{AssetID: "A", TotalValue: 100, CurrencyGain: -10}, // -10% loss
+				{AssetID: "B", TotalValue: 300, CurrencyGain: -30}, // -10% loss
+			},
+			expected: -10.0, // Overall loss is -10%
+		},
+		{
+			name: "Mixed gains and weights",
+			investments: []*Investment{
+				{AssetID: "A", TotalValue: 50, CurrencyGain: 5},    // 10% gain
+				{AssetID: "B", TotalValue: 150, CurrencyGain: -15}, // -10% loss
+			},
+			expected: -5.0, // Weighted total loss is -5%
+		},
+		{
+			name: "Zero investment value",
+			investments: []*Investment{
+				{AssetID: "A", TotalValue: 0, CurrencyGain: 0},
+			},
+			expected: 0.0, // Zero total value results in 0% gain
+		},
+		{
+			name:        "Empty input",
+			investments: []*Investment{},
+			expected:    0.0, // No investments, no gain
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			result := CalculateTotalCurrencyGainPercentage(test.investments)
+			if result != test.expected {
+				t.Errorf("got %.2f, want %.2f", result, test.expected)
+			}
+		})
+	}
+}
+
+func TestCalculateTotalDividendGainPercentage(t *testing.T) {
+	tests := []struct {
+		name        string
+		investments []*Investment
+		expected    float64
+	}{
+		{
+			name: "Multiple dividends",
+			investments: []*Investment{
+				{AssetID: "A", TotalValue: 100, Dividend: 10}, // 10% gain
+				{AssetID: "B", TotalValue: 200, Dividend: 20}, // 10% gain
+			},
+			expected: 10.0, // Weighted average gain
+		},
+		{
+			name: "Zero total value",
+			investments: []*Investment{
+				{AssetID: "A", TotalValue: 0, Dividend: 10}, // Value is 0
+			},
+			expected: 0.0, // Division by zero avoided
+		},
+		{
+			name:        "Empty investments array",
+			investments: []*Investment{},
+			expected:    0.0, // No investments implies no dividend
+		},
+		{
+			name: "All zero capital gains",
+			investments: []*Investment{
+				{AssetID: "A", TotalValue: 100, Dividend: 0}, // No dividend
+				{AssetID: "B", TotalValue: 200, Dividend: 0}, // No dividend
+			},
+			expected: 0.0, // Zero gain percentage
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			result := CalculateTotalDividendGainPercentage(test.investments)
+			if result != test.expected {
+				t.Errorf("Test %q failed: got %.2f, expected %.2f", test.name, result, test.expected)
+			}
+		})
+	}
+}

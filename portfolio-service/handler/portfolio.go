@@ -64,12 +64,21 @@ func (h *Transaction) GetSummaryTotals(
 	totalDividendReturnAmt := 0.0
 	totalCurrencyReturnAmt := 0.0
 
+	financeInvestments := make([]*finance.Investment, 0)
+
 	for _, investment := range holdingsRes.GetInvestments() {
 		portfolioValue += investment.GetTotalValue().GetAmount()
 		totalCapitalReturnAmt += investment.GetCapitalReturn().GetAmount()
 		totalDividendReturnAmt += investment.GetDividendReturn().GetAmount()
 		totalCurrencyReturnAmt += investment.GetCurrencyReturn().GetAmount()
 		totalCost += investment.GetTotalCost().GetAmount()
+		financeInvestments = append(financeInvestments, &finance.Investment{
+			AssetID:      investment.AssetSymbol,
+			TotalValue:   investment.GetTotalValue().GetAmount(),
+			CapitalGain:  investment.GetCapitalReturn().GetAmount(),
+			CurrencyGain: investment.GetCurrencyReturn().GetAmount(),
+			Dividend:     investment.GetDividendReturn().GetAmount(),
+		})
 	}
 
 	res.PortfolioValue = &pb.Money{
@@ -84,23 +93,24 @@ func (h *Transaction) GetSummaryTotals(
 		ReturnPercentage: capitalReturnPct,
 	}
 
-	dividendReturnPct := 0.0
+	weightedDividendReturnPct := finance.CalculateTotalDividendGainPercentage(financeInvestments)
 	res.DividendReturn = &pb.InvestmentReturn{
-		Amount:       0,
-		CurrencyCode: targetCurrency,
+		Amount:           totalDividendReturnAmt,
+		CurrencyCode:     targetCurrency,
+		ReturnPercentage: weightedDividendReturnPct,
 	}
 
-	currencyReturnPct := 0.0
+	weightedCurrencyReturnPct := finance.CalculateTotalCurrencyGainPercentage(financeInvestments)
 	res.CurrencyReturn = &pb.InvestmentReturn{
-		Amount:           0,
+		Amount:           totalCurrencyReturnAmt,
 		CurrencyCode:     targetCurrency,
-		ReturnPercentage: 0,
+		ReturnPercentage: weightedCurrencyReturnPct,
 	}
 
 	res.TotalReturn = &pb.InvestmentReturn{
 		Amount:           totalCapitalReturnAmt + totalDividendReturnAmt + totalCurrencyReturnAmt,
 		CurrencyCode:     targetCurrency,
-		ReturnPercentage: capitalReturnPct + dividendReturnPct + currencyReturnPct,
+		ReturnPercentage: capitalReturnPct + weightedDividendReturnPct + weightedCurrencyReturnPct,
 	}
 
 	return nil

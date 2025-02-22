@@ -1,8 +1,11 @@
 package finance
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
-// Trade represents a stock purchase transaction
+// Trade represents a stock purchase transaction.
 type Trade struct {
 	AssetID      string  // Asset ID
 	Quantity     int     // Number of shares bought
@@ -12,6 +15,16 @@ type Trade struct {
 	CurrencyRate float64 // Exchange rate at transaction date
 }
 
+// Investment represents an investment holding.
+type Investment struct {
+	AssetID      string
+	TotalValue   float64
+	CapitalGain  float64
+	Dividend     float64
+	CurrencyGain float64
+}
+
+// Money represents a monetary value.
 type Money struct {
 	Amount       float64
 	CurrencyCode string
@@ -123,4 +136,51 @@ func ConvertCurrency(amount float64, rate float64) float64 {
 	}
 
 	return amount * rate
+}
+
+// CalculateTotalCurrencyGainPercentage calculates the total percentage currency gain for a slice of investments.
+func CalculateTotalCurrencyGainPercentage(investments []*Investment) float64 {
+	var totalValue float64 = 0
+	var totalCurrencyGain float64 = 0
+
+	// Iterate through each investment to calculate total value and total currency gain
+	for _, investment := range investments {
+		totalValue += investment.TotalValue
+		totalCurrencyGain += (investment.CurrencyGain / investment.TotalValue) * investment.TotalValue
+	}
+
+	// Avoid division by zero
+	if totalValue == 0 {
+		return 0
+	}
+
+	// Calculate total percentage of currency gain
+	totalPercentage := (totalCurrencyGain / totalValue) * 100
+
+	// Round to two decimal places
+	return math.Round(totalPercentage*100) / 100
+}
+
+// CalculateTotalDividendGainPercentage calculates the total return percentage for dividend gains
+// from an array of investments. The result is rounded to two decimal places.
+func CalculateTotalDividendGainPercentage(investments []*Investment) float64 {
+	var totalValue float64 = 0
+	var totalDividendGain float64 = 0
+
+	// Iterate through each investment to calculate total value and capital gains
+	for _, investment := range investments {
+		totalValue += investment.TotalValue
+		totalDividendGain += investment.Dividend
+	}
+
+	// Avoid division by zero
+	if totalValue == 0 {
+		return 0
+	}
+
+	// Calculate total return percentage for capital gains
+	totalPercentage := (totalDividendGain / totalValue) * 100
+
+	// Round to two decimal places
+	return math.Round(totalPercentage*100) / 100
 }
