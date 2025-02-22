@@ -7,11 +7,20 @@ import (
 	"fmt"
 	stdlibTransactor "github.com/Thiht/transactor/stdlib"
 	"github.com/garcios/asset-trak-portfolio/portfolio-service/model"
+	"strings"
 	"time"
 )
 
 type TransactionRepository struct {
 	dbGetter stdlibTransactor.DBGetter
+}
+
+type TransactionFilter struct {
+	AccountID        string
+	AssetID          string
+	StartDate        string
+	EndDate          string
+	transactionTypes []string
 }
 
 func NewTransactionRepository(dbGetter stdlibTransactor.DBGetter) *TransactionRepository {
@@ -37,7 +46,7 @@ func (r *TransactionRepository) AddTransaction(ctx context.Context, rec *model.T
 		rec.TransactionDate,
 		rec.Quantity,
 		rec.TradePrice,
-		rec.CurrencyCode,
+		rec.AssetPriceCurrencyCode,
 	)
 	if err != nil {
 		return fmt.Errorf("AddTransaction: %v", err)
@@ -57,27 +66,40 @@ func (r *TransactionRepository) Truncate(ctx context.Context) error {
 
 func (r *TransactionRepository) GetTransactions(
 	ctx context.Context,
-	accountID string,
-	assetID string,
-	startDate string,
-	endDate string,
+	filter TransactionFilter,
 ) ([]*model.Transaction, error) {
 	query := `SELECT id, account_id, asset_id, transaction_type, transaction_date, quantity, price, currency_code FROM transaction WHERE account_id = ?`
-	args := []interface{}{accountID}
+	args := []interface{}{filter.AccountID}
 
-	if assetID != "" {
+	if filter.AssetID != "" {
 		query += ` AND asset_id = ?`
-		args = append(args, assetID)
+		args = append(args, filter.AssetID)
 	}
 
-	if startDate != "" {
+	if filter.StartDate != "" {
 		query += ` AND transaction_date >= ?`
-		args = append(args, startDate)
+		args = append(args, filter.StartDate)
 	}
 
-	if endDate != "" {
+	if filter.EndDate != "" {
 		query += ` AND transaction_date <= ?`
-		args = append(args, endDate)
+		args = append(args, filter.EndDate)
+	}
+
+	if len(filter.transactionTypes) > 0 {
+		// Generate placeholders for the number of transaction types
+		placeholders := make([]string, len(filter.transactionTypes))
+		for i := range filter.transactionTypes {
+			placeholders[i] = "?"
+		}
+
+		// Join the placeholders with commas
+		query += ` AND transaction_type IN (` + strings.Join(placeholders, ",") + `)`
+
+		// Append all transaction type values to the args slice
+		for _, transactionType := range filter.transactionTypes {
+			args = append(args, transactionType)
+		}
 	}
 
 	query += ` ORDER BY transaction_date ASC`
@@ -112,7 +134,7 @@ func (r *TransactionRepository) GetTransactions(
 			&dateStr,
 			&transaction.Quantity,
 			&transaction.TradePrice,
-			&transaction.CurrencyCode,
+			&transaction.AssetPriceCurrencyCode,
 		); err != nil {
 			return nil, fmt.Errorf("GetTransactions: %v", err)
 		}

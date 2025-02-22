@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"github.com/garcios/asset-trak-portfolio/lib/finance"
+	"github.com/garcios/asset-trak-portfolio/portfolio-service/db"
 	"github.com/garcios/asset-trak-portfolio/portfolio-service/model"
 	"log"
 	"sort"
@@ -40,7 +41,7 @@ type PortfolioManager interface {
 }
 
 type TransactionManager interface {
-	GetTransactions(ctx context.Context, accountID string, assetID string, startDate string, endDate string) ([]*model.Transaction, error)
+	GetTransactions(ctx context.Context, filter db.TransactionFilter) ([]*model.Transaction, error)
 }
 
 func (h *Transaction) GetSummaryTotals(
@@ -82,23 +83,23 @@ func (h *Transaction) GetHoldings(
 	for _, s := range summaryItems {
 		totalValue := s.Quantity * s.Price
 		if s.CurrencyCode == foreignCurrency {
-			totalValue = totalValue * currencyRates.ExchangeRate
+			totalValue = finance.ConvertCurrency(totalValue, currencyRates.ExchangeRate)
 		}
 
-		txns, err := h.transactionManager.GetTransactions(
-			ctx,
-			req.GetAccountId(),
-			s.AssetID,
-			"",
-			"")
+		dbFilter := db.TransactionFilter{
+			AccountID: req.GetAccountId(),
+			AssetID:   s.AssetID,
+		}
+
+		txns, err := h.transactionManager.GetTransactions(ctx, dbFilter)
 
 		if err != nil {
 			return err
 		}
 
-		trades := toTrades(txns)
+		trades := toTrades(txns, currencyRates.ExchangeRate)
 
-		totalCost := h.computeTotalCost(trades)
+		totalCost := h.computeTotalCost(trades, targetCurrency)
 		capitalReturn := h.computeCapitalReturn(totalCost.Amount, totalValue)
 		dividendReturn := h.computeDividendReturn(trades)
 		currencyReturn := h.computeCurrencyReturn(trades)
@@ -112,7 +113,7 @@ func (h *Transaction) GetHoldings(
 				Amount:       s.Price,
 				CurrencyCode: s.CurrencyCode,
 			},
-			AveragePrice: h.computeAveragePrice(trades),
+			AveragePrice: h.computeAveragePrice(trades, targetCurrency),
 			TotalValue: &pb.Money{
 				Amount:       totalValue,
 				CurrencyCode: targetCurrency,
@@ -134,22 +135,22 @@ func (h *Transaction) GetHoldings(
 	return nil
 }
 
-func (h *Transaction) computeTotalCost(trades []*finance.Trade) *pb.Money {
+func (h *Transaction) computeTotalCost(trades []*finance.Trade, targetCurrency string) *pb.Money {
 	return &pb.Money{
-		Amount:       finance.CalculateTotalCost(trades),
+		Amount:       finance.CalculateTotalCost(trades, targetCurrency),
 		CurrencyCode: targetCurrency,
 	}
 }
 
-func (h *Transaction) computeAveragePrice(trades []*finance.Trade) *pb.Money {
+func (h *Transaction) computeAveragePrice(trades []*finance.Trade, targetCurrency string) *pb.Money {
 	return &pb.Money{
-		Amount:       finance.CalculateAveragePrice(trades),
+		Amount:       finance.CalculateAveragePrice(trades, targetCurrency),
 		CurrencyCode: targetCurrency,
 	}
 }
 
 func (h *Transaction) computeCapitalReturn(totalCost, totalValue float64) *pb.InvestmentReturn {
-	amt, pct := finance.CalculatePortfolioReturn(totalCost, totalValue)
+	amt, pct := finance.CalculateReturn(totalCost, totalValue)
 
 	return &pb.InvestmentReturn{
 		Amount:           amt,
@@ -182,15 +183,16 @@ func (h *Transaction) computeTotalReturn(capital, dividend, currency *pb.Investm
 	}
 }
 
-func toTrades(txns []*model.Transaction) []*finance.Trade {
+func toTrades(txns []*model.Transaction, currencyRate float64) []*finance.Trade {
 	trades := make([]*finance.Trade, 0)
 
 	for _, txn := range txns {
 		trade := &finance.Trade{
-			AssetID:    txn.AssetID,
-			Quantity:   int(txn.Quantity),
-			Price:      txn.TradePrice,
-			Commission: 0,
+			AssetID:      txn.AssetID,
+			Quantity:     int(txn.Quantity),
+			Price:        finance.Money{Amount: txn.TradePrice, CurrencyCode: txn.AssetPriceCurrencyCode},
+			Commission:   finance.Money{Amount: txn.TradeCommission, CurrencyCode: txn.CommissionCurrencyCode},
+			CurrencyRate: currencyRate,
 		}
 		trades = append(trades, trade)
 	}

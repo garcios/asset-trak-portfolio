@@ -4,22 +4,41 @@ import "fmt"
 
 // Trade represents a stock purchase transaction
 type Trade struct {
-	AssetID    string  // Asset ID
-	Quantity   int     // Number of shares bought
-	Price      float64 // Price per share
-	Commission float64 // Trade commission
-	TradeType  string  // Trade type e.g. BUY or SELL
+	AssetID      string  // Asset ID
+	Quantity     int     // Number of shares bought
+	Price        Money   // Price per share
+	Commission   Money   // Trade commission
+	TradeType    string  // Trade type e.g. BUY or SELL
+	CurrencyRate float64 // Exchange rate at transaction date
+}
+
+type Money struct {
+	Amount       float64
+	CurrencyCode string
 }
 
 // CalculateAveragePrice computes the weighted average cost per share
-func CalculateAveragePrice(trades []*Trade) float64 {
+func CalculateAveragePrice(
+	trades []*Trade,
+	targetCurrency string,
+) float64 {
 	var totalCost float64
 	var totalShares int
 
 	for _, trade := range trades {
+		assetPriceRate := 1.0
+		if trade.Price.CurrencyCode != "" && trade.Price.CurrencyCode != targetCurrency {
+			assetPriceRate = trade.CurrencyRate
+		}
+
+		commissionRate := 1.0
+		if trade.Commission.CurrencyCode != "" && trade.Commission.CurrencyCode != targetCurrency {
+			commissionRate = trade.CurrencyRate
+		}
+
 		// Handle BUY transactions
 		if trade.Quantity > 0 {
-			totalCost += float64(trade.Quantity)*trade.Price + trade.Commission
+			totalCost += float64(trade.Quantity)*(trade.Price.Amount*assetPriceRate) + (trade.Commission.Amount * commissionRate)
 			totalShares += trade.Quantity
 		}
 
@@ -50,78 +69,43 @@ func CalculateAveragePrice(trades []*Trade) float64 {
 	return totalCost / float64(totalShares)
 }
 
-// CalculateProfitLoss calculates profit or loss based on current price
-func CalculateProfitLoss(totalShares int, totalCost, currentPrice float64) float64 {
-	currentValue := float64(totalShares) * currentPrice
-	return currentValue - totalCost
-}
-
-// CalculateTotalCost computes the total cost of all trades including commissions
-func CalculateTotalCost(trades []*Trade) float64 {
+// CalculateTotalCost handles multi-currencies by converting all trades to the target currency
+// before computing the total cost.
+func CalculateTotalCost(
+	trades []*Trade,
+	targetCurrency string,
+) float64 {
 	var totalCost float64
 
 	for _, trade := range trades {
 		// Ignore SELL transactions (Quantity < 0)
 		if trade.Quantity > 0 {
-			totalCost += float64(trade.Quantity)*trade.Price + trade.Commission
+			// Get the exchange rate for the trade's currency
+
+			assetPriceRate := 1.0
+			if trade.Price.CurrencyCode != "" && trade.Price.CurrencyCode != targetCurrency {
+				assetPriceRate = trade.CurrencyRate
+			}
+
+			commissionRate := 1.0
+			if trade.Commission.CurrencyCode != "" && trade.Commission.CurrencyCode != targetCurrency {
+				commissionRate = trade.CurrencyRate
+			}
+
+			// Convert price and commission to the target currency
+			priceInBase := trade.Price.Amount * assetPriceRate
+			commissionInBase := trade.Commission.Amount * commissionRate
+
+			// Calculate total cost in base currency
+			totalCost += float64(trade.Quantity)*priceInBase + commissionInBase
 		}
 	}
 
 	return totalCost
 }
 
-// CalculateNewAveragePrice computes the new average price after adding a new trade
-func CalculateNewAveragePrice(
-	oldAvgPrice float64,
-	oldShares int,
-	newShares int,
-	newPrice float64,
-	newCommission float64,
-) float64 {
-	// Calculate total cost before new trade
-	oldTotalCost := float64(oldShares) * oldAvgPrice
-
-	// Calculate new total cost after adding new trade
-	newTotalCost := oldTotalCost + (float64(newShares) * newPrice) + newCommission
-
-	// Calculate new total shares
-	newTotalShares := oldShares + newShares
-
-	// Avoid division by zero
-	if newTotalShares == 0 {
-		return 0
-	}
-
-	// Compute new average price
-	return newTotalCost / float64(newTotalShares)
-}
-
-// CalculatePercentageReturn computes the percentage return based on the current price
-func CalculatePercentageReturn(totalShares int, totalCost, currentPrice float64) float64 {
-	if totalShares == 0 || totalCost == 0 {
-		return 0 // Avoid division by zero
-	}
-
-	// Compute current value of holdings
-	currentValue := float64(totalShares) * currentPrice
-
-	// Compute percentage return
-	return ((currentValue - totalCost) / totalCost) * 100
-}
-
-// CalculateTotalValue computes the current total portfolio value based on market prices
-func CalculateTotalValue(trades []*Trade, stockPrices map[string]float64) float64 {
-	var totalValue float64
-	for _, trade := range trades {
-		if currentPrice, exists := stockPrices[trade.AssetID]; exists {
-			totalValue += float64(trade.Quantity) * currentPrice
-		}
-	}
-	return totalValue
-}
-
-// CalculatePortfolioReturn computes the total return percentage of the portfolio
-func CalculatePortfolioReturn(totalCost, totalValue float64) (float64, float64) {
+// CalculateReturn computes the total return percentage of the portfolio
+func CalculateReturn(totalCost, totalValue float64) (float64, float64) {
 	if totalCost == 0 {
 		return 0, 0 // Avoid division by zero
 	}
@@ -130,4 +114,13 @@ func CalculatePortfolioReturn(totalCost, totalValue float64) (float64, float64) 
 	pctChange := ((valueChange) / totalCost) * 100
 
 	return valueChange, pctChange
+}
+
+// ConvertCurrency converts an amount from one currency to another given an exchange rate.
+func ConvertCurrency(amount float64, rate float64) float64 {
+	if rate <= 0 || amount < 0 {
+		return 0
+	}
+
+	return amount * rate
 }

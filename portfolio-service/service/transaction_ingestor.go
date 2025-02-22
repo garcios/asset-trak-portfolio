@@ -177,12 +177,12 @@ func (ingestor *TransactionIngestor) mapColumnsToTransaction(row []string) (*mod
 	}
 
 	return &model.Transaction{
-		AssetID:         asset.ID,
-		TransactionType: getStringValue(row[4]),
-		TransactionDate: transactionDate,
-		Quantity:        quantity,
-		TradePrice:      price,
-		CurrencyCode:    row[7],
+		AssetID:                asset.ID,
+		TransactionType:        getStringValue(row[4]),
+		TransactionDate:        transactionDate,
+		Quantity:               quantity,
+		TradePrice:             price,
+		AssetPriceCurrencyCode: row[7],
 	}, nil
 }
 
