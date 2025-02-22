@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"github.com/garcios/asset-trak-portfolio/lib/finance"
 	"github.com/garcios/asset-trak-portfolio/portfolio-service/db"
 	"github.com/garcios/asset-trak-portfolio/portfolio-service/model"
@@ -46,8 +47,61 @@ type TransactionManager interface {
 
 func (h *Transaction) GetSummaryTotals(
 	ctx context.Context,
-	request *pb.SummaryTotalsRequest,
-	response *pb.SummaryTotalsResponse) error {
+	req *pb.SummaryTotalsRequest,
+	res *pb.SummaryTotalsResponse,
+) error {
+	log.Println("GetSummaryTotals...")
+	holdingReq := &pb.HoldingsRequest{AccountId: req.GetAccountId()}
+	holdingsRes := &pb.HoldingsResponse{}
+	err := h.GetHoldings(ctx, holdingReq, holdingsRes)
+	if err != nil {
+		return fmt.Errorf("failed to get holdings: %w", err)
+	}
+
+	portfolioValue := 0.0
+	totalCost := 0.0
+	totalCapitalReturnAmt := 0.0
+	totalDividendReturnAmt := 0.0
+	totalCurrencyReturnAmt := 0.0
+
+	for _, investment := range holdingsRes.GetInvestments() {
+		portfolioValue += investment.GetTotalValue().GetAmount()
+		totalCapitalReturnAmt += investment.GetCapitalReturn().GetAmount()
+		totalDividendReturnAmt += investment.GetDividendReturn().GetAmount()
+		totalCurrencyReturnAmt += investment.GetCurrencyReturn().GetAmount()
+		totalCost += investment.GetTotalCost().GetAmount()
+	}
+
+	res.PortfolioValue = &pb.Money{
+		Amount:       portfolioValue,
+		CurrencyCode: targetCurrency,
+	}
+
+	_, capitalReturnPct := finance.CalculateReturn(totalCost, portfolioValue)
+	res.CapitalReturn = &pb.InvestmentReturn{
+		Amount:           totalCapitalReturnAmt,
+		CurrencyCode:     targetCurrency,
+		ReturnPercentage: capitalReturnPct,
+	}
+
+	dividendReturnPct := 0.0
+	res.DividendReturn = &pb.InvestmentReturn{
+		Amount:       0,
+		CurrencyCode: targetCurrency,
+	}
+
+	currencyReturnPct := 0.0
+	res.CurrencyReturn = &pb.InvestmentReturn{
+		Amount:           0,
+		CurrencyCode:     targetCurrency,
+		ReturnPercentage: 0,
+	}
+
+	res.TotalReturn = &pb.InvestmentReturn{
+		Amount:           totalCapitalReturnAmt + totalDividendReturnAmt + totalCurrencyReturnAmt,
+		CurrencyCode:     targetCurrency,
+		ReturnPercentage: capitalReturnPct + dividendReturnPct + currencyReturnPct,
+	}
 
 	return nil
 }

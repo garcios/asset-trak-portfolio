@@ -18,14 +18,14 @@ type Investment struct {
 }
 
 type Money struct {
-	Amount       float64
-	CurrencyCode string
+	Amount       float64 `json:"amount"`
+	CurrencyCode string  `json:"currencyCode"`
 }
 
 type MoneyWithPercentage struct {
-	Amount       float64
-	CurrencyCode string
-	Percentage   float64
+	Amount       float64 `json:"amount"`
+	CurrencyCode string  `json:"currencyCode"`
+	Percentage   float64 `json:"percentage"`
 }
 
 type SummaryTotals struct {

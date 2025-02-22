@@ -10,6 +10,7 @@ import (
 
 type IPortfolioService interface {
 	GetHoldingsSummary(ctx context.Context, accountID string) (*pb.HoldingsResponse, error)
+	GetSummaryTotals(ctx context.Context, accountID string) (*pb.SummaryTotalsResponse, error)
 }
 
 type PortfolioService struct {
@@ -42,6 +43,20 @@ func (t PortfolioService) GetHoldingsSummary(
 	resp, err := t.grpcPortfolioService.GetHoldings(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("get holdings summary error: %w", err)
+	}
+
+	return resp, nil
+}
+
+func (t PortfolioService) GetSummaryTotals(ctx context.Context, accountID string) (*pb.SummaryTotalsResponse, error) {
+
+	req := &pb.SummaryTotalsRequest{
+		AccountId: accountID,
+	}
+
+	resp, err := t.grpcPortfolioService.GetSummaryTotals(ctx, req)
+	if err != nil {
+		return nil, fmt.Errorf("get summary totals error: %w", err)
 	}
 
 	return resp, nil
