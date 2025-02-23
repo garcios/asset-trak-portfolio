@@ -1,0 +1,16 @@
+[account]
+id = "eb08df3c-958d-4ae8-b3ae-41ec04418786"
+
+[trades]
+path = "data/AllTradesReport.xlsx"
+skip_rows = 3
+tab_name = "Combined"
+
+[dividends]
+path = "data/taxable_income.xlsx"
+tab_name_domestic = "Domestic"
+skip_rows_domestic = 6
+tab_name_foreign = "Foreign"
+skip_rows_foreign = 2
+
+

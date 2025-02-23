@@ -3,11 +3,14 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
+	"github.com/BurntSushi/toml"
 	pbc "github.com/garcios/asset-trak-portfolio/currency-service/proto"
 	"github.com/garcios/asset-trak-portfolio/portfolio-service/handler"
 	"go-micro.dev/v4"
 	"go-micro.dev/v4/logger"
 	"log"
+	"os"
 
 	_ "github.com/go-micro/plugins/v4/client/grpc"
 	_ "github.com/go-micro/plugins/v4/registry/etcd"
@@ -21,13 +24,8 @@ import (
 )
 
 const (
-	assetIngestorProcessor       = "assetIngestor"
 	transactionIngestorProcessor = "transactionIngestor"
 	truncateProcessor            = "truncate"
-	skipRows                     = 3
-	tabName                      = "Combined"
-	filePath                     = "data/AllTradesReport.xlsx"
-	accountID                    = "eb08df3c-958d-4ae8-b3ae-41ec04418786"
 	portfolioServiceName         = "portfolio-service"
 	currencyServiceName          = "currency-service"
 )
@@ -35,6 +33,11 @@ const (
 func main() {
 	processor := flag.String("processor", "", "the processor to run")
 	flag.Parse()
+
+	cfg, err := readConfig()
+	if err != nil {
+		log.Fatalf("failed to read config: %v", err)
+	}
 
 	conn, err := mysql.Connect()
 	if err != nil {
@@ -59,11 +62,12 @@ func main() {
 		assetRepo,
 		portfolioRepo,
 		transactor,
+		&cfg,
 	)
 
 	switch *processor {
 	case transactionIngestorProcessor:
-		err := transactionIngestor.ProcessTransactions(ctx, filePath, tabName, skipRows, accountID)
+		err := transactionIngestor.ProcessTransactions(ctx)
 		if err != nil {
 			log.Fatalf("failed to process transaction ingestor: %v", err)
 		}
@@ -102,4 +106,21 @@ func main() {
 
 	log.Println("Transaction service has started.")
 
+}
+
+func readConfig() (service.Config, error) {
+	var cfg service.Config
+	configDir := os.Getenv("CONFIG_DIR")
+	if configDir == "" {
+		configDir = "./"
+	}
+
+	configPath := configDir + "config.toml"
+
+	_, err := toml.DecodeFile(configPath, &cfg)
+	if err != nil {
+		return cfg, fmt.Errorf("failed to load config.toml: %s", err)
+	}
+
+	return cfg, nil
 }

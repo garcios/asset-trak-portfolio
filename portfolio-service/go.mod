@@ -5,6 +5,7 @@ go 1.22.2
 replace github.com/garcios/asset-trak-portfolio/lib => /Users/oscargarcia/workspace/asset-trak-portfolio/lib
 
 require (
+	github.com/BurntSushi/toml v1.4.0
 	github.com/Thiht/transactor v1.1.0
 	github.com/garcios/asset-trak-portfolio/currency-service v0.0.0-20250220073347-2ce3c59d9302
 	github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250222045010-be1f0e8df8a9

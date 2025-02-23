@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/BurntSushi/toml"
 	"github.com/garcios/asset-trak-portfolio/ingestion-service/db"
 	"github.com/garcios/asset-trak-portfolio/ingestion-service/service"
@@ -25,17 +26,9 @@ func main() {
 	processor := flag.String("processor", "", "the processor to run")
 	flag.Parse()
 
-	var cfg service.Config
-	configDir := os.Getenv("CONFIG_DIR")
-	if configDir == "" {
-		configDir = "./"
-	}
-
-	configPath := configDir + "config.toml"
-
-	_, err := toml.DecodeFile(configPath, &cfg)
+	cfg, err := readConfig()
 	if err != nil {
-		log.Fatalf("failed to load config.toml: %s", err)
+		log.Fatalf("failed to read config: %v", err)
 	}
 
 	conn, err := mysql.Connect()
@@ -104,4 +97,21 @@ func main() {
 
 	// TODO: setup starting this service as background process for processing external API market data.
 
+}
+
+func readConfig() (service.Config, error) {
+	var cfg service.Config
+	configDir := os.Getenv("CONFIG_DIR")
+	if configDir == "" {
+		configDir = "./"
+	}
+
+	configPath := configDir + "config.toml"
+
+	_, err := toml.DecodeFile(configPath, &cfg)
+	if err != nil {
+		return cfg, fmt.Errorf("failed to load config.toml: %s", err)
+	}
+
+	return cfg, nil
 }

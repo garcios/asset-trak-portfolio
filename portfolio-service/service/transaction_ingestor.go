@@ -59,6 +59,7 @@ type TransactionIngestor struct {
 	BalanceManager     IBalanceManager
 	Transactor         transactor.Transactor
 	cache              *allCache
+	cfg                *Config
 }
 
 func NewTransactionIngestor(
@@ -67,6 +68,7 @@ func NewTransactionIngestor(
 	astm IAssetManager,
 	bm IBalanceManager,
 	tr transactor.Transactor,
+	cfg *Config,
 ) *TransactionIngestor {
 	ac := cache.New(defaultExpiration, purgeTime)
 	return &TransactionIngestor{
@@ -75,6 +77,7 @@ func NewTransactionIngestor(
 		AssetManager:       astm,
 		BalanceManager:     bm,
 		Transactor:         tr,
+		cfg:                cfg,
 		cache:              &allCache{assets: ac},
 	}
 }
@@ -99,12 +102,13 @@ func (ingestor *TransactionIngestor) Truncate(ctx context.Context) error {
 
 func (ingestor *TransactionIngestor) ProcessTransactions(
 	ctx context.Context,
-	filePath string,
-	tabName string,
-	skipRows int,
-	accountID string,
 ) error {
 	log.Println("Processing transactions...")
+
+	accountID := ingestor.cfg.Account.ID
+	filePath := ingestor.cfg.Trades.Path
+	tabName := ingestor.cfg.Trades.TabName
+	skipRows := ingestor.cfg.Trades.SkipRows
 
 	// verify account
 	account, err := ingestor.AccountManager.FindAccountByID(accountID)
