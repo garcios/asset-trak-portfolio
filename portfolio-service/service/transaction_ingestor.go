@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/Thiht/transactor"
 	"github.com/garcios/asset-trak-portfolio/lib/excel"
+	"github.com/garcios/asset-trak-portfolio/lib/typesutils"
 	"github.com/garcios/asset-trak-portfolio/portfolio-service/db"
 	"github.com/garcios/asset-trak-portfolio/portfolio-service/model"
 	"github.com/google/uuid"
@@ -40,6 +41,10 @@ type IBalanceManager interface {
 	UpdateBalance(ctx context.Context, rec *model.AssetBalance) error
 	GetBalance(ctx context.Context, accountID string, assetID string) (*model.AssetBalance, error)
 	Truncate(ctx context.Context) error
+}
+
+type IAssetManager interface {
+	FindAssetBySymbol(symbol string) (*model.Asset, error)
 }
 
 // verify interface compliance
@@ -158,19 +163,19 @@ func (ingestor *TransactionIngestor) mapColumnsToTransaction(row []string) (*mod
 		return nil, fmt.Errorf("unable to retrieve asset with symbol: %s", row[0])
 	}
 
-	transactionDate, err := getDateValue(row[3])
+	transactionDate, err := typesutils.GetDateValue(row[3])
 	if err != nil {
 		displayRow(row)
 		return nil, fmt.Errorf("unable to process transaction date with value: %s", row[3])
 	}
 
-	quantity, err := getFloatValue(row[5])
+	quantity, err := typesutils.GetFloatValue(row[5])
 	if err != nil {
 		displayRow(row)
 		return nil, fmt.Errorf("unable to process quantity with value: %s", row[5])
 	}
 
-	price, err := getFloatValue(row[6])
+	price, err := typesutils.GetFloatValue(row[6])
 	if err != nil {
 		displayRow(row)
 		return nil, fmt.Errorf("unable to process price with value: %s", row[6])
@@ -178,7 +183,7 @@ func (ingestor *TransactionIngestor) mapColumnsToTransaction(row []string) (*mod
 
 	return &model.Transaction{
 		AssetID:                asset.ID,
-		TransactionType:        getStringValue(row[4]),
+		TransactionType:        typesutils.GetStringValue(row[4]),
 		TransactionDate:        transactionDate,
 		Quantity:               quantity,
 		TradePrice:             price,

@@ -1,13 +1,13 @@
-package service
+package typesutils
 
 import (
-	"log"
+	"github.com/xuri/excelize/v2"
 	"strconv"
 	"strings"
 	"time"
 )
 
-func getDateValue(dateString string) (*time.Time, error) {
+func GetDateValue(dateString string) (*time.Time, error) {
 	if dateString == "" {
 		return nil, nil
 	}
@@ -20,7 +20,21 @@ func getDateValue(dateString string) (*time.Time, error) {
 	return &dateValue, nil
 }
 
-func getFloatValue(valueString string) (float64, error) {
+func GetFloatAsDate(valueString string) (*time.Time, error) {
+	floatValue, err := GetFloatValue(valueString)
+	if err != nil {
+		return nil, err
+	}
+
+	dateValue, err := excelize.ExcelDateToTime(floatValue, false)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dateValue, nil
+}
+
+func GetFloatValue(valueString string) (float64, error) {
 	if valueString == "" {
 		return 0, nil
 	}
@@ -37,14 +51,10 @@ func normalizeNumber(s string) string {
 	return strings.Replace(s, ",", "", -1)
 }
 
-func getStringValue(valueString string) string {
+func GetStringValue(valueString string) string {
 	if valueString == "" {
 		return ""
 	}
 
 	return strings.ToUpper(strings.TrimSpace(valueString))
-}
-
-func displayRow(row []string) {
-	log.Printf("row: %v", row)
 }

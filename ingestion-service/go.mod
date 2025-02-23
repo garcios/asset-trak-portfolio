@@ -2,10 +2,11 @@ module github.com/garcios/asset-trak-portfolio/ingestion-service
 
 go 1.22.2
 
+replace github.com/garcios/asset-trak-portfolio/lib => /Users/oscargarcia/workspace/asset-trak-portfolio/lib
+
 require (
 	github.com/BurntSushi/toml v1.4.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
-	github.com/xuri/excelize/v2 v2.9.0
 	go-micro.dev/v4 v4.11.0
 	google.golang.org/protobuf v1.28.1
 )
@@ -18,7 +19,6 @@ require (
 	github.com/gobwas/pool v0.2.1 // indirect
 	github.com/gobwas/ws v1.0.4 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/google/go-cmp v0.5.6 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/handlers v1.5.1 // indirect
 	github.com/miekg/dns v1.1.43 // indirect
@@ -28,6 +28,7 @@ require (
 	github.com/richardlehane/mscfb v1.0.4 // indirect
 	github.com/richardlehane/msoleps v1.0.4 // indirect
 	github.com/xuri/efp v0.0.0-20240408161823-9ad904a10d6d // indirect
+	github.com/xuri/excelize/v2 v2.9.0 // indirect
 	github.com/xuri/nfp v0.0.0-20240318013403-ab9948c2c4a7 // indirect
 	golang.org/x/crypto v0.28.0 // indirect
 	golang.org/x/net v0.30.0 // indirect
@@ -38,6 +39,6 @@ require (
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
-	github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250208054937-2e9fc7410cd9
+	github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250222045010-be1f0e8df8a9
 	github.com/go-sql-driver/mysql v1.8.1 // indirect
 )

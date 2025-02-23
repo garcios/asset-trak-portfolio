@@ -2,11 +2,10 @@ package service
 
 import (
 	"fmt"
-	"github.com/garcios/asset-trak-portfolio/currency-service/model"
+	"github.com/garcios/asset-trak-portfolio/ingestion-service/model"
 	"github.com/garcios/asset-trak-portfolio/lib/excel"
-	"github.com/xuri/excelize/v2"
+	"github.com/garcios/asset-trak-portfolio/lib/typesutils"
 	"log"
-	"time"
 )
 
 const (
@@ -42,7 +41,7 @@ func (ingestor *CurrencyIngestor) ProcessCurrencyRates() error {
 	log.Println("Processing currency rates...")
 
 	log.Printf("%+v\n", ingestor.cfg)
-	filePath := ingestor.cfg.FileInfo.Path
+	filePath := ingestor.cfg.CurrencyRate.Path
 
 	err := ingestor.processCurrencyRates(filePath, "price-history")
 	if err != nil {
@@ -58,7 +57,7 @@ func (ingestor *CurrencyIngestor) processCurrencyRates(filePath string, tab stri
 		return err
 	}
 
-	skipRows := ingestor.cfg.FileInfo.SkipRows
+	skipRows := ingestor.cfg.CurrencyRate.SkipRows
 
 	var rowCount int
 	for _, row := range rows {
@@ -67,12 +66,12 @@ func (ingestor *CurrencyIngestor) processCurrencyRates(filePath string, tab stri
 			continue
 		}
 
-		tradeDate, err := getFloatAsDate(row[1])
+		tradeDate, err := typesutils.GetFloatAsDate(row[1])
 		if err != nil {
 			return err
 		}
 
-		rate, err := getFloatValue(row[2])
+		rate, err := typesutils.GetFloatValue(row[2])
 		if err != nil {
 			return err
 		}
@@ -92,18 +91,4 @@ func (ingestor *CurrencyIngestor) processCurrencyRates(filePath string, tab stri
 	}
 
 	return nil
-}
-
-func getFloatAsDate(valueString string) (*time.Time, error) {
-	floatValue, err := getFloatValue(valueString)
-	if err != nil {
-		return nil, err
-	}
-
-	dateValue, err := excelize.ExcelDateToTime(floatValue, false)
-	if err != nil {
-		return nil, err
-	}
-
-	return &dateValue, nil
 }

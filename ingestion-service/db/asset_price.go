@@ -3,7 +3,7 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	"github.com/garcios/asset-trak-portfolio/asset-price-service/model"
+	"github.com/garcios/asset-trak-portfolio/ingestion-service/model"
 )
 
 type AssetPriceRepository struct {

@@ -2,14 +2,12 @@ module github.com/garcios/asset-trak-portfolio/portfolio-service
 
 go 1.22.2
 
-replace (
-	github.com/garcios/asset-trak-portfolio/lib => /Users/oscargarcia/workspace/asset-trak-portfolio/lib
-)
+replace github.com/garcios/asset-trak-portfolio/lib => /Users/oscargarcia/workspace/asset-trak-portfolio/lib
 
 require (
 	github.com/Thiht/transactor v1.1.0
 	github.com/garcios/asset-trak-portfolio/currency-service v0.0.0-20250220073347-2ce3c59d9302
-	github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250219102033-647378d197c2
+	github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250222045010-be1f0e8df8a9
 	github.com/go-micro/plugins/v4/client/grpc v1.2.1
 	github.com/go-micro/plugins/v4/registry/etcd v1.2.0
 	github.com/google/uuid v1.6.0

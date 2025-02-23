@@ -53,7 +53,6 @@ func main() {
 	transactionRepo := db.NewTransactionRepository(dbGetter)
 	portfolioRepo := db.NewAssetBalanceRepository(dbGetter)
 
-	assetIngestor := service.NewAssetIngestor(assetRepo)
 	transactionIngestor := service.NewTransactionIngestor(
 		transactionRepo,
 		accountRepo,
@@ -63,13 +62,6 @@ func main() {
 	)
 
 	switch *processor {
-	case assetIngestorProcessor:
-		err := assetIngestor.ProcessAssets(filePath, tabName, skipRows)
-		if err != nil {
-			log.Fatalf("failed to process asset ingestor: %v", err)
-		}
-
-		return
 	case transactionIngestorProcessor:
 		err := transactionIngestor.ProcessTransactions(ctx, filePath, tabName, skipRows, accountID)
 		if err != nil {
@@ -81,11 +73,6 @@ func main() {
 		err := transactionIngestor.Truncate(ctx)
 		if err != nil {
 			log.Fatalf("failed to truncate transaction data: %v", err)
-		}
-
-		err = assetIngestor.Truncate()
-		if err != nil {
-			log.Fatalf("failed to truncate asset data: %v", err)
 		}
 
 		return

@@ -1,14 +1,10 @@
 # Ingestion Service
-The Asset Price Service is a core module in `Investment Portfolio Navigator` application, responsible for retrieving, 
-processing, and managing real-time and historical asset prices. It ensures accurate valuation of portfolio holdings and 
-enables data-driven decision-making.
+The Ingestion Service is a core module in `Investment Portfolio Navigator` application, responsible for ingestion of 
+market data such as assets, asset prices, and currency rates.
 
 __Key Features & Responsibilities__:
 - Real-Time Price Updates: Continuously fetches live asset prices from financial data providers.
 - Historical Price Data: Stores and maintains historical asset prices for performance analysis and backtesting.
-
-By integrating the Asset Price Service, the `Investment Portfolio Navigator` application enhances accuracy, transparency, 
-and efficiency, helping users track market movements and optimize investment strategies.
 
 ## Install toml parser
 ```shell

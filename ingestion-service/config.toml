@@ -1,8 +1,12 @@
-[file_info]
+[asset_price]
 path = "data/prices.xlsx"
 skip_rows = 1
 
+[currency_rate]
+path = "data/currency_rates.xlsx"
+skip_rows = 1
 
 [asset]
 symbols = ["IVV","NDQ","STW","WTC","AMZN","GOOGL","GOOG","MSFT","AVGO","TSM","NVDA","AMD","MA","UBER","FTNT","AMAT"]
+path = "data/asset.csv"
 

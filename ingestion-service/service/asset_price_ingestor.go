@@ -2,11 +2,11 @@ package service
 
 import (
 	"fmt"
-	"github.com/garcios/asset-trak-portfolio/asset-price-service/db"
-	"github.com/garcios/asset-trak-portfolio/asset-price-service/model"
+	"github.com/garcios/asset-trak-portfolio/ingestion-service/db"
+	"github.com/garcios/asset-trak-portfolio/ingestion-service/model"
 	"github.com/garcios/asset-trak-portfolio/lib/excel"
+	"github.com/garcios/asset-trak-portfolio/lib/typesutils"
 	"github.com/patrickmn/go-cache"
-	"github.com/xuri/excelize/v2"
 	"log"
 	"time"
 )
@@ -23,10 +23,6 @@ const (
 type IAssetPriceManager interface {
 	AddAssetPrice(rec *model.AssetPrice) error
 	Truncate() error
-}
-
-type IAssetManager interface {
-	FindAssetBySymbol(symbol string) (*model.Asset, error)
 }
 
 // verify interface compliance
@@ -73,11 +69,11 @@ func (ingestor *AssetPriceIngestor) ProcessAssetPrices() error {
 	}
 
 	log.Printf("%+v\n", ingestor.cfg)
-	filePath := ingestor.cfg.FileInfo.Path
-	tabs := ingestor.cfg.Asset.Symbols
+	filePath := ingestor.cfg.AssetPrice.Path
+	assets := ingestor.cfg.Asset.Symbols
 
-	for _, tab := range tabs {
-		err := ingestor.processPricesTab(filePath, tab)
+	for _, asset := range assets {
+		err := ingestor.processPricesTab(filePath, asset)
 		if err != nil {
 			return err
 		}
@@ -86,13 +82,13 @@ func (ingestor *AssetPriceIngestor) ProcessAssetPrices() error {
 	return nil
 }
 
-func (ingestor *AssetPriceIngestor) processPricesTab(filePath string, tab string) error {
-	rows, err := excel.GetRows(filePath, tab)
+func (ingestor *AssetPriceIngestor) processPricesTab(filePath string, assetSymbol string) error {
+	rows, err := excel.GetRows(filePath, assetSymbol)
 	if err != nil {
 		return err
 	}
 
-	skipRows := ingestor.cfg.FileInfo.SkipRows
+	skipRows := ingestor.cfg.AssetPrice.SkipRows
 
 	var rowCount int
 	for _, row := range rows {
@@ -101,24 +97,28 @@ func (ingestor *AssetPriceIngestor) processPricesTab(filePath string, tab string
 			continue
 		}
 
-		tradeDate, err := getFloatAsDate(row[1])
+		tradeDate, err := typesutils.GetFloatAsDate(row[1])
 		if err != nil {
 			return err
 		}
 
-		price, err := getFloatValue(row[2])
+		price, err := typesutils.GetFloatValue(row[2])
 		if err != nil {
 			return err
 		}
 
-		currencyCode, ok := ingestor.symbolToCurrency[tab]
+		currencyCode, ok := ingestor.symbolToCurrency[assetSymbol]
 		if !ok {
 			return fmt.Errorf("no such symbol to currency mapping")
 		}
 
-		asset, err := ingestor.getAsset(tab)
+		asset, err := ingestor.getAsset(assetSymbol)
 		if err != nil {
 			return err
+		}
+
+		if asset == nil {
+			return fmt.Errorf("asset %s not found", assetSymbol)
 		}
 
 		assetPrice := model.AssetPrice{
@@ -138,23 +138,9 @@ func (ingestor *AssetPriceIngestor) processPricesTab(filePath string, tab string
 	return nil
 }
 
-func getFloatAsDate(valueString string) (*time.Time, error) {
-	floatValue, err := getFloatValue(valueString)
-	if err != nil {
-		return nil, err
-	}
-
-	dateValue, err := excelize.ExcelDateToTime(floatValue, false)
-	if err != nil {
-		return nil, err
-	}
-
-	return &dateValue, nil
-}
-
 func (ingestor *AssetPriceIngestor) loadCurrenTab() error {
 	log.Println("Loading current tab...")
-	rows, err := excel.GetRows(ingestor.cfg.FileInfo.Path, "current")
+	rows, err := excel.GetRows(ingestor.cfg.AssetPrice.Path, "current")
 	if err != nil {
 		return err
 	}

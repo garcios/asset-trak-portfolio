@@ -1,3 +1,4 @@
+include .env
 
 init:
 	go get -u google.golang.org/protobuf/proto
@@ -7,14 +8,8 @@ init:
 tidy:
 	go mod tidy
 
-truncate:
-	DBUSER=root DBPASS=Pass123 go run cmd/main.go -processor=truncate
-
-ingest_currency_rates:
-	DBUSER=root DBPASS=Pass123 go run cmd/main.go -processor=currencyRateIngestor
-
 run:
-	DBUSER=root DBPASS=Pass123 go run cmd/main.go
+	DBUSER=${DB_USER} DBPASS=${DB_PASSWORD} go run cmd/main.go
 
 proto:
 	protoc --proto_path=. --micro_out=. --go_out=. proto/currency.proto
@@ -25,5 +20,5 @@ docker:
 push:
 	minikube image tag localhost/currency-service:1.0 localhost/currency-service:latest &&  minikube image push localhost/currency-service:latest
 
-.PHONY: tidy ingest_currency_rates run_server truncate proto docker
+.PHONY: tidy run proto docker
 
