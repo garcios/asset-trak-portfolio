@@ -2,9 +2,9 @@ package resolvers
 
 import (
 	"context"
-	"fmt"
 	"github.com/garcios/asset-trak-portfolio/graphql/middlewares"
 	"github.com/garcios/asset-trak-portfolio/graphql/models"
+	"log"
 )
 
 func (r *queryResolver) GetSummaryTotals(ctx context.Context, accountID string) (*models.SummaryTotals, error) {
@@ -14,7 +14,7 @@ func (r *queryResolver) GetSummaryTotals(ctx context.Context, accountID string) 
 		return nil, err
 	}
 
-	fmt.Printf("GetSummaryTotals:resp: %+v\n", resp)
+	log.Printf("GetSummaryTotals:resp: %+v\n", resp)
 
 	var portfolioValue *models.Money
 	if resp.PortfolioValue != nil {

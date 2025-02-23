@@ -5,19 +5,18 @@ go 1.22.5
 toolchain go1.22.11
 
 replace (
-	github.com/garcios/asset-trak-portfolio/portfolio-service => /Users/oscargarcia/workspace/asset-trak-portfolio/portfolio-service
 	github.com/garcios/asset-trak-portfolio/lib => /Users/oscargarcia/workspace/asset-trak-portfolio/lib
+	github.com/garcios/asset-trak-portfolio/portfolio-service => /Users/oscargarcia/workspace/asset-trak-portfolio/portfolio-service
 )
 
 require (
 	github.com/99designs/gqlgen v0.17.64
 	github.com/coreos/go-oidc v2.3.0+incompatible
-	github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250220083717-194a5b98632c
+	github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250222045010-be1f0e8df8a9
 	github.com/garcios/asset-trak-portfolio/portfolio-service v0.0.0-20250220074743-76b245d49aa2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/joho/godotenv v1.5.1
 	github.com/vektah/gqlparser/v2 v2.5.22
-	go-micro.dev/v4 v4.11.0
 )
 
 require (
@@ -81,6 +80,7 @@ require (
 	github.com/urfave/cli/v2 v2.27.5 // indirect
 	github.com/xanzy/ssh-agent v0.3.0 // indirect
 	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
+	go-micro.dev/v4 v4.11.0 // indirect
 	golang.org/x/arch v0.8.0 // indirect
 	golang.org/x/crypto v0.31.0 // indirect
 	golang.org/x/mod v0.20.0 // indirect

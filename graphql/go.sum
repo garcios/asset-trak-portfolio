@@ -151,10 +151,6 @@ github.com/fsnotify/fsnotify v1.6.0 h1:n+5WquG0fcWoWp6xPWfHdbskMCQaFnG6PfBrh1Ky4
 github.com/fsnotify/fsnotify v1.6.0/go.mod h1:sl3t1tCWJFWoRz9R8WJCbQihKKwmorjAbSClcnxKAGw=
 github.com/gabriel-vasile/mimetype v1.4.3 h1:in2uUcidCuFcDKtdcBxlR0rJ1+fsokWf+uqxgUFjbI0=
 github.com/gabriel-vasile/mimetype v1.4.3/go.mod h1:d8uq/6HKRL6CGdk+aubisF/M5GcPfT7nKyLpA0lbSSk=
-github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250220083717-194a5b98632c h1:99rYOsweAlDJZ3SmkEUjU0jWiN3XNy0xz6Ww2a0NF58=
-github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250220083717-194a5b98632c/go.mod h1:RvphsWUXmOJo98iJEihQrbCnT+bNqsxIZfTXb1X16qE=
-github.com/garcios/asset-trak-portfolio/portfolio-service v0.0.0-20250220074743-76b245d49aa2 h1:omSWjQYfczGFIcEvLEwyU+ZWGyFOhtNKiPvudNy0M6o=
-github.com/garcios/asset-trak-portfolio/portfolio-service v0.0.0-20250220074743-76b245d49aa2/go.mod h1:0CW0PBO6c7D3EvR4XnYjrbbSt89I9twPWimCJ8/aBws=
 github.com/getkin/kin-openapi v0.13.0/go.mod h1:WGRs2ZMM1Q8LR1QBEwUxC6RJEfaBcD0s+pcEVXFuAjw=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
 github.com/gin-contrib/sse v0.1.0 h1:Y/yl/+YNO8GZSjAhjMsSuLt29uWRFHdHYUb5lYOV9qE=

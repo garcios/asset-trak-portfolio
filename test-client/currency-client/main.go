@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"fmt"
 	pb "github.com/garcios/asset-trak-portfolio/currency-service/proto"
 	lib "github.com/garcios/asset-trak-portfolio/lib/retryable"
+	"log"
 )
 
 const (
@@ -30,9 +30,9 @@ func main() {
 		},
 	)
 	if err != nil {
-		fmt.Printf("Error calling GetExchangeRate: %v", err)
+		log.Printf("Error calling GetExchangeRate: %v", err)
 		return
 	}
 
-	fmt.Println(response)
+	log.Println(response)
 }

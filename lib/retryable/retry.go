@@ -2,9 +2,9 @@ package retryable
 
 import (
 	"context"
-	"fmt"
 	"go-micro.dev/v4/client"
 	"go-micro.dev/v4/errors"
+	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -88,7 +88,7 @@ func (r *RetryableClient) Call(
 
 		// Perform retry with delay
 		time.Sleep(r.RetryDelay)
-		fmt.Printf("Retrying request: %+v (attempt: %d)\n", req, retryCount)
+		log.Printf("Retrying request: %+v (attempt: %d)\n", req, retryCount)
 	}
 }
 

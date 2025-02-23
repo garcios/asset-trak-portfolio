@@ -1,7 +1,7 @@
 package finance
 
 import (
-	"fmt"
+	"log"
 	"math"
 )
 
@@ -61,7 +61,7 @@ func CalculateAveragePrice(
 			sellQuantity := -trade.Quantity // Convert to positive quantity for logic
 			if sellQuantity > totalShares {
 				// Avoid selling more shares than owned
-				fmt.Println("SELL transaction exceeds currently owned shares")
+				log.Println("SELL transaction exceeds currently owned shares")
 				return 0
 			}
 

@@ -90,7 +90,7 @@ func main() {
 		return
 	}
 
-	fmt.Println(response)
+	log.Println(response)
 
 }
 

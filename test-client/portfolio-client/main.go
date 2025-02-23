@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"fmt"
 	lib "github.com/garcios/asset-trak-portfolio/lib/retryable"
 	pb "github.com/garcios/asset-trak-portfolio/portfolio-service/proto"
+	"log"
 	"time"
 )
 
@@ -29,12 +29,12 @@ func main() {
 
 	resp, err := transactionSrv.GetHoldings(context.Background(), req)
 	if err != nil {
-		fmt.Printf("Get balance summary error: %v", err)
+		log.Printf("Get balance summary error: %v", err)
 		return
 	}
 
 	for _, item := range resp.Investments {
-		fmt.Println(item)
+		log.Println(item)
 	}
 
 }

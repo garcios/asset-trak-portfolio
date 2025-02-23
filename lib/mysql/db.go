@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	"log"
 	"os"
 	"strconv"
 )
@@ -40,7 +41,7 @@ func Connect() (*sql.DB, error) {
 	}
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", user, pass, dbHost, dbPort, dbName)
-	fmt.Printf("Connecting to database: %s\n", dsn) //TODO: remove this line
+	log.Printf("Connecting to database: %s\n", dsn) //TODO: remove this line
 
 	// initialize the connection pool
 	var err error

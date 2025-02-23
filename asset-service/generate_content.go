@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
-	"fmt"
 	"log"
 	"os"
 	"time"
@@ -74,6 +73,6 @@ func main() {
 		return
 	}
 
-	fmt.Println(response)
+	log.Println(response)
 
 }
