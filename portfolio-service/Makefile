@@ -9,6 +9,9 @@ init:
 tidy:
 	go mod tidy
 
+lint:
+	golangci-lint run
+
 truncate:
 	DBUSER=${DB_USER} DBPASS=${DB_PASSWORD} go run cmd/main.go -processor=truncate
 
@@ -27,5 +30,5 @@ proto:
 docker:
 	podman build -t portfolio-service:1.0 .
 
-.PHONY: init tidy ingest_assets ingest-trades ingest-dividends run truncate proto docker
+.PHONY: init tidy ingest_assets ingest-trades ingest-dividends run truncate proto docker lint
 

@@ -8,9 +8,8 @@ replace github.com/garcios/asset-trak-portfolio/lib => /Users/oscargarcia/worksp
 
 require (
 	github.com/garcios/asset-trak-portfolio/currency-service v0.0.0-20250220104703-94ec53071ea7
-	github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250219102033-647378d197c2
+	github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250222045010-be1f0e8df8a9
 	github.com/garcios/asset-trak-portfolio/portfolio-service v0.0.0-20250214102920-035938d3d46b
-	go-micro.dev/v4 v4.11.0
 )
 
 require (
@@ -47,6 +46,7 @@ require (
 	github.com/urfave/cli/v2 v2.25.7 // indirect
 	github.com/xanzy/ssh-agent v0.3.0 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
+	go-micro.dev/v4 v4.11.0 // indirect
 	golang.org/x/crypto v0.28.0 // indirect
 	golang.org/x/mod v0.18.0 // indirect
 	golang.org/x/net v0.30.0 // indirect

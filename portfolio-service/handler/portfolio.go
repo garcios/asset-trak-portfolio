@@ -176,6 +176,10 @@ func (h *Transaction) GetHoldings(
 		}
 
 		dividends, err := h.transactionManager.GetTransactions(ctx, dbFilterDiv)
+		if err != nil {
+			return err
+		}
+
 		tradesDiv := toTrades(dividends)
 		dividendReturn := h.computeDividendReturn(tradesDiv, totalCost.Amount)
 
