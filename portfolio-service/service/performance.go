@@ -49,7 +49,8 @@ func getCachedValue[T any](
 	cacheClient CacheClient,
 	key string,
 	fetchFunc func() (T, error),
-	expiration time.Duration) (T, error) {
+	expiration time.Duration,
+) (T, error) {
 	// Check Redis cache for the key
 	val, err := cacheClient.Get(ctx, key)
 	if err == nil {
