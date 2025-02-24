@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	DividendType = "DIVIDEND"
+	TransactionTypeDividend = "DIVIDEND"
 )
 
 type DividendIngestor struct {
@@ -98,7 +98,11 @@ func (ingestor *TransactionIngestor) domesticDividend(
 			continue
 		}
 
-		if len(row) < 2 || row[0] == "Total" {
+		if len(row) < 2 || row[0] == "Total" || row[0] == "Trust Income" || row[0] == "Code" {
+			continue
+		}
+
+		if strings.Contains(row[0], "Grand Total") {
 			break
 		}
 
@@ -172,7 +176,6 @@ func (ingestor *TransactionIngestor) addDividend(ctx context.Context, rec *model
 }
 
 func (ingestor *TransactionIngestor) mapDomesticDividendColumnsToTransaction(row []string) (*model.Transaction, error) {
-	log.Println("mapDomesticDividendColumnsToTransaction")
 	assetSymbol, err := getAssetSymbol(row[0])
 	if err != nil {
 		return nil, err
@@ -198,7 +201,7 @@ func (ingestor *TransactionIngestor) mapDomesticDividendColumnsToTransaction(row
 
 	return &model.Transaction{
 		AssetID:                 asset.ID,
-		TransactionType:         DividendType,
+		TransactionType:         TransactionTypeDividend,
 		TransactionDate:         transactionDate,
 		AmountCash:              amountCash,
 		AmountCurrencyCode:      "AUD",
@@ -209,7 +212,6 @@ func (ingestor *TransactionIngestor) mapDomesticDividendColumnsToTransaction(row
 }
 
 func (ingestor *TransactionIngestor) mapForeignDividendColumnsToTransaction(row []string) (*model.Transaction, error) {
-	log.Println("mapForeignDividendColumnsToTransaction")
 	assetSymbol, err := getAssetSymbol(row[0])
 	if err != nil {
 		return nil, err
@@ -247,7 +249,7 @@ func (ingestor *TransactionIngestor) mapForeignDividendColumnsToTransaction(row 
 
 	return &model.Transaction{
 		AssetID:                 asset.ID,
-		TransactionType:         DividendType,
+		TransactionType:         TransactionTypeDividend,
 		TransactionDate:         transactionDate,
 		AmountCash:              amountCash,
 		AmountCurrencyCode:      strings.ToUpper(row[4]),

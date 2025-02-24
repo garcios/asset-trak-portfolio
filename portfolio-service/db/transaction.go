@@ -20,7 +20,7 @@ type TransactionFilter struct {
 	AssetID          string
 	StartDate        string
 	EndDate          string
-	transactionTypes []string
+	TransactionTypes []string
 }
 
 func NewTransactionRepository(dbGetter stdlibTransactor.DBGetter) *TransactionRepository {
@@ -115,10 +115,10 @@ func (r *TransactionRepository) GetTransactions(
 		args = append(args, filter.EndDate)
 	}
 
-	if len(filter.transactionTypes) > 0 {
+	if len(filter.TransactionTypes) > 0 {
 		// Generate placeholders for the number of transaction types
-		placeholders := make([]string, len(filter.transactionTypes))
-		for i := range filter.transactionTypes {
+		placeholders := make([]string, len(filter.TransactionTypes))
+		for i := range filter.TransactionTypes {
 			placeholders[i] = "?"
 		}
 
@@ -126,7 +126,7 @@ func (r *TransactionRepository) GetTransactions(
 		query += ` AND transaction_type IN (` + strings.Join(placeholders, ",") + `)`
 
 		// Append all transaction type values to the args slice
-		for _, transactionType := range filter.transactionTypes {
+		for _, transactionType := range filter.TransactionTypes {
 			args = append(args, transactionType)
 		}
 	}

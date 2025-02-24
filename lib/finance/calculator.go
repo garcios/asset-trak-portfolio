@@ -13,6 +13,7 @@ type Trade struct {
 	Commission   Money   // Trade commission
 	TradeType    string  // Trade type e.g. BUY or SELL
 	CurrencyRate float64 // Exchange rate at transaction date
+	AmountCash   Money   // Dividend
 }
 
 // Investment represents an investment holding.
@@ -183,4 +184,25 @@ func CalculateTotalDividendGainPercentage(investments []*Investment) float64 {
 
 	// Round to two decimal places
 	return math.Round(totalPercentage*100) / 100
+}
+
+// CalculateTotalDividendAndReturn computes the total dividend amount and return percentage.
+func CalculateTotalDividendAndReturn(trades []*Trade, totalCost float64) (float64, float64) {
+	var totalDividends float64
+
+	// Sum up the dividends from AmountCash
+	for _, trade := range trades {
+		if trade.AmountCash.Amount > 0 {
+			totalDividends += trade.AmountCash.Amount
+		}
+	}
+
+	// Calculate return percentage (Total Dividends / Total Value * 100)
+	var returnPct float64
+	if totalCost > 0 {
+		returnPct = (totalDividends / totalCost) * 100
+		returnPct = math.Round(returnPct*100) / 100
+	}
+
+	return totalDividends, returnPct
 }

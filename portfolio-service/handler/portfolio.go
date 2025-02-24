@@ -6,6 +6,7 @@ import (
 	"github.com/garcios/asset-trak-portfolio/lib/finance"
 	"github.com/garcios/asset-trak-portfolio/portfolio-service/db"
 	"github.com/garcios/asset-trak-portfolio/portfolio-service/model"
+	"github.com/garcios/asset-trak-portfolio/portfolio-service/service"
 	"log"
 	"sort"
 	"time"
@@ -151,8 +152,9 @@ func (h *Transaction) GetHoldings(
 		}
 
 		dbFilter := db.TransactionFilter{
-			AccountID: req.GetAccountId(),
-			AssetID:   s.AssetID,
+			AccountID:        req.GetAccountId(),
+			AssetID:          s.AssetID,
+			TransactionTypes: []string{service.TransactionTypeBuy, service.TransactionTypeSell},
 		}
 
 		txns, err := h.transactionManager.GetTransactions(ctx, dbFilter)
@@ -165,8 +167,17 @@ func (h *Transaction) GetHoldings(
 
 		totalCost := h.computeTotalCost(trades, targetCurrency)
 		capitalReturn := h.computeCapitalReturn(totalCost.Amount, totalValue)
-		dividendReturn := h.computeDividendReturn(trades)
 		currencyReturn := h.computeCurrencyReturn(trades)
+
+		dbFilterDiv := db.TransactionFilter{
+			AccountID:        req.GetAccountId(),
+			AssetID:          s.AssetID,
+			TransactionTypes: []string{service.TransactionTypeDividend},
+		}
+
+		dividends, err := h.transactionManager.GetTransactions(ctx, dbFilterDiv)
+		tradesDiv := toTrades(dividends, currencyRates.ExchangeRate)
+		dividendReturn := h.computeDividendReturn(tradesDiv, totalCost.Amount)
 
 		investment := &pb.Investment{
 			AssetSymbol: s.AssetSymbol,
@@ -223,11 +234,13 @@ func (h *Transaction) computeCapitalReturn(totalCost, totalValue float64) *pb.In
 	}
 }
 
-func (h *Transaction) computeDividendReturn(trades []*finance.Trade) *pb.InvestmentReturn {
+func (h *Transaction) computeDividendReturn(trades []*finance.Trade, totalCost float64) *pb.InvestmentReturn {
+	amt, pct := finance.CalculateTotalDividendAndReturn(trades, totalCost)
+
 	return &pb.InvestmentReturn{
-		Amount:           0,
+		Amount:           amt,
 		CurrencyCode:     targetCurrency,
-		ReturnPercentage: 0,
+		ReturnPercentage: pct,
 	}
 }
 
@@ -257,6 +270,7 @@ func toTrades(txns []*model.Transaction, currencyRate float64) []*finance.Trade 
 			Price:        finance.Money{Amount: txn.TradePrice, CurrencyCode: txn.TradePriceCurrencyCode},
 			Commission:   finance.Money{Amount: txn.BrokerageFee, CurrencyCode: txn.FeeCurrencyCode},
 			CurrencyRate: currencyRate,
+			AmountCash:   finance.Money{Amount: txn.AmountCash, CurrencyCode: txn.AmountCurrencyCode},
 		}
 		trades = append(trades, trade)
 	}
