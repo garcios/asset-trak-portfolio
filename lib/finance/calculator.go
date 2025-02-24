@@ -3,17 +3,19 @@ package finance
 import (
 	"log"
 	"math"
+	"time"
 )
 
 // Trade represents a stock purchase transaction.
 type Trade struct {
-	AssetID      string  // Asset ID
-	Quantity     float64 // Number of shares bought
-	Price        Money   // Price per share
-	Commission   Money   // Trade commission
-	TradeType    string  // Trade type e.g. BUY or SELL
-	CurrencyRate float64 // Exchange rate at transaction date
-	AmountCash   Money   // Dividend
+	AssetID         string    // Asset ID
+	Quantity        float64   // Number of shares bought
+	Price           Money     // Price per share
+	Commission      Money     // Trade commission
+	TradeType       string    // Trade type e.g. BUY or SELL
+	CurrencyRate    float64   // Exchange rate at transaction date
+	AmountCash      Money     // Dividend
+	TransactionDate time.Time // The transaction date
 }
 
 // Investment represents an investment holding.
@@ -159,7 +161,7 @@ func CalculateTotalCurrencyGainPercentage(investments []*Investment) float64 {
 	totalPercentage := (totalCurrencyGain / totalValue) * 100
 
 	// Round to two decimal places
-	return math.Round(totalPercentage*100) / 100
+	return ToTwoDecimalPlaces(totalPercentage)
 }
 
 // CalculateTotalDividendGainPercentage calculates the total return percentage for dividend gains
@@ -183,7 +185,7 @@ func CalculateTotalDividendGainPercentage(investments []*Investment) float64 {
 	totalPercentage := (totalDividendGain / totalValue) * 100
 
 	// Round to two decimal places
-	return math.Round(totalPercentage*100) / 100
+	return ToTwoDecimalPlaces(totalPercentage)
 }
 
 // CalculateTotalDividendAndReturn computes the total dividend amount and return percentage.
@@ -200,8 +202,7 @@ func CalculateTotalDividendAndReturn(trades []*Trade, totalCost float64) (float6
 	// Calculate return percentage (Total Dividends / Total Cost * 100)
 	var returnPct float64
 	if totalCost > 0 {
-		returnPct = (totalDividends / totalCost) * 100
-		returnPct = math.Round(returnPct*100) / 100
+		returnPct = ToTwoDecimalPlaces((totalDividends / totalCost) * 100)
 	}
 
 	return totalDividends, returnPct
@@ -235,9 +236,13 @@ func CalculateCurrencyReturns(trades []*Trade, currencyRate float64, targetCurre
 	// Calculate the percentage currency return
 	var currencyReturnPct float64
 	if totalBaseValue > 0 {
-		currencyReturnPct = (currencyReturn / totalBaseValue) * 100
-		currencyReturnPct = math.Round(currencyReturnPct*100) / 100
+		currencyReturnPct = ToTwoDecimalPlaces((currencyReturn / totalBaseValue) * 100)
 	}
 
 	return currencyReturn, currencyReturnPct
+}
+
+// ToTwoDecimalPlaces takes a float64 value and returns it rounded to 2 decimal places.
+func ToTwoDecimalPlaces(value float64) float64 {
+	return math.Round(value*100) / 100
 }
