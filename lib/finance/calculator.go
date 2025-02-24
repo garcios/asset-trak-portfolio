@@ -197,7 +197,7 @@ func CalculateTotalDividendAndReturn(trades []*Trade, totalCost float64) (float6
 		}
 	}
 
-	// Calculate return percentage (Total Dividends / Total Value * 100)
+	// Calculate return percentage (Total Dividends / Total Cost * 100)
 	var returnPct float64
 	if totalCost > 0 {
 		returnPct = (totalDividends / totalCost) * 100
