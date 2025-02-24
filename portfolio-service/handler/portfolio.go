@@ -167,7 +167,7 @@ func (h *Transaction) GetHoldings(
 
 		totalCost := h.computeTotalCost(trades, targetCurrency)
 		capitalReturn := h.computeCapitalReturn(totalCost.Amount, totalValue)
-		currencyReturn := h.computeCurrencyReturn(trades)
+		currencyReturn := h.computeCurrencyReturn(trades, currencyRates.ExchangeRate)
 
 		dbFilterDiv := db.TransactionFilter{
 			AccountID:        req.GetAccountId(),
@@ -244,11 +244,13 @@ func (h *Transaction) computeDividendReturn(trades []*finance.Trade, totalCost f
 	}
 }
 
-func (h *Transaction) computeCurrencyReturn(trades []*finance.Trade) *pb.InvestmentReturn {
+func (h *Transaction) computeCurrencyReturn(trades []*finance.Trade, currencyRate float64) *pb.InvestmentReturn {
+	amt, pct := finance.CalculateCurrencyReturns(trades, currencyRate, targetCurrency)
+
 	return &pb.InvestmentReturn{
-		Amount:           0,
+		Amount:           amt,
 		CurrencyCode:     targetCurrency,
-		ReturnPercentage: 0,
+		ReturnPercentage: pct,
 	}
 }
 
@@ -266,10 +268,10 @@ func toTrades(txns []*model.Transaction, currencyRate float64) []*finance.Trade 
 	for _, txn := range txns {
 		trade := &finance.Trade{
 			AssetID:      txn.AssetID,
-			Quantity:     int(txn.Quantity),
+			Quantity:     txn.Quantity,
 			Price:        finance.Money{Amount: txn.TradePrice, CurrencyCode: txn.TradePriceCurrencyCode},
 			Commission:   finance.Money{Amount: txn.BrokerageFee, CurrencyCode: txn.FeeCurrencyCode},
-			CurrencyRate: currencyRate,
+			CurrencyRate: 1 / txn.ExchangeRate,
 			AmountCash:   finance.Money{Amount: txn.AmountCash, CurrencyCode: txn.AmountCurrencyCode},
 		}
 		trades = append(trades, trade)

@@ -8,7 +8,7 @@ import (
 // Trade represents a stock purchase transaction.
 type Trade struct {
 	AssetID      string  // Asset ID
-	Quantity     int     // Number of shares bought
+	Quantity     float64 // Number of shares bought
 	Price        Money   // Price per share
 	Commission   Money   // Trade commission
 	TradeType    string  // Trade type e.g. BUY or SELL
@@ -37,7 +37,7 @@ func CalculateAveragePrice(
 	targetCurrency string,
 ) float64 {
 	var totalCost float64
-	var totalShares int
+	var totalShares float64
 
 	for _, trade := range trades {
 		assetPriceRate := 1.0
@@ -205,4 +205,39 @@ func CalculateTotalDividendAndReturn(trades []*Trade, totalCost float64) (float6
 	}
 
 	return totalDividends, returnPct
+}
+
+// CalculateCurrencyReturns calculates the total currency return amount and percentage.
+func CalculateCurrencyReturns(trades []*Trade, currencyRate float64, targetCurrency string) (float64, float64) {
+	var totalCurrencyAdjustedValue float64
+	var totalBaseValue float64
+
+	// Compute the base value and the currency-adjusted value
+	for _, trade := range trades {
+		if trade.Price.CurrencyCode == targetCurrency {
+			continue
+		}
+
+		// Calculate the value in the target currency based on provided currency rate
+		currencyAdjustedAmount := trade.Quantity * trade.Price.Amount * currencyRate
+
+		// Total value based on the currency rate on trade date
+		baseAmount := trade.Quantity * trade.Price.Amount * trade.CurrencyRate
+
+		// Sum up the total values
+		totalCurrencyAdjustedValue += currencyAdjustedAmount
+		totalBaseValue += baseAmount
+	}
+
+	// Calculate the currency return amount
+	currencyReturn := totalCurrencyAdjustedValue - totalBaseValue
+
+	// Calculate the percentage currency return
+	var currencyReturnPct float64
+	if totalBaseValue > 0 {
+		currencyReturnPct = (currencyReturn / totalBaseValue) * 100
+		currencyReturnPct = math.Round(currencyReturnPct*100) / 100
+	}
+
+	return currencyReturn, currencyReturnPct
 }
