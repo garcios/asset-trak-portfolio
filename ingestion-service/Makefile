@@ -8,6 +8,9 @@ init:
 tidy:
 	go mod tidy
 
+lint:
+	golangci-lint run
+
 truncate-assets:
 	DBUSER=${DB_USER} DBPASS=${DB_PASSWORD} go run cmd/main.go -processor=truncateAsset
 
@@ -35,5 +38,5 @@ proto:
 docker:
 	podman build -t asset-price-service:1.0 .
 
-.PHONY: init tidy  run  proto docker truncate-assets truncate-asset-prices ingest-asset ingest-asset-prices ingest-currency-rates
+.PHONY: init tidy  run  proto docker truncate-assets truncate-asset-prices ingest-asset ingest-asset-prices ingest-currency-rates lint
 

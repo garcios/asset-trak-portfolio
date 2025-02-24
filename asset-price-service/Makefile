@@ -8,6 +8,9 @@ init:
 tidy:
 	go mod tidy
 
+lint:
+	golangci-lint run
+
 run:
 	DBUSER=${DB_USER} DBPASS=${DB_PASSWORD} go run cmd/main.go
 
@@ -17,5 +20,5 @@ proto:
 docker:
 	podman build -t asset-price-service:1.0 .
 
-.PHONY: init tidy run  proto docker
+.PHONY: init tidy run  proto docker lint
 

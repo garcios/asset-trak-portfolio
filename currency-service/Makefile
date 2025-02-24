@@ -8,6 +8,9 @@ init:
 tidy:
 	go mod tidy
 
+lint:
+	golangci-lint run
+
 run:
 	DBUSER=${DB_USER} DBPASS=${DB_PASSWORD} go run cmd/main.go
 
@@ -20,5 +23,5 @@ docker:
 push:
 	minikube image tag localhost/currency-service:1.0 localhost/currency-service:latest &&  minikube image push localhost/currency-service:latest
 
-.PHONY: tidy run proto docker
+.PHONY: tidy run proto docker lint
 
