@@ -134,7 +134,8 @@ func (s PerformanceService) CalculateDailyHistoricalValueAndCost(
 			commissionExchangeRateOnTradeDate, err := getCachedValue(
 				ctx,
 				s.cacheClient,
-				commissionExchangeRateKey, func() (float64, error) {
+				commissionExchangeRateKey,
+				func() (float64, error) {
 					return getExchangeRate(trade.Commission.CurrencyCode, targetCurrency, tradeDate)
 				}, cacheExpiration)
 			if err != nil {
