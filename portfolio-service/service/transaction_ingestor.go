@@ -15,14 +15,16 @@ import (
 )
 
 const (
-	fieldLength         = 8
-	TransactionTypeBuy  = "BUY"
-	TransactionTypeSell = "SELL"
+	fieldLength          = 8
+	TransactionTypeBuy   = "BUY"
+	TransactionTypeSell  = "SELL"
+	TransactionTypeSplit = "SPLIT"
 )
 
 var validTransactionTypes = map[string]struct{}{
-	TransactionTypeBuy:  {},
-	TransactionTypeSell: {},
+	TransactionTypeBuy:   {},
+	TransactionTypeSell:  {},
+	TransactionTypeSplit: {},
 }
 
 type ITransactionManager interface {
