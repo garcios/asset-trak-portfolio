@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"fmt"
 	"github.com/garcios/asset-trak-portfolio/lib/finance"
 	"testing"
@@ -142,7 +143,17 @@ func TestCalculateDailyHistoricalValueAndCost(t *testing.T) {
 	// Execute test cases
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, _ := CalculateDailyHistoricalValueAndCost(tt.trades, tt.startDate, tt.endDate, tt.targetCurrency, mockExchangeRate, mockAssetPrice)
+			mockRedisClient := NewMockRedisClient()
+			s := NewPerformanceService(mockRedisClient)
+			result, _ := s.CalculateDailyHistoricalValueAndCost(
+				context.Background(),
+				tt.trades,
+				tt.startDate,
+				tt.endDate,
+				tt.targetCurrency,
+				mockExchangeRate,
+				mockAssetPrice,
+			)
 			if len(result) != len(tt.expected) {
 				t.Errorf("expected %d records, got %d", len(tt.expected), len(result))
 			}
