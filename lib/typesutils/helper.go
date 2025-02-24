@@ -7,12 +7,16 @@ import (
 	"time"
 )
 
-func GetDateValue(dateString string) (*time.Time, error) {
+func GetDateValue(dateString string, format string) (*time.Time, error) {
 	if dateString == "" {
 		return nil, nil
 	}
 
-	dateValue, err := time.Parse("2006-01-02", dateString)
+	if format == "" {
+		format = "2006-01-02"
+	}
+
+	dateValue, err := time.Parse(format, dateString)
 	if err != nil {
 		return nil, err
 	}

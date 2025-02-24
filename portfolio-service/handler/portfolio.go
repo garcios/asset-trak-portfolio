@@ -254,8 +254,8 @@ func toTrades(txns []*model.Transaction, currencyRate float64) []*finance.Trade 
 		trade := &finance.Trade{
 			AssetID:      txn.AssetID,
 			Quantity:     int(txn.Quantity),
-			Price:        finance.Money{Amount: txn.TradePrice, CurrencyCode: txn.AssetPriceCurrencyCode},
-			Commission:   finance.Money{Amount: txn.TradeCommission, CurrencyCode: txn.CommissionCurrencyCode},
+			Price:        finance.Money{Amount: txn.TradePrice, CurrencyCode: txn.TradePriceCurrencyCode},
+			Commission:   finance.Money{Amount: txn.BrokerageFee, CurrencyCode: txn.FeeCurrencyCode},
 			CurrencyRate: currencyRate,
 		}
 		trades = append(trades, trade)

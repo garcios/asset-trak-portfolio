@@ -14,12 +14,19 @@ CREATE TABLE asset (
 CREATE TABLE transaction (
   id VARCHAR(36) PRIMARY KEY,
   account_id VARCHAR(36) NOT NULL,
-  asset_id VARCHAR(36)  NOT NULL,
-  transaction_type VARCHAR(10)  NOT NULL,
-  transaction_date DATE  NOT NULL,
-  quantity DECIMAL(15, 4)  NOT NULL,
-  price DECIMAL(15, 4)  NOT NULL,
-  currency_code   VARCHAR(3)  NOT NULL,
+  asset_id VARCHAR(36),  -- Optional: Associated with an asset (e.g., for dividends, buy/sell)
+  transaction_type VARCHAR(10)  NOT NULL, -- E.g., "BUY", "SELL", "DIVIDEND", "INTEREST"
+  transaction_date DATE  NOT NULL, -- trade date or date of dividend payout
+  quantity DECIMAL(15, 4), -- Amount of shares or units (optional for non-asset transactions)
+  trade_price DECIMAL(15, 4), -- Optional: purchase or sell price
+  trade_price_currency_code VARCHAR(3), -- ISO currency code of the transaction price
+  brokerage_fee DECIMAL(15, 4), -- Fee charged for processing the transaction
+  fee_currency_code VARCHAR(3), -- ISO currency code for the brokerage fee
+  amount_cash DECIMAL(15, 4), -- Optional: Cash amount (e.g., for dividends)
+  amount_currency_code VARCHAR(3),  -- ISO currency code for cash amount
+  exchange_rate DECIMAL(15, 8) NOT NULL, -- Conversion rate for currency
+  withheld_tax_amount DECIMAL(15, 4), -- Optional: Tax withheld (e.g., for dividends)
+  withheld_tax_currency_code VARCHAR(3),  -- ISO currency code for tax withheld
   FOREIGN KEY (account_id) REFERENCES account(id),
   FOREIGN KEY (asset_id) REFERENCES asset(id)
 );

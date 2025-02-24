@@ -24,14 +24,16 @@ import (
 )
 
 const (
-	transactionIngestorProcessor = "transactionIngestor"
-	truncateProcessor            = "truncate"
-	portfolioServiceName         = "portfolio-service"
-	currencyServiceName          = "currency-service"
+	tradesIngestorProcessor    = "tradesIngestor"
+	dividendsIngestorProcessor = "dividendsIngestor"
+	truncateProcessor          = "truncate"
+	portfolioServiceName       = "portfolio-service"
+	currencyServiceName        = "currency-service"
 )
 
 func main() {
 	processor := flag.String("processor", "", "the processor to run")
+	accountID := flag.String("accountID", "", "the account ID to process")
 	flag.Parse()
 
 	cfg, err := readConfig()
@@ -65,11 +67,27 @@ func main() {
 		&cfg,
 	)
 
+	dividendIngestor := service.NewDividendIngestor(
+		transactionRepo,
+		accountRepo,
+		assetRepo,
+		portfolioRepo,
+		transactor,
+		&cfg,
+	)
+
 	switch *processor {
-	case transactionIngestorProcessor:
-		err := transactionIngestor.ProcessTransactions(ctx)
+	case tradesIngestorProcessor:
+		err := transactionIngestor.ProcessTrades(ctx, *accountID)
 		if err != nil {
 			log.Fatalf("failed to process transaction ingestor: %v", err)
+		}
+
+		return
+	case dividendsIngestorProcessor:
+		err := dividendIngestor.ProcessDividends(ctx, *accountID)
+		if err != nil {
+			log.Fatalf("failed to process dividend ingestor: %v", err)
 		}
 
 		return

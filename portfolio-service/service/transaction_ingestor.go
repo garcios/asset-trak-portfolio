@@ -5,27 +5,25 @@ import (
 	"fmt"
 	"github.com/Thiht/transactor"
 	"github.com/garcios/asset-trak-portfolio/lib/excel"
-	"github.com/garcios/asset-trak-portfolio/lib/typesutils"
+	lib "github.com/garcios/asset-trak-portfolio/lib/typesutils"
 	"github.com/garcios/asset-trak-portfolio/portfolio-service/db"
 	"github.com/garcios/asset-trak-portfolio/portfolio-service/model"
 	"github.com/google/uuid"
 	"github.com/patrickmn/go-cache"
 	"log"
-	"time"
+	"strings"
 )
 
 const (
-	fieldLength = 8
+	fieldLength         = 8
+	TransactionTypeBuy  = "BUY"
+	TransactionTypeSell = "SELL"
 )
 
-type allCache struct {
-	assets *cache.Cache
+var validTransactionTypes = map[string]struct{}{
+	TransactionTypeBuy:  {},
+	TransactionTypeSell: {},
 }
-
-const (
-	defaultExpiration = 5 * time.Minute
-	purgeTime         = 10 * time.Minute
-)
 
 type ITransactionManager interface {
 	AddTransaction(ctx context.Context, rec *model.Transaction) error
@@ -100,12 +98,12 @@ func (ingestor *TransactionIngestor) Truncate(ctx context.Context) error {
 	return nil
 }
 
-func (ingestor *TransactionIngestor) ProcessTransactions(
+func (ingestor *TransactionIngestor) ProcessTrades(
 	ctx context.Context,
+	accountID string,
 ) error {
-	log.Println("Processing transactions...")
+	log.Println("Processing trades...")
 
-	accountID := ingestor.cfg.Account.ID
 	filePath := ingestor.cfg.Trades.Path
 	tabName := ingestor.cfg.Trades.TabName
 	skipRows := ingestor.cfg.Trades.SkipRows
@@ -141,6 +139,10 @@ func (ingestor *TransactionIngestor) ProcessTransactions(
 			return err
 		}
 
+		if !isValidTransactionType(transaction.TransactionType) {
+			continue
+		}
+
 		// populate IDs
 		transaction.ID = uuid.New().String()
 		transaction.AccountID = accountID
@@ -167,31 +169,57 @@ func (ingestor *TransactionIngestor) mapColumnsToTransaction(row []string) (*mod
 		return nil, fmt.Errorf("unable to retrieve asset with symbol: %s", row[0])
 	}
 
-	transactionDate, err := typesutils.GetDateValue(row[3])
+	transactionDate, err := lib.GetDateValue(row[3], "")
 	if err != nil {
 		displayRow(row)
 		return nil, fmt.Errorf("unable to process transaction date with value: %s", row[3])
 	}
 
-	quantity, err := typesutils.GetFloatValue(row[5])
+	quantity, err := lib.GetFloatValue(row[5])
 	if err != nil {
 		displayRow(row)
 		return nil, fmt.Errorf("unable to process quantity with value: %s", row[5])
 	}
 
-	price, err := typesutils.GetFloatValue(row[6])
+	price, err := lib.GetFloatValue(row[6])
 	if err != nil {
 		displayRow(row)
 		return nil, fmt.Errorf("unable to process price with value: %s", row[6])
 	}
 
+	brokerageFee := 0.0
+	if len(row) > 9 {
+		brokerageFee, err = lib.GetFloatValue(row[9])
+		if err != nil {
+			displayRow(row)
+			return nil, fmt.Errorf("unable to process brokerage fee with value: '%s'", row[9])
+		}
+	}
+
+	feeCurrencyCode := ""
+	if len(row) > 10 {
+		feeCurrencyCode = strings.ToUpper(row[10])
+	}
+
+	exchangeRate := 1.0
+	if len(row) > 11 && strings.ToUpper(strings.TrimSpace(row[11])) != "" {
+		exchangeRate, err = lib.GetFloatValue(row[11])
+		if err != nil {
+			displayRow(row)
+			return nil, fmt.Errorf("unable to process exchange rate with value: %s", row[9])
+		}
+	}
+
 	return &model.Transaction{
 		AssetID:                asset.ID,
-		TransactionType:        typesutils.GetStringValue(row[4]),
+		TransactionType:        strings.ToUpper(lib.GetStringValue(row[4])),
 		TransactionDate:        transactionDate,
 		Quantity:               quantity,
 		TradePrice:             price,
-		AssetPriceCurrencyCode: row[7],
+		TradePriceCurrencyCode: strings.ToUpper(row[7]),
+		BrokerageFee:           brokerageFee,
+		FeeCurrencyCode:        feeCurrencyCode,
+		ExchangeRate:           exchangeRate,
 	}, nil
 }
 
@@ -232,20 +260,7 @@ func (ingestor *TransactionIngestor) addTransaction(ctx context.Context, rec *mo
 	})
 }
 
-// getAsset retrieves an asset by its symbol. If the asset is not found in the cache, it is retrieved from the database.
-func (ingestor *TransactionIngestor) getAsset(assetSymbol string) (*model.Asset, error) {
-	if assetFromCache, ok := ingestor.cache.assets.Get(assetSymbol); ok {
-		log.Printf("found asset from cache: %v", assetSymbol)
-		return assetFromCache.(*model.Asset), nil
-	}
-
-	log.Printf("retrieving asset from DB: %v", assetSymbol)
-	asset, err := ingestor.AssetManager.FindAssetBySymbol(assetSymbol)
-	if err != nil {
-		return nil, err
-	}
-
-	ingestor.cache.assets.Set(assetSymbol, asset, cache.DefaultExpiration)
-
-	return asset, nil
+func isValidTransactionType(transactionType string) bool {
+	_, valid := validTransactionTypes[transactionType]
+	return valid
 }

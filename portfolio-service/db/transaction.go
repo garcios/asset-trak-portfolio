@@ -35,8 +35,15 @@ func (r *TransactionRepository) AddTransaction(ctx context.Context, rec *model.T
 		transaction_type,
 		transaction_date,
 		quantity,
-		price,
-		currency_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+		trade_price,
+		trade_price_currency_code,
+	    brokerage_fee,
+	    fee_currency_code,
+	    amount_cash,
+	    amount_currency_code,            
+	    exchange_rate,
+	    withheld_tax_amount,
+	    withheld_tax_currency_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
 	_, err := r.dbGetter(ctx).Exec(insertQuery,
 		rec.ID,
@@ -46,7 +53,14 @@ func (r *TransactionRepository) AddTransaction(ctx context.Context, rec *model.T
 		rec.TransactionDate,
 		rec.Quantity,
 		rec.TradePrice,
-		rec.AssetPriceCurrencyCode,
+		rec.TradePriceCurrencyCode,
+		rec.BrokerageFee,
+		rec.FeeCurrencyCode,
+		rec.AmountCash,
+		rec.AmountCurrencyCode,
+		rec.ExchangeRate,
+		rec.WithheldTaxAmount,
+		rec.WithheldTaxCurrencyCode,
 	)
 	if err != nil {
 		return fmt.Errorf("AddTransaction: %v", err)
@@ -68,7 +82,22 @@ func (r *TransactionRepository) GetTransactions(
 	ctx context.Context,
 	filter TransactionFilter,
 ) ([]*model.Transaction, error) {
-	query := `SELECT id, account_id, asset_id, transaction_type, transaction_date, quantity, price, currency_code FROM transaction WHERE account_id = ?`
+	query := `SELECT id,
+       account_id,
+       asset_id,
+       transaction_type,
+       transaction_date,
+       quantity,
+       trade_price, 
+       trade_price_currency_code, 
+       brokerage_fee,
+       fee_currency_code,
+       amount_cash,
+       amount_currency_code,
+       exchange_rate,
+       withheld_tax_amount,
+       withheld_tax_currency_code
+       FROM transaction WHERE account_id = ?`
 	args := []interface{}{filter.AccountID}
 
 	if filter.AssetID != "" {
@@ -123,7 +152,7 @@ func (r *TransactionRepository) GetTransactions(
 	}
 	transactions := make([]*model.Transaction, 0)
 
-	var dateStr string
+	var transactionDateStr string
 	for rows.Next() {
 		var transaction model.Transaction
 		if err := rows.Scan(
@@ -131,15 +160,22 @@ func (r *TransactionRepository) GetTransactions(
 			&transaction.AccountID,
 			&transaction.AssetID,
 			&transaction.TransactionType,
-			&dateStr,
+			&transactionDateStr,
 			&transaction.Quantity,
 			&transaction.TradePrice,
-			&transaction.AssetPriceCurrencyCode,
+			&transaction.TradePriceCurrencyCode,
+			&transaction.BrokerageFee,
+			&transaction.FeeCurrencyCode,
+			&transaction.AmountCash,
+			&transaction.AmountCurrencyCode,
+			&transaction.ExchangeRate,
+			&transaction.WithheldTaxAmount,
+			&transaction.WithheldTaxCurrencyCode,
 		); err != nil {
 			return nil, fmt.Errorf("GetTransactions: %v", err)
 		}
 
-		convertedDate, err := time.Parse("2006-01-02", dateStr)
+		convertedDate, err := time.Parse("2006-01-02", transactionDateStr)
 		if err != nil {
 			return nil, fmt.Errorf("failed to parse transaction_date: %v", err)
 		}

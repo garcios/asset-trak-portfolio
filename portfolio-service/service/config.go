@@ -1,13 +1,8 @@
 package service
 
 type Config struct {
-	Account   Account   `toml:"account"`
 	Trades    Trades    `toml:"trades"`
 	Dividends Dividends `toml:"dividends"`
-}
-
-type Account struct {
-	ID string `toml:"id"`
 }
 
 type Trades struct {
