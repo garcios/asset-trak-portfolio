@@ -180,6 +180,7 @@ sequenceDiagram
 - ChatGPT <https://chatgpt.com/>
 - Mermaid <https://github.com/mermaid-js/mermaid>
 - Github Project Planning Tool <https://docs.github.com/en/issues/planning-and-tracking-with-projects/learning-about-projects/about-projects>
+- Golang-CI Lint <https://golangci-lint.run/>
 
 ## References
 - <https://go.dev/doc/tutorial/database-access>
