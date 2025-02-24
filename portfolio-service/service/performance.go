@@ -5,9 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"time"
+
 	"github.com/garcios/asset-trak-portfolio/lib/finance"
 	"github.com/go-redis/redis/v8"
-	"time"
 )
 
 const (
@@ -113,11 +114,33 @@ func (s PerformanceService) CalculateDailyHistoricalValueAndCost(
 			}
 
 			// Define cache keys
-			priceExchangeRateKey := fmt.Sprintf("exchangeRate:%s:%s:%s", trade.Price.CurrencyCode, targetCurrency, tradeDate.Format("2006-01-02"))
-			commissionExchangeRateKey := fmt.Sprintf("exchangeRate:%s:%s:%s", trade.Commission.CurrencyCode, targetCurrency, tradeDate.Format("2006-01-02"))
-			currentDayExchangeRateKey := fmt.Sprintf("exchangeRate:%s:%s:%s", trade.Price.CurrencyCode, targetCurrency, currentDay.Format("2006-01-02"))
-			assetPriceOnTradeDateKey := fmt.Sprintf("assetPrice:%s:%s", trade.AssetID, tradeDate.Format("2006-01-02"))
-			assetPriceOnCurrentDayKey := fmt.Sprintf("assetPrice:%s:%s", trade.AssetID, currentDay.Format("2006-01-02"))
+			priceExchangeRateKey := fmt.Sprintf("exchangeRate:%s:%s:%s",
+				trade.Price.CurrencyCode,
+				targetCurrency,
+				tradeDate.Format("2006-01-02"),
+			)
+
+			commissionExchangeRateKey := fmt.Sprintf("exchangeRate:%s:%s:%s",
+				trade.Commission.CurrencyCode,
+				targetCurrency,
+				tradeDate.Format("2006-01-02"),
+			)
+
+			currentDayExchangeRateKey := fmt.Sprintf("exchangeRate:%s:%s:%s",
+				trade.Price.CurrencyCode,
+				targetCurrency,
+				currentDay.Format("2006-01-02"),
+			)
+
+			assetPriceOnTradeDateKey := fmt.Sprintf("assetPrice:%s:%s",
+				trade.AssetID,
+				tradeDate.Format("2006-01-02"),
+			)
+
+			assetPriceOnCurrentDayKey := fmt.Sprintf("assetPrice:%s:%s",
+				trade.AssetID,
+				currentDay.Format("2006-01-02"),
+			)
 
 			// Get exchange rates and asset prices from cache (or compute and cache them)
 			priceExchangeRateOnTradeDate, err := getCachedValue(
@@ -126,7 +149,9 @@ func (s PerformanceService) CalculateDailyHistoricalValueAndCost(
 				priceExchangeRateKey,
 				func() (float64, error) {
 					return getExchangeRate(trade.Price.CurrencyCode, targetCurrency, tradeDate)
-				}, cacheExpiration)
+				},
+				cacheExpiration,
+			)
 			if err != nil {
 				return nil, err
 			}
@@ -137,7 +162,9 @@ func (s PerformanceService) CalculateDailyHistoricalValueAndCost(
 				commissionExchangeRateKey,
 				func() (float64, error) {
 					return getExchangeRate(trade.Commission.CurrencyCode, targetCurrency, tradeDate)
-				}, cacheExpiration)
+				},
+				cacheExpiration,
+			)
 			if err != nil {
 				return nil, err
 			}
@@ -149,7 +176,9 @@ func (s PerformanceService) CalculateDailyHistoricalValueAndCost(
 				currentDayExchangeRateKey,
 				func() (float64, error) {
 					return getExchangeRate(trade.Price.CurrencyCode, targetCurrency, currentDay)
-				}, cacheExpiration)
+				},
+				cacheExpiration,
+			)
 			if err != nil {
 				return nil, err
 			}

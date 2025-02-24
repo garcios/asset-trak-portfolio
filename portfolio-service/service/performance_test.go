@@ -3,9 +3,10 @@ package service
 import (
 	"context"
 	"fmt"
-	"github.com/garcios/asset-trak-portfolio/lib/finance"
 	"testing"
 	"time"
+
+	"github.com/garcios/asset-trak-portfolio/lib/finance"
 )
 
 func TestCalculateDailyHistoricalValueAndCost(t *testing.T) {
