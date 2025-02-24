@@ -163,7 +163,7 @@ func (h *Transaction) GetHoldings(
 			return err
 		}
 
-		trades := toTrades(txns, currencyRates.ExchangeRate)
+		trades := toTrades(txns)
 
 		totalCost := h.computeTotalCost(trades, targetCurrency)
 		capitalReturn := h.computeCapitalReturn(totalCost.Amount, totalValue)
@@ -176,7 +176,7 @@ func (h *Transaction) GetHoldings(
 		}
 
 		dividends, err := h.transactionManager.GetTransactions(ctx, dbFilterDiv)
-		tradesDiv := toTrades(dividends, currencyRates.ExchangeRate)
+		tradesDiv := toTrades(dividends)
 		dividendReturn := h.computeDividendReturn(tradesDiv, totalCost.Amount)
 
 		investment := &pb.Investment{
@@ -262,7 +262,7 @@ func (h *Transaction) computeTotalReturn(capital, dividend, currency *pb.Investm
 	}
 }
 
-func toTrades(txns []*model.Transaction, currencyRate float64) []*finance.Trade {
+func toTrades(txns []*model.Transaction) []*finance.Trade {
 	trades := make([]*finance.Trade, 0)
 
 	for _, txn := range txns {
