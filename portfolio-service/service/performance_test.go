@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"github.com/garcios/asset-trak-portfolio/lib/finance"
 	"testing"
 	"time"
@@ -8,17 +9,33 @@ import (
 
 func TestCalculateDailyHistoricalValueAndCost(t *testing.T) {
 	// Mock implementations
+
+	fxRateMap := make(map[string]float64)
+	fxRateMap[createFXRateKey("USDAUD", time.Date(2023, 10, 15, 0, 0, 0, 0, time.UTC))] = 1.50
+	fxRateMap[createFXRateKey("USDAUD", time.Date(2023, 10, 16, 0, 0, 0, 0, time.UTC))] = 1.60
+	fxRateMap[createFXRateKey("USDAUD", time.Date(2023, 10, 17, 0, 0, 0, 0, time.UTC))] = 1.61
+
 	mockExchangeRate := func(fromCurrency string, toCurrency string, date time.Time) (float64, error) {
-		if fromCurrency == "USD" && toCurrency == "EUR" {
-			return 0.85, nil
+		key := createFXRateKey(fromCurrency+toCurrency, date)
+		if rate, ok := fxRateMap[key]; ok {
+			return rate, nil
 		}
+
 		return 1.0, nil
 	}
 
+	assetPricesMap := make(map[string]float64)
+	// Add example asset prices (key: "assetID:date", value: price)
+	assetPricesMap[createAssetPriceKey("A1", time.Date(2023, 10, 15, 0, 0, 0, 0, time.UTC))] = 90
+	assetPricesMap[createAssetPriceKey("A1", time.Date(2023, 10, 16, 0, 0, 0, 0, time.UTC))] = 100
+	assetPricesMap[createAssetPriceKey("A1", time.Date(2023, 10, 17, 0, 0, 0, 0, time.UTC))] = 101
+
 	mockAssetPrice := func(assetID string, date time.Time) (float64, error) {
-		if assetID == "A1" {
-			return 100.0, nil
+		key := createAssetPriceKey(assetID, date)
+		if price, ok := assetPricesMap[key]; ok {
+			return price, nil
 		}
+
 		return 0.0, nil
 	}
 
@@ -44,17 +61,17 @@ func TestCalculateDailyHistoricalValueAndCost(t *testing.T) {
 			},
 			startDate:      time.Date(2023, 10, 15, 0, 0, 0, 0, time.UTC),
 			endDate:        time.Date(2023, 10, 16, 0, 0, 0, 0, time.UTC),
-			targetCurrency: "EUR",
+			targetCurrency: "AUD",
 			expected: []HistoricalRecord{
 				{
 					Date:  time.Date(2023, 10, 15, 0, 0, 0, 0, time.UTC),
-					Value: 850.0,
-					Cost:  851.7,
+					Value: 1350,
+					Cost:  1353,
 				},
 				{
 					Date:  time.Date(2023, 10, 16, 0, 0, 0, 0, time.UTC),
-					Value: 850.0,
-					Cost:  851.7,
+					Value: 1600,
+					Cost:  1353,
 				},
 			},
 		},
@@ -71,7 +88,7 @@ func TestCalculateDailyHistoricalValueAndCost(t *testing.T) {
 			},
 			startDate:      time.Date(2023, 10, 15, 0, 0, 0, 0, time.UTC),
 			endDate:        time.Date(2023, 10, 20, 0, 0, 0, 0, time.UTC),
-			targetCurrency: "EUR",
+			targetCurrency: "AUD",
 			expected: []HistoricalRecord{
 				{Date: time.Date(2023, 10, 15, 0, 0, 0, 0, time.UTC), Value: 0, Cost: 0},
 				{Date: time.Date(2023, 10, 16, 0, 0, 0, 0, time.UTC), Value: 0, Cost: 0},
@@ -95,28 +112,28 @@ func TestCalculateDailyHistoricalValueAndCost(t *testing.T) {
 					AssetID:         "A1",
 					TransactionDate: time.Date(2023, 10, 16, 0, 0, 0, 0, time.UTC),
 					Quantity:        10,
-					Price:           finance.Money{Amount: 95, CurrencyCode: "USD"},
+					Price:           finance.Money{Amount: 100, CurrencyCode: "USD"},
 					Commission:      finance.Money{Amount: 2, CurrencyCode: "USD"},
 				},
 			},
 			startDate:      time.Date(2023, 10, 15, 0, 0, 0, 0, time.UTC),
 			endDate:        time.Date(2023, 10, 17, 0, 0, 0, 0, time.UTC),
-			targetCurrency: "EUR",
+			targetCurrency: "AUD",
 			expected: []HistoricalRecord{
 				{
 					Date:  time.Date(2023, 10, 15, 0, 0, 0, 0, time.UTC),
-					Value: 425.0,
-					Cost:  425.85,
+					Value: 675,
+					Cost:  676.5,
 				},
 				{
 					Date:  time.Date(2023, 10, 16, 0, 0, 0, 0, time.UTC),
-					Value: 1275.0,
-					Cost:  1277.55,
+					Value: 2400,
+					Cost:  2279.7,
 				},
 				{
 					Date:  time.Date(2023, 10, 17, 0, 0, 0, 0, time.UTC),
-					Value: 1275.0,
-					Cost:  1277.55,
+					Value: 2439.15,
+					Cost:  2279.7,
 				},
 			},
 		},
@@ -136,4 +153,14 @@ func TestCalculateDailyHistoricalValueAndCost(t *testing.T) {
 			}
 		})
 	}
+}
+
+// createAssetPriceKey generates the key in the format "assetID:YYYY-MM-DD"
+func createAssetPriceKey(assetID string, date time.Time) string {
+	return fmt.Sprintf("%s:%s", assetID, date.Format("2006-01-02"))
+}
+
+// createFXRateKey generates the key in the format "currencyPair:YYYY-MM-DD"
+func createFXRateKey(currencyPair string, date time.Time) string {
+	return fmt.Sprintf("%s:%s", currencyPair, date.Format("2006-01-02"))
 }
