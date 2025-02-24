@@ -8,18 +8,18 @@ import (
 
 func TestCalculateDailyHistoricalValueAndCost(t *testing.T) {
 	// Mock implementations
-	mockExchangeRate := func(fromCurrency string, toCurrency string, date time.Time) float64 {
+	mockExchangeRate := func(fromCurrency string, toCurrency string, date time.Time) (float64, error) {
 		if fromCurrency == "USD" && toCurrency == "EUR" {
-			return 0.85
+			return 0.85, nil
 		}
-		return 1.0
+		return 1.0, nil
 	}
 
-	mockAssetPrice := func(assetID string, date time.Time) float64 {
+	mockAssetPrice := func(assetID string, date time.Time) (float64, error) {
 		if assetID == "A1" {
-			return 100.0
+			return 100.0, nil
 		}
-		return 0.0
+		return 0.0, nil
 	}
 
 	// Test cases
@@ -125,7 +125,7 @@ func TestCalculateDailyHistoricalValueAndCost(t *testing.T) {
 	// Execute test cases
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := CalculateDailyHistoricalValueAndCost(tt.trades, tt.startDate, tt.endDate, tt.targetCurrency, mockExchangeRate, mockAssetPrice)
+			result, _ := CalculateDailyHistoricalValueAndCost(tt.trades, tt.startDate, tt.endDate, tt.targetCurrency, mockExchangeRate, mockAssetPrice)
 			if len(result) != len(tt.expected) {
 				t.Errorf("expected %d records, got %d", len(tt.expected), len(result))
 			}

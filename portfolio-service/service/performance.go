@@ -13,10 +13,10 @@ type HistoricalRecord struct {
 }
 
 // ExchangeRateFunc retrieves the exchange rate for a given currency and date.
-type ExchangeRateFunc func(fromCurrency string, toCurrency string, date time.Time) float64
+type ExchangeRateFunc func(fromCurrency string, toCurrency string, date time.Time) (float64, error)
 
 // AssetPriceFunc retrieves the price of an asset on a specific date.
-type AssetPriceFunc func(assetID string, date time.Time) float64
+type AssetPriceFunc func(assetID string, date time.Time) (float64, error)
 
 // CalculateDailyHistoricalValueAndCost calculates the portfolio's daily historical value and cost
 // across a date range while supporting multi-currency and fetching historical asset prices.
@@ -26,7 +26,7 @@ func CalculateDailyHistoricalValueAndCost(
 	targetCurrency string,
 	getExchangeRate ExchangeRateFunc,
 	getAssetPrice AssetPriceFunc,
-) []HistoricalRecord {
+) ([]HistoricalRecord, error) {
 	// Initialize a map to store daily updates for portfolio value and cost
 	dailyRecords := make(map[time.Time]*HistoricalRecord)
 
@@ -48,20 +48,38 @@ func CalculateDailyHistoricalValueAndCost(
 			}
 
 			// Get exchange rates for trade currency and commission currency for the trade date
-			priceExchangeRateOnTradeDate := getExchangeRate(trade.Price.CurrencyCode, targetCurrency, tradeDate)
-			commissionExchangeRateOnTradeDate := getExchangeRate(trade.Commission.CurrencyCode, targetCurrency, tradeDate)
+			priceExchangeRateOnTradeDate, err := getExchangeRate(trade.Price.CurrencyCode, targetCurrency, tradeDate)
+			if err != nil {
+				return nil, err
+			}
+
+			commissionExchangeRateOnTradeDate, err := getExchangeRate(trade.Commission.CurrencyCode, targetCurrency, tradeDate)
+			if err != nil {
+				return nil, err
+			}
 
 			// Get the exchange rate for the target currency for the current day (for value calculation)
-			priceExchangeRateOnCurrentDay := getExchangeRate(trade.Price.CurrencyCode, targetCurrency, currentDay)
+			priceExchangeRateOnCurrentDay, err := getExchangeRate(trade.Price.CurrencyCode, targetCurrency, currentDay)
+			if err != nil {
+				return nil, err
+			}
 
 			// Get the asset price on the transaction date (for cost calculation)
-			assetPriceOnTradeDate := getAssetPrice(trade.AssetID, tradeDate)
+			assetPriceOnTradeDate, err := getAssetPrice(trade.AssetID, tradeDate)
+			if err != nil {
+				return nil, err
+			}
+
 			if assetPriceOnTradeDate == 0 {
 				assetPriceOnTradeDate = trade.Price.Amount // Fallback if no historical price is available
 			}
 
 			// Get the asset price for the current day (for value calculation)
-			assetPriceOnCurrentDay := getAssetPrice(trade.AssetID, currentDay)
+			assetPriceOnCurrentDay, err := getAssetPrice(trade.AssetID, currentDay)
+			if err != nil {
+				return nil, err
+			}
+
 			if assetPriceOnCurrentDay == 0 {
 				assetPriceOnCurrentDay = trade.Price.Amount // Fallback if no price available
 			}
@@ -114,5 +132,5 @@ func CalculateDailyHistoricalValueAndCost(
 		}
 	}
 
-	return result
+	return result, nil
 }
