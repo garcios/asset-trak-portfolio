@@ -280,3 +280,101 @@ func TestCalculateTotalDividendGainPercentage(t *testing.T) {
 		})
 	}
 }
+
+func TestCalculateCurrencyReturns(t *testing.T) {
+	tests := []struct {
+		name                   string
+		trades                 []*Trade
+		currencyRate           float64
+		targetCurrency         string
+		expectedCurrencyReturn float64
+		expectedReturnPct      float64
+	}{
+		{
+			name: "Single trade with currency conversion",
+			trades: []*Trade{
+				{
+					Price: Money{
+						Amount:       100,
+						CurrencyCode: "USD",
+					},
+					Quantity:     10,
+					CurrencyRate: 1.2,
+				},
+			},
+			currencyRate:           1.3,
+			targetCurrency:         "EUR",
+			expectedCurrencyReturn: 100,
+			expectedReturnPct:      8.33, // Rounded value
+		},
+		{
+			name: "Multiple trades with conversions",
+			trades: []*Trade{
+				{
+					Price: Money{
+						Amount:       50,
+						CurrencyCode: "USD",
+					},
+					Quantity:     20,
+					CurrencyRate: 1.1,
+				},
+				{
+					Price: Money{
+						Amount:       30,
+						CurrencyCode: "USD",
+					},
+					Quantity:     15,
+					CurrencyRate: 1.2,
+				},
+			},
+			currencyRate:           1.3,
+			targetCurrency:         "EUR",
+			expectedCurrencyReturn: 245,
+			expectedReturnPct:      14.94, // Rounded value
+		},
+		{
+			name: "Trade with target currency, no conversion",
+			trades: []*Trade{
+				{
+					Price: Money{
+						Amount:       100,
+						CurrencyCode: "EUR",
+					},
+					Quantity:     10,
+					CurrencyRate: 1.0,
+				},
+			},
+			currencyRate:           1.2,
+			targetCurrency:         "EUR",
+			expectedCurrencyReturn: 0,
+			expectedReturnPct:      0,
+		},
+		{
+			name:                   "No trades",
+			trades:                 []*Trade{},
+			currencyRate:           1.5,
+			targetCurrency:         "EUR",
+			expectedCurrencyReturn: 0,
+			expectedReturnPct:      0,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			currencyReturn, returnPct := CalculateCurrencyReturns(tc.trades, tc.currencyRate, tc.targetCurrency)
+
+			if !almostEqual(currencyReturn, tc.expectedCurrencyReturn, 0.01) { // Allow minor precision differences
+				t.Errorf("unexpected currency return: got %v, expected %v", currencyReturn, tc.expectedCurrencyReturn)
+			}
+
+			if !almostEqual(returnPct, tc.expectedReturnPct, 0.01) {
+				t.Errorf("unexpected return percentage: got %v, expected %v", returnPct, tc.expectedReturnPct)
+			}
+		})
+	}
+}
+
+// Helper function to compare floats
+func almostEqual(a, b, tolerance float64) bool {
+	return math.Abs(a-b) <= tolerance
+}
