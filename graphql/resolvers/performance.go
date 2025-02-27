@@ -2,32 +2,31 @@ package resolvers
 
 import (
 	"context"
+	"github.com/garcios/asset-trak-portfolio/graphql/middlewares"
 	"github.com/garcios/asset-trak-portfolio/graphql/models"
 )
 
-func (r *queryResolver) GetHistoricalValues(ctx context.Context, accountID string) ([]*models.PerformanceData, error) {
-	performanceData := []*models.PerformanceData{
-		{
-			TradeDate:    "2021-01-01",
-			Amount:       100,
-			CurrencyCode: "AUD",
-		},
-		{
-			TradeDate: "2021-02-01",
+func (r *queryResolver) GetPerformanceHistory(
+	ctx context.Context,
+	accountID string,
+	startDate string,
+	endDate string,
+) ([]*models.PerformanceData, error) {
+	svcs := middlewares.GetServices(ctx)
+	resp, err := svcs.PortfolioService.GetPerformanceHistory(ctx, accountID, startDate, endDate)
+	if err != nil {
+		return nil, err
+	}
 
-			Amount:       101,
-			CurrencyCode: "AUD",
-		},
-		{
-			TradeDate:    "2021-03-01",
-			Amount:       150,
-			CurrencyCode: "AUD",
-		},
-		{
-			TradeDate:    "2021-04-01",
-			Amount:       120,
-			CurrencyCode: "AUD",
-		},
+	performanceData := make([]*models.PerformanceData, 0, len(resp.GetRecords()))
+
+	for _, item := range resp.GetRecords() {
+		performanceData = append(performanceData, &models.PerformanceData{
+			TradeDate:    item.TradeDate,
+			Cost:         item.Cost,
+			Value:        item.Value,
+			CurrencyCode: item.CurrencyCode,
+		})
 	}
 
 	return performanceData, nil

@@ -70,15 +70,16 @@ type ComplexityRoot struct {
 	}
 
 	PerformanceData struct {
-		Amount       func(childComplexity int) int
+		Cost         func(childComplexity int) int
 		CurrencyCode func(childComplexity int) int
 		TradeDate    func(childComplexity int) int
+		Value        func(childComplexity int) int
 	}
 
 	Query struct {
-		GetHistoricalValues func(childComplexity int, accountID string) int
-		GetHoldingsSummary  func(childComplexity int, accountID string) int
-		GetSummaryTotals    func(childComplexity int, accountID string) int
+		GetHoldingsSummary    func(childComplexity int, accountID string) int
+		GetPerformanceHistory func(childComplexity int, accountID string, startDate string, endDate string) int
+		GetSummaryTotals      func(childComplexity int, accountID string) int
 	}
 
 	SummaryTotals struct {
@@ -93,7 +94,7 @@ type ComplexityRoot struct {
 type QueryResolver interface {
 	GetHoldingsSummary(ctx context.Context, accountID string) ([]*models.Investment, error)
 	GetSummaryTotals(ctx context.Context, accountID string) (*models.SummaryTotals, error)
-	GetHistoricalValues(ctx context.Context, accountID string) ([]*models.PerformanceData, error)
+	GetPerformanceHistory(ctx context.Context, accountID string, startDate string, endDate string) ([]*models.PerformanceData, error)
 }
 
 type executableSchema struct {
@@ -220,12 +221,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.MoneyWithPercentage.Percentage(childComplexity), true
 
-	case "PerformanceData.amount":
-		if e.complexity.PerformanceData.Amount == nil {
+	case "PerformanceData.cost":
+		if e.complexity.PerformanceData.Cost == nil {
 			break
 		}
 
-		return e.complexity.PerformanceData.Amount(childComplexity), true
+		return e.complexity.PerformanceData.Cost(childComplexity), true
 
 	case "PerformanceData.currencyCode":
 		if e.complexity.PerformanceData.CurrencyCode == nil {
@@ -241,17 +242,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.PerformanceData.TradeDate(childComplexity), true
 
-	case "Query.getHistoricalValues":
-		if e.complexity.Query.GetHistoricalValues == nil {
+	case "PerformanceData.value":
+		if e.complexity.PerformanceData.Value == nil {
 			break
 		}
 
-		args, err := ec.field_Query_getHistoricalValues_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.GetHistoricalValues(childComplexity, args["accountId"].(string)), true
+		return e.complexity.PerformanceData.Value(childComplexity), true
 
 	case "Query.getHoldingsSummary":
 		if e.complexity.Query.GetHoldingsSummary == nil {
@@ -264,6 +260,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetHoldingsSummary(childComplexity, args["accountId"].(string)), true
+
+	case "Query.getPerformanceHistory":
+		if e.complexity.Query.GetPerformanceHistory == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getPerformanceHistory_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetPerformanceHistory(childComplexity, args["accountId"].(string), args["startDate"].(string), args["endDate"].(string)), true
 
 	case "Query.getSummaryTotals":
 		if e.complexity.Query.GetSummaryTotals == nil {
@@ -436,14 +444,15 @@ type SummaryTotals {
 
 type PerformanceData{
   tradeDate: String!
-  amount: Float!
+  cost: Float!
+  value: Float!
   currencyCode: String!
 }
 
 type Query {
   getHoldingsSummary(accountId: String!): [Investment!]!
   getSummaryTotals(accountId: String!): SummaryTotals!
-  getHistoricalValues(accountId: String!): [PerformanceData!]!
+  getPerformanceHistory(accountId: String!, startDate:String!, endDate:String!): [PerformanceData!]!
 }
 `, BuiltIn: false},
 }
@@ -476,29 +485,6 @@ func (ec *executionContext) field_Query___type_argsName(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_getHistoricalValues_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
-	var err error
-	args := map[string]any{}
-	arg0, err := ec.field_Query_getHistoricalValues_argsAccountID(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["accountId"] = arg0
-	return args, nil
-}
-func (ec *executionContext) field_Query_getHistoricalValues_argsAccountID(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (string, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("accountId"))
-	if tmp, ok := rawArgs["accountId"]; ok {
-		return ec.unmarshalNString2string(ctx, tmp)
-	}
-
-	var zeroVal string
-	return zeroVal, nil
-}
-
 func (ec *executionContext) field_Query_getHoldingsSummary_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
@@ -515,6 +501,65 @@ func (ec *executionContext) field_Query_getHoldingsSummary_argsAccountID(
 ) (string, error) {
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("accountId"))
 	if tmp, ok := rawArgs["accountId"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_getPerformanceHistory_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Query_getPerformanceHistory_argsAccountID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["accountId"] = arg0
+	arg1, err := ec.field_Query_getPerformanceHistory_argsStartDate(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["startDate"] = arg1
+	arg2, err := ec.field_Query_getPerformanceHistory_argsEndDate(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["endDate"] = arg2
+	return args, nil
+}
+func (ec *executionContext) field_Query_getPerformanceHistory_argsAccountID(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (string, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("accountId"))
+	if tmp, ok := rawArgs["accountId"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_getPerformanceHistory_argsStartDate(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (string, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("startDate"))
+	if tmp, ok := rawArgs["startDate"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_getPerformanceHistory_argsEndDate(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (string, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("endDate"))
+	if tmp, ok := rawArgs["endDate"]; ok {
 		return ec.unmarshalNString2string(ctx, tmp)
 	}
 
@@ -1393,8 +1438,8 @@ func (ec *executionContext) fieldContext_PerformanceData_tradeDate(_ context.Con
 	return fc, nil
 }
 
-func (ec *executionContext) _PerformanceData_amount(ctx context.Context, field graphql.CollectedField, obj *models.PerformanceData) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_PerformanceData_amount(ctx, field)
+func (ec *executionContext) _PerformanceData_cost(ctx context.Context, field graphql.CollectedField, obj *models.PerformanceData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PerformanceData_cost(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -1407,7 +1452,7 @@ func (ec *executionContext) _PerformanceData_amount(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Amount, nil
+		return obj.Cost, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1424,7 +1469,51 @@ func (ec *executionContext) _PerformanceData_amount(ctx context.Context, field g
 	return ec.marshalNFloat2float64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_PerformanceData_amount(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_PerformanceData_cost(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PerformanceData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PerformanceData_value(ctx context.Context, field graphql.CollectedField, obj *models.PerformanceData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PerformanceData_value(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Value, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalNFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_PerformanceData_value(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "PerformanceData",
 		Field:      field,
@@ -1625,8 +1714,8 @@ func (ec *executionContext) fieldContext_Query_getSummaryTotals(ctx context.Cont
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_getHistoricalValues(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_getHistoricalValues(ctx, field)
+func (ec *executionContext) _Query_getPerformanceHistory(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getPerformanceHistory(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -1639,7 +1728,7 @@ func (ec *executionContext) _Query_getHistoricalValues(ctx context.Context, fiel
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetHistoricalValues(rctx, fc.Args["accountId"].(string))
+		return ec.resolvers.Query().GetPerformanceHistory(rctx, fc.Args["accountId"].(string), fc.Args["startDate"].(string), fc.Args["endDate"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1656,7 +1745,7 @@ func (ec *executionContext) _Query_getHistoricalValues(ctx context.Context, fiel
 	return ec.marshalNPerformanceData2ᚕᚖgithubᚗcomᚋgarciosᚋassetᚑtrakᚑportfolioᚋgraphqlᚋmodelsᚐPerformanceDataᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_getHistoricalValues(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_getPerformanceHistory(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -1666,8 +1755,10 @@ func (ec *executionContext) fieldContext_Query_getHistoricalValues(ctx context.C
 			switch field.Name {
 			case "tradeDate":
 				return ec.fieldContext_PerformanceData_tradeDate(ctx, field)
-			case "amount":
-				return ec.fieldContext_PerformanceData_amount(ctx, field)
+			case "cost":
+				return ec.fieldContext_PerformanceData_cost(ctx, field)
+			case "value":
+				return ec.fieldContext_PerformanceData_value(ctx, field)
 			case "currencyCode":
 				return ec.fieldContext_PerformanceData_currencyCode(ctx, field)
 			}
@@ -1681,7 +1772,7 @@ func (ec *executionContext) fieldContext_Query_getHistoricalValues(ctx context.C
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_getHistoricalValues_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_getPerformanceHistory_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -4229,8 +4320,13 @@ func (ec *executionContext) _PerformanceData(ctx context.Context, sel ast.Select
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "amount":
-			out.Values[i] = ec._PerformanceData_amount(ctx, field, obj)
+		case "cost":
+			out.Values[i] = ec._PerformanceData_cost(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "value":
+			out.Values[i] = ec._PerformanceData_value(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -4325,7 +4421,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "getHistoricalValues":
+		case "getPerformanceHistory":
 			field := field
 
 			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
@@ -4334,7 +4430,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_getHistoricalValues(ctx, field)
+				res = ec._Query_getPerformanceHistory(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}

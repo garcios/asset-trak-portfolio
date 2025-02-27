@@ -3,6 +3,7 @@ package service
 type Config struct {
 	Trades    Trades    `toml:"trades"`
 	Dividends Dividends `toml:"dividends"`
+	Redis     Redis     `toml:"redis"`
 }
 
 type Trades struct {
@@ -17,4 +18,11 @@ type Dividends struct {
 	SkipRowsDomestic int    `toml:"skip_rows_domestic"`
 	TabNameForeign   string `toml:"tab_name_foreign"`
 	SkipRowsForeign  int    `toml:"skip_rows_foreign"`
+}
+
+type Redis struct {
+	Host     string `toml:"host"`
+	Port     int    `toml:"port"`
+	DB       int    `toml:"db"`
+	Password string `toml:"password"`
 }

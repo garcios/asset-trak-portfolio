@@ -15,16 +15,16 @@ const (
 	cacheExpiration = 24 * time.Hour
 )
 
-type CacheClient interface {
-	Get(ctx context.Context, key string) (string, error)
-	Set(ctx context.Context, key string, value string, expiration time.Duration) error
+type ICacheClient interface {
+	Get(ctx context.Context, key string) *redis.StringCmd
+	Set(ctx context.Context, key string, value interface{}, expiration time.Duration) *redis.StatusCmd
 }
 
 type PerformanceService struct {
-	cacheClient CacheClient
+	cacheClient ICacheClient
 }
 
-func NewPerformanceService(cacheClient CacheClient) *PerformanceService {
+func NewPerformanceService(cacheClient ICacheClient) *PerformanceService {
 	return &PerformanceService{
 		cacheClient: cacheClient,
 	}
@@ -46,13 +46,13 @@ type AssetPriceFunc func(assetID string, date time.Time) (float64, error)
 // getCachedValue retrieves a cached value or computes and caches it if not present.
 func getCachedValue[T any](
 	ctx context.Context,
-	cacheClient CacheClient,
+	cacheClient ICacheClient,
 	key string,
 	fetchFunc func() (T, error),
 	expiration time.Duration,
 ) (T, error) {
 	// Check Redis cache for the key
-	val, err := cacheClient.Get(ctx, key)
+	val, err := cacheClient.Get(ctx, key).Result()
 	if err == nil {
 		// If found, deserialize and return cached value
 		var result T

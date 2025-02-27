@@ -7,6 +7,7 @@ import (
 	"github.com/BurntSushi/toml"
 	pbc "github.com/garcios/asset-trak-portfolio/currency-service/proto"
 	"github.com/garcios/asset-trak-portfolio/portfolio-service/handler"
+	"github.com/go-redis/redis/v8"
 	"go-micro.dev/v4"
 	"go-micro.dev/v4/logger"
 	"log"
@@ -41,6 +42,14 @@ func main() {
 		log.Fatalf("failed to read config: %v", err)
 	}
 
+	// redis
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     fmt.Sprintf("%s:%d", cfg.Redis.Host, cfg.Redis.Port),
+		Password: cfg.Redis.Password,
+		DB:       cfg.Redis.DB,
+	})
+
+	// database
 	conn, err := mysql.Connect()
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
@@ -75,6 +84,8 @@ func main() {
 		transactor,
 		&cfg,
 	)
+
+	performnaceSvc := service.NewPerformanceService(rdb)
 
 	switch *processor {
 	case tradesIngestorProcessor:
@@ -111,7 +122,7 @@ func main() {
 
 	currencyService := pbc.NewCurrencyService(currencyServiceName, transactionSrv.Client())
 
-	h := handler.New(currencyService, portfolioRepo, transactionRepo)
+	h := handler.New(currencyService, portfolioRepo, transactionRepo, performnaceSvc)
 
 	err = pb.RegisterPortfolioHandler(transactionSrv.Server(), h)
 	if err != nil {

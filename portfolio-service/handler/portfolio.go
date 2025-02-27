@@ -24,11 +24,13 @@ func New(
 	currencyService pbc.CurrencyService,
 	portfolioSummaryManager PortfolioManager,
 	transactionManager TransactionManager,
+	performanceService *service.PerformanceService,
 ) *Transaction {
 	return &Transaction{
 		currencyService:    currencyService,
 		portfolioManager:   portfolioSummaryManager,
 		transactionManager: transactionManager,
+		performanceService: performanceService,
 	}
 }
 
@@ -36,6 +38,7 @@ type Transaction struct {
 	currencyService    pbc.CurrencyService
 	portfolioManager   PortfolioManager
 	transactionManager TransactionManager
+	performanceService *service.PerformanceService
 }
 
 type PortfolioManager interface {

@@ -10,6 +10,9 @@ service Portfolio {
   // GetSummaryTotals provides a summarized view of the totals for a user or account.
   // This typically includes aggregated financial data such as total value, profits, or losses.
   rpc GetSummaryTotals(SummaryTotalsRequest) returns (SummaryTotalsResponse);
+
+  // GetPerformanceHistory provides the historical values and costs of the investments over a period of time.
+  rpc GetPerformanceHistory(PerformanceHistoryRequest) returns (PerformanceHistoryResponse);
 }
 
 // Represents the request to retrieve holdings for a specific account.
@@ -108,4 +111,40 @@ message SummaryTotalsResponse{
 
   // The overall total return, combining capital, dividend, and currency returns.
   InvestmentReturn total_return = 5;
+}
+
+// Represents the request to retrieve historical values for a specific account.
+message PerformanceHistoryRequest {
+  // The unique identifier of the account for which the holdings are to be retrieved.
+  string account_id = 1;
+
+  // The start date for the historical data retrieval period, formatted as "YYYY-MM-DD".
+  // This marks the beginning of the time range for which historical investment data is requested.
+  string start_date = 2;
+
+  // The end date for the historical data retrieval period, formatted as "YYYY-MM-DD".
+  // This marks the conclusion of the time range for which historical investment data is requested.
+  string end_date = 3;
+}
+
+// Represents the response containing historical investment data over a specified period.
+message PerformanceHistoryResponse{
+  // A list of historical records, where each record provides detailed information
+  // about an investment's cost and value on specific dates.
+  repeated HistoricalRecord records = 1;
+}
+
+// Represents the historical record of an investment's data for a specific date.
+message HistoricalRecord{
+  // The date of the trade or valuation, formatted as "YYYY-MM-DD".
+  string trade_date = 1;
+
+  // The total cost of the investment on the specified trade date.
+  double cost =2;
+
+  // The total value of the investment on the specified trade date.
+  double value=3;
+
+  // The ISO currency code (e.g., "USD") associated with the cost and value.
+  string currency_code=4;
 }

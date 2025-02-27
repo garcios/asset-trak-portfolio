@@ -2,6 +2,7 @@ package models
 
 type PerformanceData struct {
 	TradeDate    string  `json:"tradeDate"`
-	Amount       float64 `json:"amount"`
+	Cost         float64 `json:"cost"`
+	Value        float64 `json:"value"`
 	CurrencyCode string  `json:"currencyCode"`
 }

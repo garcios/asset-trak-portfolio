@@ -42,6 +42,8 @@ type PortfolioService interface {
 	// GetSummaryTotals provides a summarized view of the totals for a user or account.
 	// This typically includes aggregated financial data such as total value, profits, or losses.
 	GetSummaryTotals(ctx context.Context, in *SummaryTotalsRequest, opts ...client.CallOption) (*SummaryTotalsResponse, error)
+	// GetPerformanceHistory provides the historical values and costs of the investments over a period of time.
+	GetPerformanceHistory(ctx context.Context, in *PerformanceHistoryRequest, opts ...client.CallOption) (*PerformanceHistoryResponse, error)
 }
 
 type portfolioService struct {
@@ -76,6 +78,16 @@ func (c *portfolioService) GetSummaryTotals(ctx context.Context, in *SummaryTota
 	return out, nil
 }
 
+func (c *portfolioService) GetPerformanceHistory(ctx context.Context, in *PerformanceHistoryRequest, opts ...client.CallOption) (*PerformanceHistoryResponse, error) {
+	req := c.c.NewRequest(c.name, "Portfolio.GetPerformanceHistory", in)
+	out := new(PerformanceHistoryResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Portfolio service
 
 type PortfolioHandler interface {
@@ -85,12 +97,15 @@ type PortfolioHandler interface {
 	// GetSummaryTotals provides a summarized view of the totals for a user or account.
 	// This typically includes aggregated financial data such as total value, profits, or losses.
 	GetSummaryTotals(context.Context, *SummaryTotalsRequest, *SummaryTotalsResponse) error
+	// GetPerformanceHistory provides the historical values and costs of the investments over a period of time.
+	GetPerformanceHistory(context.Context, *PerformanceHistoryRequest, *PerformanceHistoryResponse) error
 }
 
 func RegisterPortfolioHandler(s server.Server, hdlr PortfolioHandler, opts ...server.HandlerOption) error {
 	type portfolio interface {
 		GetHoldings(ctx context.Context, in *HoldingsRequest, out *HoldingsResponse) error
 		GetSummaryTotals(ctx context.Context, in *SummaryTotalsRequest, out *SummaryTotalsResponse) error
+		GetPerformanceHistory(ctx context.Context, in *PerformanceHistoryRequest, out *PerformanceHistoryResponse) error
 	}
 	type Portfolio struct {
 		portfolio
@@ -109,4 +124,8 @@ func (h *portfolioHandler) GetHoldings(ctx context.Context, in *HoldingsRequest,
 
 func (h *portfolioHandler) GetSummaryTotals(ctx context.Context, in *SummaryTotalsRequest, out *SummaryTotalsResponse) error {
 	return h.PortfolioHandler.GetSummaryTotals(ctx, in, out)
+}
+
+func (h *portfolioHandler) GetPerformanceHistory(ctx context.Context, in *PerformanceHistoryRequest, out *PerformanceHistoryResponse) error {
+	return h.PortfolioHandler.GetPerformanceHistory(ctx, in, out)
 }

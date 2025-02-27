@@ -33,12 +33,13 @@ type SummaryTotals {
 
 type PerformanceData{
   tradeDate: String!
-  amount: Float!
+  cost: Float!
+  value: Float!
   currencyCode: String!
 }
 
 type Query {
   getHoldingsSummary(accountId: String!): [Investment!]!
   getSummaryTotals(accountId: String!): SummaryTotals!
-  getHistoricalValues(accountId: String!): [PerformanceData!]!
+  getPerformanceHistory(accountId: String!, startDate:String!, endDate:String!): [PerformanceData!]!
 }
