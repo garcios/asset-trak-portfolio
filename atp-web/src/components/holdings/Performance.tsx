@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Typography,Card, CardContent} from "@mui/material";
-import {Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
+import {CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
 import GraphQLService from "../../services/graphql-service";
 import {PerformanceData} from "../../services/get-performance-numbers";
 
@@ -39,10 +39,13 @@ const Performance: React.FC = () => {
                 <Typography variant="h6" fontWeight="bold" gutterBottom align="left">Performance</Typography>
                 <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={performanceNumbers}>
-                        <XAxis dataKey="tradeDate" />
-                        <YAxis dataKey="amount" />
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="tradeDate"/>
+                        <YAxis/>
                         <Tooltip />
-                        <Line type="monotone" dataKey="amount" stroke="#1976d2" />
+                        <Legend />
+                        <Line type="monotone" dataKey="value" stroke="#8884d8" />
+                        <Line type="monotone" dataKey="cost" stroke="#82ca9d" strokeDasharray="5 5"/>
                     </LineChart>
                 </ResponsiveContainer>
             </CardContent>

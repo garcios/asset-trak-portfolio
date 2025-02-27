@@ -1,8 +1,9 @@
 # Investment Portfolio Navigator
 
-> Initial web ui (last updated on 17 Feb 2025)
+> Initial web ui (last updated on 27 Feb 2025)
 
-![webui-2.png](webui-2.png)
+![webui-4.png](webui-4.png)
+
 
 ## Project Description
 The `Investment Portfolio Navigator` is a `side coding project` aimed at providing individual investors or traders a way to 

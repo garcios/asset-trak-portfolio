@@ -4,7 +4,8 @@ const GET_PERFORMANCE_NUMBERS = gql`
     query GetPerformanceNumbers($accountId: String!){
         getHistoricalValues(accountId: $accountId) {
             tradeDate
-            amount
+            cost
+            value
             currencyCode
         }
     }
@@ -16,7 +17,8 @@ export interface PerformanceDataResponse{
 
 export interface PerformanceData {
     tradeDate: string;
-    amount: number;
+    cost: number;
+    value: number;
     currencyCode: string;
 }
 
