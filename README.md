@@ -160,6 +160,7 @@ sequenceDiagram
 - React.js <https://react.dev/>
 - Vite <https://vite.dev/>
 - Apollo Client <https://www.apollographql.com>
+- Recharts <https://recharts.org/>
 - Material-UI <https://mui.com/material-ui/>
 - API Mocking for Javascript <https://mswjs.io/>
 
