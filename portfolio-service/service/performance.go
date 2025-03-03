@@ -5,8 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"time"
 
+	apm "github.com/garcios/asset-trak-portfolio/asset-price-service/model"
 	"github.com/garcios/asset-trak-portfolio/lib/finance"
 	"github.com/go-redis/redis/v8"
 )
@@ -41,7 +43,7 @@ type HistoricalRecord struct {
 type ExchangeRateFunc func(fromCurrency string, toCurrency string, date time.Time) (float64, error)
 
 // AssetPriceFunc retrieves the price of an asset on a specific date.
-type AssetPriceFunc func(assetID string, date time.Time) (float64, error)
+type AssetPriceFunc func(assetID string, date time.Time) (*apm.AssetPrice, error)
 
 // getCachedValue retrieves a cached value or computes and caches it if not present.
 func getCachedValue[T any](
@@ -84,6 +86,25 @@ func getCachedValue[T any](
 	return result, nil
 }
 
+// serialize converts a Go value to a JSON string, which can be stored in Redis.
+func serialize[T any](value T) (string, error) {
+	// Convert the Go value into a JSON string
+	data, err := json.Marshal(value)
+	if err != nil {
+		return "", fmt.Errorf("failed to serialize value: %w", err)
+	}
+	return string(data), nil
+}
+
+// deserialize converts a JSON string from Redis back into a Go value.
+func deserialize[T any](data string, value *T) error {
+	// Convert the JSON string back into the Go value
+	if err := json.Unmarshal([]byte(data), value); err != nil {
+		return fmt.Errorf("failed to deserialize value: %w", err)
+	}
+	return nil
+}
+
 // CalculateDailyHistoricalValueAndCost calculates the portfolio's daily historical value and cost
 // across a date range while supporting multi-currency and fetching historical asset prices.
 func (s PerformanceService) CalculateDailyHistoricalValueAndCost(
@@ -93,12 +114,17 @@ func (s PerformanceService) CalculateDailyHistoricalValueAndCost(
 	targetCurrency string,
 	getExchangeRate ExchangeRateFunc,
 	getAssetPrice AssetPriceFunc,
-) ([]HistoricalRecord, error) {
+) ([]*HistoricalRecord, error) {
 	// Initialize a map to store daily updates for portfolio value and cost
 	dailyRecords := make(map[time.Time]*HistoricalRecord)
 
 	// Iterate over each trade to update the portfolio data for the trade's date and subsequent days
 	for _, trade := range trades {
+		if trade == nil {
+			continue
+		}
+		
+		log.Printf("trade: %#v\n", trade)
 		tradeDate := trade.TransactionDate // Assume Trade struct has a Date field of type time.Time
 		if tradeDate.Before(startDate) || tradeDate.After(endDate) {
 			continue // Skip trades outside the date range
@@ -189,15 +215,15 @@ func (s PerformanceService) CalculateDailyHistoricalValueAndCost(
 				ctx,
 				s.cacheClient,
 				assetPriceOnTradeDateKey,
-				func() (float64, error) {
+				func() (*apm.AssetPrice, error) {
 					return getAssetPrice(trade.AssetID, tradeDate)
 				}, cacheExpiration)
 			if err != nil {
 				return nil, err
 			}
 
-			if assetPriceOnTradeDate == 0 {
-				assetPriceOnTradeDate = trade.Price.Amount // Fallback if no historical price is available
+			if assetPriceOnTradeDate.Price == 0 {
+				assetPriceOnTradeDate.Price = trade.Price.Amount // Fallback if no historical price is available
 			}
 
 			// Get the asset price for the current day (for value calculation)
@@ -205,20 +231,20 @@ func (s PerformanceService) CalculateDailyHistoricalValueAndCost(
 				ctx,
 				s.cacheClient,
 				assetPriceOnCurrentDayKey,
-				func() (float64, error) {
+				func() (*apm.AssetPrice, error) {
 					return getAssetPrice(trade.AssetID, currentDay)
 				}, cacheExpiration)
 			if err != nil {
 				return nil, err
 			}
 
-			if assetPriceOnCurrentDay == 0 {
-				assetPriceOnCurrentDay = trade.Price.Amount // Fallback if no price available
+			if assetPriceOnCurrentDay.Price == 0 {
+				assetPriceOnCurrentDay.Price = trade.Price.Amount // Fallback if no price available
 			}
 
 			// Convert amounts to the target currency
-			priceInTargetCurrencyForCost := assetPriceOnTradeDate * priceExchangeRateOnTradeDate
-			priceInTargetCurrencyForValue := assetPriceOnCurrentDay * priceExchangeRateOnCurrentDay
+			priceInTargetCurrencyForCost := assetPriceOnTradeDate.Price * priceExchangeRateOnTradeDate
+			priceInTargetCurrencyForValue := assetPriceOnCurrentDay.Price * priceExchangeRateOnCurrentDay
 			commissionInTargetCurrency := trade.Commission.Amount * commissionExchangeRateOnTradeDate
 
 			// Update the value and cost based on trade details
@@ -250,13 +276,13 @@ func (s PerformanceService) CalculateDailyHistoricalValueAndCost(
 	}
 
 	// Collect the results into an array sorted by date
-	var result []HistoricalRecord
+	var result []*HistoricalRecord
 	for d := startDate; !d.After(endDate); d = d.AddDate(0, 0, 1) {
 		if dailyRecords[d] != nil {
-			result = append(result, *dailyRecords[d])
+			result = append(result, dailyRecords[d])
 		} else {
 			// Add a record for dates without updates
-			result = append(result, HistoricalRecord{
+			result = append(result, &HistoricalRecord{
 				Date:  d,
 				Value: 0,
 				Cost:  0,
@@ -265,23 +291,4 @@ func (s PerformanceService) CalculateDailyHistoricalValueAndCost(
 	}
 
 	return result, nil
-}
-
-// serialize converts a Go value to a JSON string, which can be stored in Redis.
-func serialize[T any](value T) (string, error) {
-	// Convert the Go value into a JSON string
-	data, err := json.Marshal(value)
-	if err != nil {
-		return "", fmt.Errorf("failed to serialize value: %w", err)
-	}
-	return string(data), nil
-}
-
-// deserialize converts a JSON string from Redis back into a Go value.
-func deserialize[T any](data string, value *T) error {
-	// Convert the JSON string back into the Go value
-	if err := json.Unmarshal([]byte(data), value); err != nil {
-		return fmt.Errorf("failed to deserialize value: %w", err)
-	}
-	return nil
 }

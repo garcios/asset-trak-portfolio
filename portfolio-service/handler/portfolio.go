@@ -11,8 +11,9 @@ import (
 	"sort"
 	"time"
 
+	pba "github.com/garcios/asset-trak-portfolio/asset-price-service/proto"
 	pbc "github.com/garcios/asset-trak-portfolio/currency-service/proto"
-	pb "github.com/garcios/asset-trak-portfolio/portfolio-service/proto"
+	pbp "github.com/garcios/asset-trak-portfolio/portfolio-service/proto"
 )
 
 const (
@@ -22,41 +23,44 @@ const (
 
 func New(
 	currencyService pbc.CurrencyService,
-	portfolioSummaryManager PortfolioManager,
-	transactionManager TransactionManager,
+	portfolioSummaryManager PortfolioRepository,
+	transactionManager TransactionRepository,
 	performanceService *service.PerformanceService,
+	assetPriceService pba.AssetPriceService,
 ) *Transaction {
 	return &Transaction{
 		currencyService:    currencyService,
 		portfolioManager:   portfolioSummaryManager,
 		transactionManager: transactionManager,
 		performanceService: performanceService,
+		assetPriceService:  assetPriceService,
 	}
 }
 
 type Transaction struct {
 	currencyService    pbc.CurrencyService
-	portfolioManager   PortfolioManager
-	transactionManager TransactionManager
+	portfolioManager   PortfolioRepository
+	transactionManager TransactionRepository
 	performanceService *service.PerformanceService
+	assetPriceService  pba.AssetPriceService
 }
 
-type PortfolioManager interface {
+type PortfolioRepository interface {
 	GetHoldings(ctx context.Context, accountID string) ([]*model.BalanceSummary, error)
 }
 
-type TransactionManager interface {
+type TransactionRepository interface {
 	GetTransactions(ctx context.Context, filter db.TransactionFilter) ([]*model.Transaction, error)
 }
 
 func (h *Transaction) GetSummaryTotals(
 	ctx context.Context,
-	req *pb.SummaryTotalsRequest,
-	res *pb.SummaryTotalsResponse,
+	req *pbp.SummaryTotalsRequest,
+	res *pbp.SummaryTotalsResponse,
 ) error {
 	log.Println("GetSummaryTotals...")
-	holdingReq := &pb.HoldingsRequest{AccountId: req.GetAccountId()}
-	holdingsRes := &pb.HoldingsResponse{}
+	holdingReq := &pbp.HoldingsRequest{AccountId: req.GetAccountId()}
+	holdingsRes := &pbp.HoldingsResponse{}
 	err := h.GetHoldings(ctx, holdingReq, holdingsRes)
 	if err != nil {
 		return fmt.Errorf("failed to get holdings: %w", err)
@@ -85,33 +89,33 @@ func (h *Transaction) GetSummaryTotals(
 		})
 	}
 
-	res.PortfolioValue = &pb.Money{
+	res.PortfolioValue = &pbp.Money{
 		Amount:       portfolioValue,
 		CurrencyCode: targetCurrency,
 	}
 
 	_, capitalReturnPct := finance.CalculateReturn(totalCost, portfolioValue)
-	res.CapitalReturn = &pb.InvestmentReturn{
+	res.CapitalReturn = &pbp.InvestmentReturn{
 		Amount:           totalCapitalReturnAmt,
 		CurrencyCode:     targetCurrency,
 		ReturnPercentage: capitalReturnPct,
 	}
 
 	weightedDividendReturnPct := finance.CalculateTotalDividendGainPercentage(financeInvestments)
-	res.DividendReturn = &pb.InvestmentReturn{
+	res.DividendReturn = &pbp.InvestmentReturn{
 		Amount:           totalDividendReturnAmt,
 		CurrencyCode:     targetCurrency,
 		ReturnPercentage: weightedDividendReturnPct,
 	}
 
 	weightedCurrencyReturnPct := finance.CalculateTotalCurrencyGainPercentage(financeInvestments)
-	res.CurrencyReturn = &pb.InvestmentReturn{
+	res.CurrencyReturn = &pbp.InvestmentReturn{
 		Amount:           totalCurrencyReturnAmt,
 		CurrencyCode:     targetCurrency,
 		ReturnPercentage: weightedCurrencyReturnPct,
 	}
 
-	res.TotalReturn = &pb.InvestmentReturn{
+	res.TotalReturn = &pbp.InvestmentReturn{
 		Amount:           totalCapitalReturnAmt + totalDividendReturnAmt + totalCurrencyReturnAmt,
 		CurrencyCode:     targetCurrency,
 		ReturnPercentage: capitalReturnPct + weightedDividendReturnPct + weightedCurrencyReturnPct,
@@ -122,8 +126,8 @@ func (h *Transaction) GetSummaryTotals(
 
 func (h *Transaction) GetHoldings(
 	ctx context.Context,
-	req *pb.HoldingsRequest,
-	res *pb.HoldingsResponse,
+	req *pbp.HoldingsRequest,
+	res *pbp.HoldingsResponse,
 ) error {
 	log.Println("GetHoldings...")
 	now := time.Now()
@@ -146,7 +150,7 @@ func (h *Transaction) GetHoldings(
 		return err
 	}
 
-	res.Investments = make([]*pb.Investment, 0)
+	res.Investments = make([]*pbp.Investment, 0)
 
 	for _, s := range summaryItems {
 		totalValue := s.Quantity * s.Price
@@ -186,17 +190,17 @@ func (h *Transaction) GetHoldings(
 		tradesDiv := toTrades(dividends)
 		dividendReturn := h.computeDividendReturn(tradesDiv, totalCost.Amount)
 
-		investment := &pb.Investment{
+		investment := &pbp.Investment{
 			AssetSymbol: s.AssetSymbol,
 			AssetName:   s.AssetName,
 			MarketCode:  s.MarketCode,
 			Quantity:    s.Quantity,
-			CurrentPrice: &pb.Money{
+			CurrentPrice: &pbp.Money{
 				Amount:       s.Price,
 				CurrencyCode: s.CurrencyCode,
 			},
 			AveragePrice: h.computeAveragePrice(trades, targetCurrency),
-			TotalValue: &pb.Money{
+			TotalValue: &pbp.Money{
 				Amount:       totalValue,
 				CurrencyCode: targetCurrency,
 			},
@@ -217,52 +221,52 @@ func (h *Transaction) GetHoldings(
 	return nil
 }
 
-func (h *Transaction) computeTotalCost(trades []*finance.Trade, targetCurrency string) *pb.Money {
-	return &pb.Money{
+func (h *Transaction) computeTotalCost(trades []*finance.Trade, targetCurrency string) *pbp.Money {
+	return &pbp.Money{
 		Amount:       finance.CalculateTotalCost(trades, targetCurrency),
 		CurrencyCode: targetCurrency,
 	}
 }
 
-func (h *Transaction) computeAveragePrice(trades []*finance.Trade, targetCurrency string) *pb.Money {
-	return &pb.Money{
+func (h *Transaction) computeAveragePrice(trades []*finance.Trade, targetCurrency string) *pbp.Money {
+	return &pbp.Money{
 		Amount:       finance.CalculateAveragePrice(trades, targetCurrency),
 		CurrencyCode: targetCurrency,
 	}
 }
 
-func (h *Transaction) computeCapitalReturn(totalCost, totalValue float64) *pb.InvestmentReturn {
+func (h *Transaction) computeCapitalReturn(totalCost, totalValue float64) *pbp.InvestmentReturn {
 	amt, pct := finance.CalculateReturn(totalCost, totalValue)
 
-	return &pb.InvestmentReturn{
+	return &pbp.InvestmentReturn{
 		Amount:           amt,
 		CurrencyCode:     targetCurrency,
 		ReturnPercentage: pct,
 	}
 }
 
-func (h *Transaction) computeDividendReturn(trades []*finance.Trade, totalCost float64) *pb.InvestmentReturn {
+func (h *Transaction) computeDividendReturn(trades []*finance.Trade, totalCost float64) *pbp.InvestmentReturn {
 	amt, pct := finance.CalculateTotalDividendAndReturn(trades, totalCost)
 
-	return &pb.InvestmentReturn{
+	return &pbp.InvestmentReturn{
 		Amount:           amt,
 		CurrencyCode:     targetCurrency,
 		ReturnPercentage: pct,
 	}
 }
 
-func (h *Transaction) computeCurrencyReturn(trades []*finance.Trade, currencyRate float64) *pb.InvestmentReturn {
+func (h *Transaction) computeCurrencyReturn(trades []*finance.Trade, currencyRate float64) *pbp.InvestmentReturn {
 	amt, pct := finance.CalculateCurrencyReturns(trades, currencyRate, targetCurrency)
 
-	return &pb.InvestmentReturn{
+	return &pbp.InvestmentReturn{
 		Amount:           amt,
 		CurrencyCode:     targetCurrency,
 		ReturnPercentage: pct,
 	}
 }
 
-func (h *Transaction) computeTotalReturn(capital, dividend, currency *pb.InvestmentReturn) *pb.InvestmentReturn {
-	return &pb.InvestmentReturn{
+func (h *Transaction) computeTotalReturn(capital, dividend, currency *pbp.InvestmentReturn) *pbp.InvestmentReturn {
+	return &pbp.InvestmentReturn{
 		Amount:           capital.Amount + dividend.Amount + currency.Amount,
 		CurrencyCode:     targetCurrency,
 		ReturnPercentage: capital.ReturnPercentage + dividend.ReturnPercentage + currency.ReturnPercentage,

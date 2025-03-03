@@ -4,24 +4,24 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/BurntSushi/toml"
-	pbc "github.com/garcios/asset-trak-portfolio/currency-service/proto"
-	"github.com/garcios/asset-trak-portfolio/portfolio-service/handler"
-	"github.com/go-redis/redis/v8"
 	"go-micro.dev/v4"
 	"go-micro.dev/v4/logger"
 	"log"
 	"os"
 
+	"github.com/BurntSushi/toml"
+	stdlibTransactor "github.com/Thiht/transactor/stdlib"
 	_ "github.com/go-micro/plugins/v4/client/grpc"
 	_ "github.com/go-micro/plugins/v4/registry/etcd"
+	"github.com/go-redis/redis/v8"
 
-	stdlibTransactor "github.com/Thiht/transactor/stdlib"
+	pba "github.com/garcios/asset-trak-portfolio/asset-price-service/proto"
+	pbc "github.com/garcios/asset-trak-portfolio/currency-service/proto"
 	"github.com/garcios/asset-trak-portfolio/lib/mysql"
 	"github.com/garcios/asset-trak-portfolio/portfolio-service/db"
-	"github.com/garcios/asset-trak-portfolio/portfolio-service/service"
-
+	"github.com/garcios/asset-trak-portfolio/portfolio-service/handler"
 	pb "github.com/garcios/asset-trak-portfolio/portfolio-service/proto"
+	"github.com/garcios/asset-trak-portfolio/portfolio-service/service"
 )
 
 const (
@@ -30,6 +30,7 @@ const (
 	truncateProcessor          = "truncate"
 	portfolioServiceName       = "portfolio-service"
 	currencyServiceName        = "currency-service"
+	assetPriceServiceName      = "asset-price-service"
 )
 
 func main() {
@@ -121,8 +122,9 @@ func main() {
 	transactionSrv.Init()
 
 	currencyService := pbc.NewCurrencyService(currencyServiceName, transactionSrv.Client())
+	assetPriceService := pba.NewAssetPriceService(assetPriceServiceName, transactionSrv.Client())
 
-	h := handler.New(currencyService, portfolioRepo, transactionRepo, performnaceSvc)
+	h := handler.New(currencyService, portfolioRepo, transactionRepo, performnaceSvc, assetPriceService)
 
 	err = pb.RegisterPortfolioHandler(transactionSrv.Server(), h)
 	if err != nil {

@@ -7,6 +7,7 @@ replace github.com/garcios/asset-trak-portfolio/lib => /Users/oscargarcia/worksp
 require (
 	github.com/BurntSushi/toml v1.4.0
 	github.com/Thiht/transactor v1.1.0
+	github.com/garcios/asset-trak-portfolio/asset-price-service v0.0.0-20250227120234-3c26c7befc33
 	github.com/garcios/asset-trak-portfolio/currency-service v0.0.0-20250220073347-2ce3c59d9302
 	github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250222045010-be1f0e8df8a9
 	github.com/go-micro/plugins/v4/client/grpc v1.2.1

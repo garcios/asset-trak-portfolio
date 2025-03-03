@@ -57,3 +57,8 @@ go run portfolio-client/main.go
 ```shell
 go run currency-client/main.go
 ```
+
+## How to test asset price service
+```shell
+go run asset-price-client/main.go
+```

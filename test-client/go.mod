@@ -1,12 +1,18 @@
 module github.com/garcios/asset-trak-portfolio/test-client
 
-go 1.22.11
+go 1.23
 
-replace github.com/garcios/asset-trak-portfolio/portfolio-service => /Users/oscargarcia/workspace/asset-trak-portfolio/portfolio-service
+toolchain go1.23.6
 
-replace github.com/garcios/asset-trak-portfolio/lib => /Users/oscargarcia/workspace/asset-trak-portfolio/lib
+replace (
+	github.com/garcios/asset-trak-portfolio/asset-price-service => /Users/oscargarcia/workspace/asset-trak-portfolio/asset-price-service
+	github.com/garcios/asset-trak-portfolio/currency-service => /Users/oscargarcia/workspace/asset-trak-portfolio/currency-service
+	github.com/garcios/asset-trak-portfolio/lib => /Users/oscargarcia/workspace/asset-trak-portfolio/lib
+	github.com/garcios/asset-trak-portfolio/portfolio-service => /Users/oscargarcia/workspace/asset-trak-portfolio/portfolio-service
+)
 
 require (
+	github.com/garcios/asset-trak-portfolio/asset-price-service v0.0.0-20250227120234-3c26c7befc33
 	github.com/garcios/asset-trak-portfolio/currency-service v0.0.0-20250220104703-94ec53071ea7
 	github.com/garcios/asset-trak-portfolio/lib v0.0.0-20250222045010-be1f0e8df8a9
 	github.com/garcios/asset-trak-portfolio/portfolio-service v0.0.0-20250214102920-035938d3d46b
@@ -48,12 +54,12 @@ require (
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
 	go-micro.dev/v4 v4.11.0 // indirect
 	golang.org/x/crypto v0.28.0 // indirect
-	golang.org/x/mod v0.18.0 // indirect
+	golang.org/x/mod v0.21.0 // indirect
 	golang.org/x/net v0.30.0 // indirect
 	golang.org/x/sync v0.8.0 // indirect
 	golang.org/x/sys v0.26.0 // indirect
 	golang.org/x/text v0.19.0 // indirect
-	golang.org/x/tools v0.22.0 // indirect
+	golang.org/x/tools v0.26.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect

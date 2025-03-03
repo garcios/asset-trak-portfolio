@@ -23,18 +23,34 @@ func main() {
 
 	transactionSrv := pb.NewPortfolioService(ServiceName, portfolioClient.Client())
 
-	req := &pb.HoldingsRequest{
+	//req := &pb.HoldingsRequest{
+	//	AccountId: "eb08df3c-958d-4ae8-b3ae-41ec04418786",
+	//}
+
+	//resp, err := transactionSrv.GetHoldings(context.Background(), req)
+	//if err != nil {
+	//	log.Printf("Get balance summary error: %v", err)
+	//	return
+	//}
+
+	//for _, item := range resp.Investments {
+	//	log.Println(item)
+	//}
+
+	preq := &pb.PerformanceHistoryRequest{
 		AccountId: "eb08df3c-958d-4ae8-b3ae-41ec04418786",
+		StartDate: "2024-01-01",
+		EndDate:   "2025-03-03",
 	}
 
-	resp, err := transactionSrv.GetHoldings(context.Background(), req)
+	presp, err := transactionSrv.GetPerformanceHistory(context.Background(), preq)
 	if err != nil {
-		log.Printf("Get balance summary error: %v", err)
+		log.Printf("Get performance history error: %v", err)
 		return
 	}
 
-	for _, item := range resp.Investments {
-		log.Println(item)
+	for _, r := range presp.Records {
+		log.Println(r)
 	}
 
 }
