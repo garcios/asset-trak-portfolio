@@ -84,10 +84,19 @@ func (h *Transaction) assetPriceFn(ctx context.Context, dateFormat string) func(
 			return nil, err
 		}
 
+		var parsedDate time.Time
+		if res.TradeDate != "" {
+			parsedDate, err = time.Parse(dateFormat, res.TradeDate)
+			if err != nil {
+				return nil, err
+			}
+		}
+
 		return &apm.AssetPrice{
 			AssetID:      res.AssetId,
 			Price:        res.Price,
 			CurrencyCode: res.Currency,
+			TradeDate:    &parsedDate,
 		}, nil
 	}
 

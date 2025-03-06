@@ -38,6 +38,7 @@ func (a *AssetPrice) GetAssetPrice(ctx context.Context, req *pba.GetAssetPriceRe
 	res.AssetId = req.AssetId
 	res.Price = ap.Price
 	res.Currency = ap.CurrencyCode
+	res.TradeDate = req.TradeDate
 
 	return nil
 }

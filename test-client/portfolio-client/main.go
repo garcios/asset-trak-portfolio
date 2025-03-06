@@ -39,7 +39,7 @@ func main() {
 
 	preq := &pb.PerformanceHistoryRequest{
 		AccountId: "eb08df3c-958d-4ae8-b3ae-41ec04418786",
-		StartDate: "2024-01-01",
+		StartDate: "2024-06-01",
 		EndDate:   "2025-03-03",
 	}
 

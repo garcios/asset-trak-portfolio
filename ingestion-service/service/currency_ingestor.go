@@ -1,17 +1,20 @@
 package service
 
 import (
+	"encoding/csv"
 	"fmt"
 	"github.com/garcios/asset-trak-portfolio/ingestion-service/model"
-	"github.com/garcios/asset-trak-portfolio/lib/excel"
-	"github.com/garcios/asset-trak-portfolio/lib/typesutils"
 	"log"
+	"os"
+	"strconv"
+	"strings"
+	"time"
 )
 
-const (
-	baseCurrency   = "USD"
-	targetCurrency = "AUD"
-)
+type CurrencyPair struct {
+	FromCurrency string
+	ToCurrency   string
+}
 
 type CurrencyIngestor struct {
 	currencyManager ICurrencyManager
@@ -41,46 +44,96 @@ func (ingestor *CurrencyIngestor) ProcessCurrencyRates() error {
 	log.Println("Processing currency rates...")
 
 	log.Printf("%+v\n", ingestor.cfg)
-	filePath := ingestor.cfg.CurrencyRate.Path
+	dirPath := ingestor.cfg.CurrencyRate.DirPath
 
-	err := ingestor.processCurrencyRates(filePath, "price-history")
+	// Read the directory contents.
+	files, err := os.ReadDir(dirPath)
 	if err != nil {
-		return fmt.Errorf("processPricesTab: %w", err)
+		log.Fatalf("Error reading directory: %v", err)
+	}
+
+	// Iterate through the files and print their names.
+	for _, file := range files {
+		fmt.Println(file.Name())
+		filePath := dirPath + "/" + file.Name()
+
+		pair, err := getCurrencyPair(file.Name())
+		if err != nil {
+			return err
+		}
+
+		err = ingestor.processCurrencyRates(filePath, pair)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
-func (ingestor *CurrencyIngestor) processCurrencyRates(filePath string, tab string) error {
-	rows, err := excel.GetRows(filePath, tab)
-	if err != nil {
-		return err
+// getCurrencyPair extracts the currency pair from a given file name based on its format and separator.
+// e.g. USD.AUD.csv.
+func getCurrencyPair(fileName string) (*CurrencyPair, error) {
+	// Remove the file extension.
+	fileNameWithoutExt := strings.TrimSuffix(fileName, ".csv")
+
+	// Split the string by the underscore.
+	parts := strings.Split(fileNameWithoutExt, ".")
+
+	// Check if the file name follows the expected format.
+	if len(parts) != 2 {
+		return nil, fmt.Errorf("cannot parse currency pair from file name: %s", fileName)
 	}
 
-	skipRows := ingestor.cfg.CurrencyRate.SkipRows
+	return &CurrencyPair{
+		FromCurrency: parts[0],
+		ToCurrency:   parts[1],
+	}, nil
+}
 
-	var rowCount int
-	for _, row := range rows {
-		if rowCount < skipRows {
-			rowCount++
+func (ingestor *CurrencyIngestor) processCurrencyRates(filePath string, pair *CurrencyPair) error {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return fmt.Errorf("Error opening file: %s\n", err.Error())
+	}
+
+	defer file.Close()
+
+	// Create a new CSV reader.
+	reader := csv.NewReader(file)
+
+	// Read all records from the CSV file.
+	records, err := reader.ReadAll()
+	if err != nil {
+		return fmt.Errorf("Error reading CSV data: %s\n", err.Error())
+	}
+
+	// Skip the header row (first row).
+	if len(records) > 0 {
+		records = records[1:]
+	}
+
+	dateFormat := "2006-01-02"
+
+	for _, row := range records {
+		// Parse the date string into a time.Time object.
+		tradeDate, err := time.Parse(dateFormat, row[0])
+		if err != nil {
+			fmt.Printf("Error parsing date: %v\n", err)
 			continue
 		}
 
-		tradeDate, err := typesutils.GetFloatAsDate(row[1])
+		closePrice, err := strconv.ParseFloat(row[4], 64)
 		if err != nil {
-			return err
-		}
-
-		rate, err := typesutils.GetFloatValue(row[2])
-		if err != nil {
-			return err
+			fmt.Printf("Error parsing Close value: %v\n", err)
+			continue
 		}
 
 		currencyRate := model.CurrencyRate{
-			BaseCurrency:   baseCurrency,
-			TargetCurrency: targetCurrency,
-			ExchangeRate:   rate,
-			TradeDate:      tradeDate,
+			BaseCurrency:   pair.FromCurrency,
+			TargetCurrency: pair.ToCurrency,
+			ExchangeRate:   closePrice,
+			TradeDate:      &tradeDate,
 		}
 
 		err = ingestor.currencyManager.AddCurrencyRate(&currencyRate)

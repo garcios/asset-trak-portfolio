@@ -7,17 +7,14 @@ type Config struct {
 }
 
 type AssetPrice struct {
-	Path     string `toml:"path"`
-	SkipRows int    `toml:"skip_rows"`
+	DirPath string `toml:"dir_path"`
 }
 
 type Asset struct {
-	Symbols  []string `toml:"symbols"`
-	Path     string   `toml:"path"`
-	SkipRows int      `toml:"skip_rows"`
+	Path     string `toml:"path"`
+	SkipRows int    `toml:"skip_rows"`
 }
 
 type CurrencyRate struct {
-	Path     string `toml:"path"`
-	SkipRows int    `toml:"skip_rows"`
+	DirPath string `toml:"dir_path"`
 }

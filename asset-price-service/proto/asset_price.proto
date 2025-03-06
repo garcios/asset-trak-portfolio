@@ -21,6 +21,7 @@ message GetAssetPriceResponse {
   string asset_id = 1;   // Identifier of the asset
   double price = 2;      // Current price of the asset
   string currency = 3;   // Currency of the price (e.g., USD, EUR)
+  string trade_date = 4;  // Trade date in ISO 8601 format (e.g., "2023-01-01")
 }
 
 // Request message for getting asset prices by date range

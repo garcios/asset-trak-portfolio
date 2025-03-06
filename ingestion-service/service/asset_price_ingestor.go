@@ -1,13 +1,15 @@
 package service
 
 import (
+	"encoding/csv"
 	"fmt"
 	"github.com/garcios/asset-trak-portfolio/ingestion-service/db"
 	"github.com/garcios/asset-trak-portfolio/ingestion-service/model"
-	"github.com/garcios/asset-trak-portfolio/lib/excel"
-	"github.com/garcios/asset-trak-portfolio/lib/typesutils"
 	"github.com/patrickmn/go-cache"
 	"log"
+	"os"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -63,17 +65,25 @@ func (ingestor *AssetPriceIngestor) Truncate() error {
 func (ingestor *AssetPriceIngestor) ProcessAssetPrices() error {
 	log.Println("Processing assets prices...")
 
-	err := ingestor.loadCurrenTab()
+	log.Printf("%+v\n", ingestor.cfg)
+	dirPath := ingestor.cfg.AssetPrice.DirPath
+
+	// Read the directory contents.
+	files, err := os.ReadDir(dirPath)
 	if err != nil {
-		return err
+		log.Fatalf("Error reading directory: %v", err)
 	}
 
-	log.Printf("%+v\n", ingestor.cfg)
-	filePath := ingestor.cfg.AssetPrice.Path
-	assets := ingestor.cfg.Asset.Symbols
+	// Iterate through the files and print their names.
+	for _, file := range files {
+		fmt.Println(file.Name())
+		filePath := dirPath + "/" + file.Name()
+		assetSymbol, err := getAssetSymbol(file.Name())
+		if err != nil {
+			return err
+		}
 
-	for _, asset := range assets {
-		err := ingestor.processPricesTab(filePath, asset)
+		err = ingestor.processPrices(filePath, assetSymbol)
 		if err != nil {
 			return err
 		}
@@ -82,34 +92,67 @@ func (ingestor *AssetPriceIngestor) ProcessAssetPrices() error {
 	return nil
 }
 
-func (ingestor *AssetPriceIngestor) processPricesTab(filePath string, assetSymbol string) error {
-	rows, err := excel.GetRows(filePath, assetSymbol)
-	if err != nil {
-		return err
+// getAssetSymbol extracts the asset symbol from a given file name based on its format and separator.
+// e.g. ASX.IVV.csv or US.AMZN.csv.
+func getAssetSymbol(fileName string) (string, error) {
+	// Remove the file extension.
+	fileNameWithoutExt := strings.TrimSuffix(fileName, ".csv")
+
+	// Split the string by the underscore.
+	parts := strings.Split(fileNameWithoutExt, ".")
+
+	// Check if the file name follows the expected format.
+	if len(parts) != 2 {
+		return "", fmt.Errorf("cannot parse asset symbol from file name: %s", fileName)
 	}
 
-	skipRows := ingestor.cfg.AssetPrice.SkipRows
+	return parts[1], nil
+}
 
-	var rowCount int
-	for _, row := range rows {
-		if rowCount < skipRows {
-			rowCount++
+func (ingestor *AssetPriceIngestor) processPrices(filePath string, assetSymbol string) error {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return fmt.Errorf("Error opening file: %s\n", err.Error())
+	}
+
+	defer file.Close()
+
+	// Create a new CSV reader.
+	reader := csv.NewReader(file)
+
+	// Read all records from the CSV file.
+	records, err := reader.ReadAll()
+	if err != nil {
+		return fmt.Errorf("Error reading CSV data: %s\n", err.Error())
+	}
+
+	// Skip the header row (first row).
+	if len(records) > 0 {
+		records = records[1:]
+	}
+
+	for _, row := range records {
+		// Ensure row has the expected number of fields.
+		if len(row) < 6 {
+			fmt.Printf("Skipping incomplete row: %v\n", row)
 			continue
 		}
 
-		tradeDate, err := typesutils.GetFloatAsDate(row[1])
+		// Parse each field and handle errors.
+
+		dateFormat := getDateFormat(row[0])
+
+		// Parse the date string into a time.Time object.
+		parsedDate, err := time.Parse(dateFormat, row[0])
 		if err != nil {
-			return err
+			fmt.Printf("Error parsing date: %v\n", err)
+			continue
 		}
 
-		price, err := typesutils.GetFloatValue(row[2])
+		closePrice, err := strconv.ParseFloat(row[4], 64)
 		if err != nil {
-			return err
-		}
-
-		currencyCode, ok := ingestor.symbolToCurrency[assetSymbol]
-		if !ok {
-			return fmt.Errorf("no such symbol to currency mapping")
+			fmt.Printf("Error parsing Close value: %v\n", err)
+			continue
 		}
 
 		asset, err := ingestor.getAsset(assetSymbol)
@@ -123,9 +166,9 @@ func (ingestor *AssetPriceIngestor) processPricesTab(filePath string, assetSymbo
 
 		assetPrice := model.AssetPrice{
 			AssetID:      asset.ID,
-			Price:        price,
-			CurrencyCode: currencyCode,
-			TradeDate:    tradeDate,
+			Price:        closePrice,
+			CurrencyCode: getCurrency(asset.MarketCode),
+			TradeDate:    &parsedDate,
 		}
 
 		err = ingestor.assetPriceManager.AddAssetPrice(&assetPrice)
@@ -138,21 +181,20 @@ func (ingestor *AssetPriceIngestor) processPricesTab(filePath string, assetSymbo
 	return nil
 }
 
-func (ingestor *AssetPriceIngestor) loadCurrenTab() error {
-	log.Println("Loading current tab...")
-	rows, err := excel.GetRows(ingestor.cfg.AssetPrice.Path, "current")
-	if err != nil {
-		return err
+func getCurrency(marketCode string) string {
+	if marketCode == "ASX" {
+		return "AUD"
 	}
 
-	for _, row := range rows {
-		if row[0] == "Symbol" {
-			continue
-		}
-		ingestor.symbolToCurrency[row[1]] = row[3]
+	return "USD"
+}
+
+func getDateFormat(dateStr string) string {
+	if strings.Contains(dateStr, "-") {
+		return "2006-01-02"
 	}
 
-	return nil
+	return "20060102"
 }
 
 // getAsset retrieves an asset by its symbol. If the asset is not found in the cache, it is retrieved from the database.

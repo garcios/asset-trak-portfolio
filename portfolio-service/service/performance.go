@@ -123,7 +123,7 @@ func (s PerformanceService) CalculateDailyHistoricalValueAndCost(
 		if trade == nil {
 			continue
 		}
-		
+
 		log.Printf("trade: %#v\n", trade)
 		tradeDate := trade.TransactionDate // Assume Trade struct has a Date field of type time.Time
 		if tradeDate.Before(startDate) || tradeDate.After(endDate) {
