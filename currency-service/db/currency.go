@@ -8,6 +8,10 @@ import (
 	"time"
 )
 
+var (
+	NotFound = errors.New("not found")
+)
+
 type CurrencyRepository struct {
 	DB *sql.DB
 }
@@ -43,7 +47,7 @@ func (r *CurrencyRepository) GetExchangeRate(
 	var exchangeRate float64
 	if err := row.Scan(&exchangeRate); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return 1, nil
+			return 0, NotFound
 		}
 
 		return 0, fmt.Errorf("GetExchangeRate: %v", err)

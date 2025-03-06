@@ -110,7 +110,8 @@ func deserialize[T any](data string, value *T) error {
 func (s PerformanceService) CalculateDailyHistoricalValueAndCost(
 	ctx context.Context,
 	trades []*finance.Trade,
-	startDate, endDate time.Time,
+	startDate time.Time,
+	endDate time.Time,
 	targetCurrency string,
 	getExchangeRate ExchangeRateFunc,
 	getAssetPrice AssetPriceFunc,

@@ -3,6 +3,9 @@ package handler
 import (
 	"context"
 	"fmt"
+	"log"
+	"time"
+
 	apm "github.com/garcios/asset-trak-portfolio/asset-price-service/model"
 	pba "github.com/garcios/asset-trak-portfolio/asset-price-service/proto"
 	"github.com/garcios/asset-trak-portfolio/currency-service/proto"
@@ -11,8 +14,6 @@ import (
 	"github.com/garcios/asset-trak-portfolio/portfolio-service/model"
 	pb "github.com/garcios/asset-trak-portfolio/portfolio-service/proto"
 	"github.com/garcios/asset-trak-portfolio/portfolio-service/service"
-	"log"
-	"time"
 )
 
 func (h *Transaction) GetPerformanceHistory(
@@ -105,6 +106,10 @@ func (h *Transaction) assetPriceFn(ctx context.Context, dateFormat string) func(
 
 func (h *Transaction) exchangeRateFn(ctx context.Context, dateFormat string) func(fromCurrency string, toCurrency string, date time.Time) (float64, error) {
 	getExchangeRate := func(fromCurrency string, toCurrency string, date time.Time) (float64, error) {
+		if fromCurrency == toCurrency {
+			return 1.0, nil
+		}
+
 		log.Printf("get exchange rate for fromCurrency: %s, toCurrency: %s, trade date: %s\n",
 			fromCurrency,
 			toCurrency,
