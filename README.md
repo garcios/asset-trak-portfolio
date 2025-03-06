@@ -190,5 +190,3 @@ sequenceDiagram
 - <https://site.financialmodelingprep.com/developer/docs>
 - <https://community.veeam.com/kubernetes-korner-90/podman-desktop-and-minikube-a-great-combination-to-start-your-kubernetes-journey-6377>
 - <https://medium.com/@muppedaanvesh/a-hand-on-guide-to-vault-in-kubernetes-%EF%B8%8F-1daf73f331bd>
-- <https://www.marketindex.com.au/>
-- <https://www.alphavantage.co/>
