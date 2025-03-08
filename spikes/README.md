@@ -3,7 +3,7 @@ Spikes are a concept commonly used in agile project management, particularly in 
 A spike is a type of task that is aimed at answering a question or gathering enough information to reduce uncertainty
 before more significant development takes place.
 
-# Key Characteristics of Spikes:
+## Key Characteristics of Spikes:
 
 1. **Purpose**: Spikes are usually conducted to explore, research, or investigate a specific technical or design problem.
 
@@ -27,7 +27,7 @@ before more significant development takes place.
 
 4. **Timeboxing**: Spikes are usually timeboxed, meaning the team allocates a fixed amount of time to focus on them. This ensures they do not consume disproportionate effort.
 
-### Example Workflow for a Spike:
+## Example Workflow for a Spike:
 
 1. Identify the area of uncertainty or risk.
 2. Create a spike task in the sprint or backlog.
