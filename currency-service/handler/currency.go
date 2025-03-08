@@ -4,11 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
+	"time"
+
 	"github.com/garcios/asset-trak-portfolio/currency-service/db"
 	pb "github.com/garcios/asset-trak-portfolio/currency-service/proto"
 	"github.com/garcios/asset-trak-portfolio/currency-service/service"
-	"log"
-	"time"
 )
 
 const DateFormat = "2006-01-02"
@@ -44,7 +45,7 @@ func (h *Currency) extractGetExchangeRate(
 
 		return 0, err
 	}
-	
+
 	return exchangeRate, nil
 }
 

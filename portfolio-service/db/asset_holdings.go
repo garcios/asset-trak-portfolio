@@ -13,6 +13,14 @@ type AssetBalanceRepository struct {
 	dbGetter stdlibTransactor.DBGetter
 }
 
+// Holding represents the result of the query for holdings
+type Holding struct {
+	AssetID                int
+	TotalQuantity          float64
+	Price                  float64
+	TradePriceCurrencyCode string
+}
+
 func NewAssetBalanceRepository(dbGetter stdlibTransactor.DBGetter) *AssetBalanceRepository {
 	return &AssetBalanceRepository{
 		dbGetter: dbGetter,
@@ -128,4 +136,78 @@ func (r *AssetBalanceRepository) GetHoldings(
 
 	return summary, nil
 
+}
+
+func (r *AssetBalanceRepository) GetHoldingAtDateRange(
+	ctx context.Context,
+	accountID string,
+	startDate,
+	endDate string,
+) ([]Holding, error) {
+	query := `
+		WITH LatestPrices AS (
+			WITH ranked_prices AS (
+				SELECT
+					ap.asset_id,
+					ap.price,
+					ap.trade_date,
+					ROW_NUMBER() OVER (PARTITION BY ap.asset_id ORDER BY ap.trade_date DESC) AS row_num
+				FROM
+					asset_price ap
+				WHERE
+					ap.trade_date <= ?
+			)
+			SELECT
+				asset_id,
+				price,
+				trade_date AS latest_trade_date
+			FROM
+				ranked_prices
+			WHERE
+				row_num = 1
+		)
+		SELECT
+			t.asset_id,
+			SUM(t.quantity) AS total_quantity,
+			lp.price,
+			t.trade_price_currency_code
+		FROM
+			transaction t
+		JOIN
+			LatestPrices lp ON t.asset_id = lp.asset_id
+		WHERE
+			t.transaction_date BETWEEN ? AND ?
+			AND t.account_id = ?
+			AND t.transaction_type IN ('BUY', 'SELL', 'SPLIT')
+		GROUP BY
+			t.asset_id, lp.price, t.trade_price_currency_code;
+	`
+
+	// Prepare the query
+	rows, err := r.dbGetter(ctx).Query(query, endDate, startDate, endDate, accountID)
+	if err != nil {
+		return nil, fmt.Errorf("error executing query: %w", err)
+	}
+	defer rows.Close()
+
+	// Parse results
+	var holdings []Holding
+	for rows.Next() {
+		var holding Holding
+		err := rows.Scan(&holding.AssetID, &holding.TotalQuantity, &holding.Price, &holding.TradePriceCurrencyCode)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning result: %w", err)
+		}
+		holdings = append(holdings, holding)
+	}
+
+	if err = rows.Err(); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+
+		return nil, fmt.Errorf("error iterating over rows: %w", err)
+	}
+
+	return holdings, nil
 }

@@ -16,8 +16,8 @@ func main() {
 	// Create a new client service
 	portfolioClient := lib.CreateRetryableClient(
 		"portfolio-client",
-		lib.WithMaxRetries(3),             // optional
-		lib.WithRetryDelay(2*time.Second), // optional
+		lib.WithMaxRetries(3),              // optional
+		lib.WithRetryDelay(30*time.Second), // optional
 	)
 	portfolioClient.Init()
 
@@ -39,7 +39,7 @@ func main() {
 
 	preq := &pb.PerformanceHistoryRequest{
 		AccountId: "eb08df3c-958d-4ae8-b3ae-41ec04418786",
-		StartDate: "2024-06-01",
+		StartDate: "2024-09-01",
 		EndDate:   "2025-03-03",
 	}
 

@@ -22,7 +22,7 @@ func (h *Transaction) GetPerformanceHistory(
 	res *pb.PerformanceHistoryResponse,
 ) error {
 
-	txns, err := h.transactionManager.GetTransactions(ctx, db.TransactionFilter{
+	txns, err := h.transactionRepository.GetTransactions(ctx, db.TransactionFilter{
 		AccountID: req.AccountId,
 		StartDate: req.StartDate,
 		EndDate:   req.EndDate,
@@ -34,6 +34,13 @@ func (h *Transaction) GetPerformanceHistory(
 
 	trades := h.toTrades(txns)
 	log.Printf("len(trades): %d\n", len(trades))
+
+	holdings, err := h.portfolioRepository.GetHoldingAtDateRange(ctx, req.AccountId, req.StartDate, req.EndDate)
+	if err != nil {
+		return err
+	}
+
+	log.Printf("len(holdings): %d\n", len(holdings))
 
 	var (
 		startDate time.Time

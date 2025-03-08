@@ -23,30 +23,36 @@ const (
 
 func New(
 	currencyService pbc.CurrencyService,
-	portfolioSummaryManager PortfolioRepository,
-	transactionManager TransactionRepository,
+	portfolioRepository PortfolioRepository,
+	transactionRepository TransactionRepository,
 	performanceService *service.PerformanceService,
 	assetPriceService pba.AssetPriceService,
 ) *Transaction {
 	return &Transaction{
-		currencyService:    currencyService,
-		portfolioManager:   portfolioSummaryManager,
-		transactionManager: transactionManager,
-		performanceService: performanceService,
-		assetPriceService:  assetPriceService,
+		currencyService:       currencyService,
+		portfolioRepository:   portfolioRepository,
+		transactionRepository: transactionRepository,
+		performanceService:    performanceService,
+		assetPriceService:     assetPriceService,
 	}
 }
 
 type Transaction struct {
-	currencyService    pbc.CurrencyService
-	portfolioManager   PortfolioRepository
-	transactionManager TransactionRepository
-	performanceService *service.PerformanceService
-	assetPriceService  pba.AssetPriceService
+	currencyService       pbc.CurrencyService
+	portfolioRepository   PortfolioRepository
+	transactionRepository TransactionRepository
+	performanceService    *service.PerformanceService
+	assetPriceService     pba.AssetPriceService
 }
 
 type PortfolioRepository interface {
 	GetHoldings(ctx context.Context, accountID string) ([]*model.BalanceSummary, error)
+	GetHoldingAtDateRange(
+		ctx context.Context,
+		accountID string,
+		startDate,
+		endDate string,
+	) ([]db.Holding, error)
 }
 
 type TransactionRepository interface {
@@ -145,7 +151,7 @@ func (h *Transaction) GetHoldings(
 		return err
 	}
 
-	summaryItems, err := h.portfolioManager.GetHoldings(ctx, req.GetAccountId())
+	summaryItems, err := h.portfolioRepository.GetHoldings(ctx, req.GetAccountId())
 	if err != nil {
 		return err
 	}
@@ -164,7 +170,7 @@ func (h *Transaction) GetHoldings(
 			TransactionTypes: []string{service.TransactionTypeBuy, service.TransactionTypeSell},
 		}
 
-		txns, err := h.transactionManager.GetTransactions(ctx, dbFilter)
+		txns, err := h.transactionRepository.GetTransactions(ctx, dbFilter)
 
 		if err != nil {
 			return err
@@ -182,7 +188,7 @@ func (h *Transaction) GetHoldings(
 			TransactionTypes: []string{service.TransactionTypeDividend},
 		}
 
-		dividends, err := h.transactionManager.GetTransactions(ctx, dbFilterDiv)
+		dividends, err := h.transactionRepository.GetTransactions(ctx, dbFilterDiv)
 		if err != nil {
 			return err
 		}

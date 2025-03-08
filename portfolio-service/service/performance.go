@@ -119,6 +119,11 @@ func (s PerformanceService) CalculateDailyHistoricalValueAndCost(
 	// Initialize a map to store daily updates for portfolio value and cost
 	dailyRecords := make(map[time.Time]*HistoricalRecord)
 
+	// Helper function to generate a cache key
+	generateCacheKey := func(keyType, key1, key2 string, date time.Time) string {
+		return fmt.Sprintf("%s:%s:%s:%s", keyType, key1, key2, date.Format("2006-01-02"))
+	}
+
 	// Iterate over each trade to update the portfolio data for the trade's date and subsequent days
 	for _, trade := range trades {
 		if trade == nil {
@@ -142,28 +147,10 @@ func (s PerformanceService) CalculateDailyHistoricalValueAndCost(
 			}
 
 			// Define cache keys
-			priceExchangeRateKey := fmt.Sprintf("exchangeRate:%s:%s:%s",
-				trade.Price.CurrencyCode,
-				targetCurrency,
-				tradeDate.Format("2006-01-02"),
-			)
-
-			commissionExchangeRateKey := fmt.Sprintf("exchangeRate:%s:%s:%s",
-				trade.Commission.CurrencyCode,
-				targetCurrency,
-				tradeDate.Format("2006-01-02"),
-			)
-
-			currentDayExchangeRateKey := fmt.Sprintf("exchangeRate:%s:%s:%s",
-				trade.Price.CurrencyCode,
-				targetCurrency,
-				currentDay.Format("2006-01-02"),
-			)
-
-			assetPriceOnTradeDateKey := fmt.Sprintf("assetPrice:%s:%s",
-				trade.AssetID,
-				tradeDate.Format("2006-01-02"),
-			)
+			priceExchangeRateKey := generateCacheKey("exchangeRate", trade.Price.CurrencyCode, targetCurrency, tradeDate)
+			commissionExchangeRateKey := generateCacheKey("exchangeRate", trade.Commission.CurrencyCode, targetCurrency, tradeDate)
+			exchangeRateKeyForCurrentDay := generateCacheKey("exchangeRate", trade.Price.CurrencyCode, targetCurrency, currentDay)
+			assetPriceKeyTradeDate := generateCacheKey("assetPrice", trade.AssetID, "", tradeDate)
 
 			assetPriceOnCurrentDayKey := fmt.Sprintf("assetPrice:%s:%s",
 				trade.AssetID,
@@ -201,7 +188,7 @@ func (s PerformanceService) CalculateDailyHistoricalValueAndCost(
 			priceExchangeRateOnCurrentDay, err := getCachedValue(
 				ctx,
 				s.cacheClient,
-				currentDayExchangeRateKey,
+				exchangeRateKeyForCurrentDay,
 				func() (float64, error) {
 					return getExchangeRate(trade.Price.CurrencyCode, targetCurrency, currentDay)
 				},
@@ -215,7 +202,7 @@ func (s PerformanceService) CalculateDailyHistoricalValueAndCost(
 			assetPriceOnTradeDate, err := getCachedValue(
 				ctx,
 				s.cacheClient,
-				assetPriceOnTradeDateKey,
+				assetPriceKeyTradeDate,
 				func() (*apm.AssetPrice, error) {
 					return getAssetPrice(trade.AssetID, tradeDate)
 				}, cacheExpiration)
