@@ -44,6 +44,32 @@ func (a *AssetPrice) GetAssetPrice(ctx context.Context, req *pba.GetAssetPriceRe
 }
 
 func (a *AssetPrice) GetAssetPricesByDateRange(ctx context.Context, req *pba.GetAssetPricesByDateRangeRequest, res *pba.GetAssetPricesByDateRangeResponse) error {
-	// TODO: implement this
+	ap, err := a.repo.GetAssetPrices(req.AssetId, req.StartDate, req.EndDate)
+	if err != nil {
+		return err
+	}
+
+	if ap == nil {
+		return fmt.Errorf("asset prices not found for assetId: %s, tradeDates: %s-%s",
+			req.AssetId,
+			req.StartDate,
+			req.EndDate,
+		)
+	}
+
+	assetPrices := make([]*pba.AssetPriceEntry, 0, len(ap))
+	
+	for _, ap := range ap {
+		apEntry := &pba.AssetPriceEntry{
+			Date:     ap.TradeDate.Format("2006-01-02"),
+			Price:    ap.Price,
+			Currency: ap.CurrencyCode,
+		}
+		assetPrices = append(assetPrices, apEntry)
+	}
+
+	res.AssetId = req.AssetId
+	res.Prices = assetPrices
+
 	return nil
 }

@@ -32,7 +32,7 @@ func (r *AssetPriceRepository) GetAssetPrice(
 
 	stmt, err := r.DB.Prepare(query)
 	if err != nil {
-		return nil, fmt.Errorf("GetExchangeRate: %v", err)
+		return nil, fmt.Errorf("GetAssetPrice: %v", err)
 	}
 
 	defer stmt.Close()
@@ -52,4 +52,45 @@ func (r *AssetPriceRepository) GetAssetPrice(
 	}
 
 	return assetPrice, nil
+}
+
+func (r *AssetPriceRepository) GetAssetPrices(assetID string, startDate, endDate string) ([]*model.AssetPrice, error) {
+	query := `SELECT asset_id, price, currency_code, DATE(trade_date) FROM asset_price WHERE asset_id = ? AND trade_date BETWEEN ? AND ?`
+
+	stmt, err := r.DB.Prepare(query)
+	if err != nil {
+		return nil, fmt.Errorf("GetAssetPrice: %v", err)
+	}
+
+	defer stmt.Close()
+
+	rows, err := stmt.Query(assetID, startDate, endDate)
+	if err != nil {
+		return nil, fmt.Errorf("GetAssetPrice: %v", err)
+	}
+	defer rows.Close()
+
+	var assetPrices []*model.AssetPrice
+	var tradeDateStr string
+	for rows.Next() {
+		ap := &model.AssetPrice{}
+		if err := rows.Scan(&ap.AssetID, &ap.Price, &ap.CurrencyCode, &tradeDateStr); err != nil {
+			return nil, fmt.Errorf("failed to scan asset price: %w", err)
+		}
+
+		convertedDate, err := time.Parse("2006-01-02", tradeDateStr)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse trade_date: %v", err)
+		}
+
+		ap.TradeDate = &convertedDate
+
+		assetPrices = append(assetPrices, ap)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating over rows: %w", err)
+	}
+
+	return assetPrices, nil
 }

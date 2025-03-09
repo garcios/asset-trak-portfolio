@@ -6,10 +6,6 @@ import (
 	"log"
 	"time"
 
-	apm "github.com/garcios/asset-trak-portfolio/asset-price-service/model"
-	pba "github.com/garcios/asset-trak-portfolio/asset-price-service/proto"
-	"github.com/garcios/asset-trak-portfolio/currency-service/proto"
-	"github.com/garcios/asset-trak-portfolio/lib/finance"
 	"github.com/garcios/asset-trak-portfolio/portfolio-service/db"
 	"github.com/garcios/asset-trak-portfolio/portfolio-service/model"
 	pb "github.com/garcios/asset-trak-portfolio/portfolio-service/proto"
@@ -32,15 +28,8 @@ func (h *Transaction) GetPerformanceHistory(
 		return err
 	}
 
-	trades := h.toTrades(txns)
-	log.Printf("len(trades): %d\n", len(trades))
-
-	holdings, err := h.portfolioRepository.GetHoldingAtDateRange(ctx, req.AccountId, req.StartDate, req.EndDate)
-	if err != nil {
-		return err
-	}
-
-	log.Printf("len(holdings): %d\n", len(holdings))
+	transactions := h.toTransactions(txns)
+	log.Printf("len(trades): %d\n", len(transactions))
 
 	var (
 		startDate time.Time
@@ -60,14 +49,22 @@ func (h *Transaction) GetPerformanceHistory(
 		return err
 	}
 
+	dateRange := service.DateRange{
+		StartDate: startDate,
+		EndDate:   endDate,
+	}
+
+	marketData := service.MarketData{
+		AssetPrices:   h.getAssetPrices(),
+		CurrencyRates: h.getCurrencyRates(),
+	}
+
 	recs, err := h.performanceService.CalculateDailyHistoricalValueAndCost(
 		ctx,
-		trades,
-		startDate,
-		endDate,
+		transactions,
+		marketData,
 		targetCurrency,
-		h.exchangeRateFn(ctx, dateFormat),
-		h.assetPriceFn(ctx, dateFormat),
+		dateRange,
 	)
 
 	if err != nil {
@@ -80,61 +77,14 @@ func (h *Transaction) GetPerformanceHistory(
 	return nil
 }
 
-func (h *Transaction) assetPriceFn(ctx context.Context, dateFormat string) func(assetID string, date time.Time) (*apm.AssetPrice, error) {
-	getAssetPrice := func(assetID string, date time.Time) (*apm.AssetPrice, error) {
-		log.Printf("get asset price for assetID: %s, date: %s\n", assetID, date.Format(dateFormat))
-		res, err := h.assetPriceService.GetAssetPrice(ctx, &pba.GetAssetPriceRequest{
-			AssetId:   assetID,
-			TradeDate: date.Format(dateFormat),
-		})
-
-		if err != nil {
-			return nil, err
-		}
-
-		var parsedDate time.Time
-		if res.TradeDate != "" {
-			parsedDate, err = time.Parse(dateFormat, res.TradeDate)
-			if err != nil {
-				return nil, err
-			}
-		}
-
-		return &apm.AssetPrice{
-			AssetID:      res.AssetId,
-			Price:        res.Price,
-			CurrencyCode: res.Currency,
-			TradeDate:    &parsedDate,
-		}, nil
-	}
-
-	return getAssetPrice
+func (h *Transaction) getCurrencyRates() []*service.CurrencyRate {
+	return nil
 }
 
-func (h *Transaction) exchangeRateFn(ctx context.Context, dateFormat string) func(fromCurrency string, toCurrency string, date time.Time) (float64, error) {
-	getExchangeRate := func(fromCurrency string, toCurrency string, date time.Time) (float64, error) {
-		if fromCurrency == toCurrency {
-			return 1.0, nil
-		}
+func (h *Transaction) getAssetPrices() []*service.AssetPrice {
+	//h.assetPriceService.GetAssetPricesByDateRange()
 
-		log.Printf("get exchange rate for fromCurrency: %s, toCurrency: %s, trade date: %s\n",
-			fromCurrency,
-			toCurrency,
-			date.Format(dateFormat))
-
-		res, err := h.currencyService.GetExchangeRate(ctx, &proto.GetExchangeRateRequest{
-			FromCurrency: fromCurrency,
-			ToCurrency:   toCurrency,
-			TradeDate:    date.Format(dateFormat),
-		})
-
-		if err != nil {
-			return 0, err
-		}
-
-		return res.ExchangeRate, nil
-	}
-	return getExchangeRate
+	return nil
 }
 
 func (h *Transaction) toHistoricalRecords(recs []*service.HistoricalRecord, res *pb.PerformanceHistoryResponse) {
@@ -146,28 +96,19 @@ func (h *Transaction) toHistoricalRecords(recs []*service.HistoricalRecord, res 
 	res.Records = protoRecords
 }
 
-func (h *Transaction) toTrades(txns []*model.Transaction) []*finance.Trade {
-	trades := make([]*finance.Trade, len(txns))
+func (h *Transaction) toTransactions(txns []*model.Transaction) []*service.TransactionRecord {
+	trades := make([]*service.TransactionRecord, len(txns))
 
 	for _, txn := range txns {
-		trades = append(trades, &finance.Trade{
-			AssetID:  txn.AssetID,
-			Quantity: txn.Quantity,
-			Price: finance.Money{
-				Amount:       txn.TradePrice,
-				CurrencyCode: txn.AmountCurrencyCode,
-			},
-			Commission: finance.Money{
-				Amount:       txn.BrokerageFee,
-				CurrencyCode: txn.FeeCurrencyCode,
-			},
-			TradeType:    txn.TransactionType,
-			CurrencyRate: txn.ExchangeRate,
-			AmountCash: finance.Money{
-				Amount:       txn.AmountCash,
-				CurrencyCode: txn.AmountCurrencyCode,
-			},
-			TransactionDate: *txn.TransactionDate,
+		trades = append(trades, &service.TransactionRecord{
+			AssetID:                  txn.AssetID,
+			Quantity:                 txn.Quantity,
+			TradePrice:               txn.TradePrice,
+			TradePriceCurrencyCode:   txn.TradePriceCurrencyCode,
+			BrokerageFee:             txn.BrokerageFee,
+			BrokerageFeeCurrencyCode: txn.FeeCurrencyCode,
+			TransactionType:          txn.TransactionType,
+			TransactionDate:          *txn.TransactionDate,
 		})
 	}
 

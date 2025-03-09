@@ -23,17 +23,35 @@ func main() {
 
 	apSrv := pb.NewAssetPriceService(ServiceName, apClient.Client())
 
-	req := &pb.GetAssetPriceRequest{
+	//req := &pb.GetAssetPriceRequest{
+	//	AssetId:   "2264c1ab-0adf-4349-afb4-b1694e7f97c1",
+	//	TradeDate: "2025-01-30",
+	//}
+
+	//resp, err := apSrv.GetAssetPrice(context.Background(), req)
+	//if err != nil {
+	//	log.Printf("Get asset price error: %v", err)
+	//	return
+	///}
+
+	//log.Println(resp)
+
+	req2 := &pb.GetAssetPricesByDateRangeRequest{
 		AssetId:   "2264c1ab-0adf-4349-afb4-b1694e7f97c1",
-		TradeDate: "2025-01-30",
+		StartDate: "2020-07-01",
+		EndDate:   "2025-01-30",
 	}
 
-	resp, err := apSrv.GetAssetPrice(context.Background(), req)
+	res2, err := apSrv.GetAssetPricesByDateRange(context.Background(), req2)
 	if err != nil {
-		log.Printf("Get asset price error: %v", err)
+		log.Printf("Get asset prices error: %v", err)
 		return
 	}
 
-	log.Println(resp)
+	for _, p := range res2.GetPrices() {
+		log.Println(p)
+	}
+
+	log.Println(res2)
 
 }
