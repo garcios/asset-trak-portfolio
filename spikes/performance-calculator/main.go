@@ -32,8 +32,8 @@ type AssetPrice struct {
 // CurrencyRate represents fx rate data for a currency pair on a specific date.
 type CurrencyRate struct {
 	Date         time.Time
-	fromCurrency string
-	toCurrency   string
+	FromCurrency string
+	ToCurrency   string
 	Rate         float64
 }
 
@@ -181,7 +181,7 @@ func buildCurrencyRatesMap(currencyRates []*CurrencyRate) map[time.Time]map[stri
 		}
 
 		// Create a currency pair key "from-to"
-		currencyPair := rate.fromCurrency + "-" + rate.toCurrency
+		currencyPair := rate.FromCurrency + "-" + rate.ToCurrency
 
 		// Add the rate to the nested map
 		ratesMap[rate.Date][currencyPair] = rate.Rate
@@ -402,7 +402,7 @@ func main() {
 
 	// Example currency rates data
 	currencyRates := []*CurrencyRate{
-		{Date: tradeDate, fromCurrency: "USD", toCurrency: "AUD", Rate: 1.59},
+		{Date: tradeDate, FromCurrency: "USD", ToCurrency: "AUD", Rate: 1.59},
 	}
 
 	// Specify time range
