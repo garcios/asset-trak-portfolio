@@ -45,7 +45,6 @@ const Performance: React.FC = () => {
         setError(null);
         try {
             const data = await GraphQLService.fetchPerformanceNumbers('eb08df3c-958d-4ae8-b3ae-41ec04418786');
-            console.log('data:', data);
             setPerformanceNumbers(data.getPerformanceHistory);
         } catch (err) {
             setError(FAILED_TO_LOAD_MESSAGE);

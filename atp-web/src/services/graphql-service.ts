@@ -6,7 +6,6 @@ import GET_PERFORMANCE_NUMBERS, {PerformanceDataResponse} from "./get-performanc
 class GraphQLService {
     async fetchHoldingsSummary(accountId: string): Promise<HoldingsSummaryResponse> {
         const variables = { accountId: accountId };
-        console.log('fetchHoldingsSummary->variables:', variables);
 
         try {
             const { data: holdingsSummary } = await client.query<HoldingsSummaryResponse>({
@@ -45,8 +44,6 @@ class GraphQLService {
                 query: GET_PERFORMANCE_NUMBERS,
                 variables
             });
-
-            console.log('performanceNumbers:', performanceNumbers);
 
             return performanceNumbers;
         } catch (error) {
