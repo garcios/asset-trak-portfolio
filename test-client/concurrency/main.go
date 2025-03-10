@@ -14,7 +14,7 @@ func main() {
 
 	for i := 0; i < 10; i++ {
 		g.Go(func() error {
-			fmt.Println("Starting goroutine")
+			fmt.Println("->Starting goroutine")
 			time.Sleep(1 * time.Second)
 			fmt.Println("Finishing goroutine")
 			return nil
@@ -25,6 +25,48 @@ func main() {
 		fmt.Println("Error:", err)
 	}
 
-	fmt.Println("All goroutines finished")
+	fmt.Println("***All goroutines finished")
 
+	//Output:
+	//Active goroutines: 1
+	//Active goroutines: 2
+	//Active goroutines: 3
+	//->Starting goroutine
+	//->Starting goroutine
+	//->Starting goroutine
+	//Finishing goroutine
+	//Active goroutines: 2
+	//Active goroutines: 3
+	//->Starting goroutine
+	//Finishing goroutine
+	//Active goroutines: 2
+	//Active goroutines: 3
+	//->Starting goroutine
+	//Finishing goroutine
+	//Active goroutines: 2
+	//Active goroutines: 3
+	//->Starting goroutine
+	//Finishing goroutine
+	//Finishing goroutine
+	//Active goroutines: 2
+	//Active goroutines: 2
+	//Active goroutines: 3
+	//->Starting goroutine
+	//->Starting goroutine
+	//Finishing goroutine
+	//Active goroutines: 2
+	//Active goroutines: 3
+	//->Starting goroutine
+	//Active goroutines: 1
+	//Finishing goroutine
+	//Active goroutines: 2
+	//Finishing goroutine
+	//Active goroutines: 2
+	//Active goroutines: 3
+	//->Starting goroutine
+	//Finishing goroutine
+	//Active goroutines: 1
+	//Finishing goroutine
+	//Active goroutines: 0
+	//***All goroutines finished
 }
