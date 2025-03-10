@@ -141,4 +141,4 @@ npm run mock
 The initial screen, populated with mock data, appears as follows (Last updated on 17 Feb 2025).
 > Please note that this is still in the early stages of development and will be updated as progress is made.
 
-![webui-4.png](../webui-4.png)
+![webui-5.png](../webui-5.png)

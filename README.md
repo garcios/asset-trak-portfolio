@@ -2,7 +2,7 @@
 
 > Initial web ui (last updated on 27 Feb 2025)
 
-![webui-4.png](webui-4.png)
+![webui-5.png](webui-5.png)
 
 
 ## Project Description

@@ -3,8 +3,23 @@ import {Typography,Card, CardContent} from "@mui/material";
 import {CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
 import GraphQLService from "../../services/graphql-service";
 import {PerformanceData} from "../../services/get-performance-numbers";
+import { format } from 'date-fns';
 
 const FAILED_TO_LOAD_MESSAGE = 'Failed to load performance values';
+
+const CustomizedXAxisTick = ({ x, y, payload }) => {
+    // Customize the date format here using date-fns
+    const formattedDate = format(payload.value, 'MMM yyyy'); // Example format
+
+    return (
+        <g transform={`translate(${x},${y})`}>
+            <text x={0} y={0} dy={10} textAnchor="end" fill="#666" transform="rotate(-35)">
+                {formattedDate}
+            </text>
+        </g>
+    );
+};
+
 
 const Performance: React.FC = () => {
     const [performanceNumbers, setPerformanceNumbers] = useState<PerformanceData[]>([]);
@@ -38,14 +53,14 @@ const Performance: React.FC = () => {
         <Card>
             <CardContent>
                 <Typography variant="h6" fontWeight="bold" gutterBottom align="left">Performance</Typography>
-                <ResponsiveContainer width="100%" height={300}>
-                    <LineChart data={performanceNumbers}>
+                <ResponsiveContainer width="100%" height={400}>
+                    <LineChart data={performanceNumbers} margin={{ top: 5, right: 30, left: 20, bottom: 30 }}>
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="tradeDate"/>
+                        <XAxis dataKey="tradeDate"  tick={<CustomizedXAxisTick/>} />
                         <YAxis/>
                         <Tooltip />
-                        <Legend />
-                        <Line type="monotone" dataKey="value" stroke="#8884d8" />
+                        <Legend verticalAlign="top"/>
+                        <Line type="monotone" dataKey="value" stroke="#8884d8" strokeWidth={2} />
                         <Line type="monotone" dataKey="cost" stroke="#82ca9d" strokeDasharray="5 5"/>
                     </LineChart>
                 </ResponsiveContainer>
