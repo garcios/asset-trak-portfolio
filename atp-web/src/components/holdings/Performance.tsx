@@ -4,6 +4,8 @@ import {CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XA
 import GraphQLService from "../../services/graphql-service";
 import {PerformanceData} from "../../services/get-performance-numbers";
 import { format } from 'date-fns';
+import { format as format2 }  from 'd3-format';
+
 
 const FAILED_TO_LOAD_MESSAGE = 'Failed to load performance values';
 
@@ -15,6 +17,18 @@ const CustomizedXAxisTick = ({ x, y, payload }) => {
         <g transform={`translate(${x},${y})`}>
             <text x={0} y={0} dy={10} textAnchor="end" fill="#666" transform="rotate(-35)">
                 {formattedDate}
+            </text>
+        </g>
+    );
+};
+
+const CustomizedYAxisTick = ({ x, y, payload }) => {
+    const formattedValue = format2('$,')(payload.value); // Format with comma and dollar sign
+
+    return (
+        <g transform={`translate(${x},${y})`}>
+            <text x={0} y={0} dy={0} textAnchor="end" fill="#666">
+                {formattedValue}
             </text>
         </g>
     );
@@ -57,7 +71,7 @@ const Performance: React.FC = () => {
                     <LineChart data={performanceNumbers} margin={{ top: 5, right: 30, left: 20, bottom: 30 }}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="tradeDate"  tick={<CustomizedXAxisTick/>} />
-                        <YAxis/>
+                        <YAxis tick={<CustomizedYAxisTick/>}/>
                         <Tooltip />
                         <Legend verticalAlign="top"/>
                         <Line type="monotone" dataKey="value" stroke="#8884d8" strokeWidth={2} />
