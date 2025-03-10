@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"time"
 
@@ -40,7 +39,6 @@ func (h *Transaction) GetPerformanceHistory(
 
 	dateFormat := "2006-01-02"
 
-	fmt.Printf("req.StartDate: %s\n", req.StartDate)
 	startDate, err = time.Parse(dateFormat, req.StartDate)
 	if err != nil {
 		return err
@@ -118,7 +116,6 @@ func collectUniqueAssetIds(transactions []*service.TransactionRecord) []string {
 	uniqueAssetIds := make(map[string]struct{}, 0)
 
 	for _, txn := range transactions {
-		fmt.Printf("txn.AssetID: %s\n", txn.AssetID)
 		if _, ok := uniqueAssetIds[txn.AssetID]; !ok {
 			uniqueAssetIds[txn.AssetID] = struct{}{}
 		}
@@ -181,8 +178,6 @@ func (h *Transaction) getAssetPrices(
 	assetPrices := make([]*service.AssetPrice, 0)
 
 	for _, assetId := range assetIds {
-		fmt.Printf("assetId: %s\n", assetId)
-
 		req := &ap.GetAssetPricesByDateRangeRequest{
 			AssetId:   assetId,
 			StartDate: startDate,

@@ -76,15 +76,10 @@ func (s PerformanceService) CalculateDailyHistoricalValueAndCost(
 	// Initialize running totals for cost
 	var runningCost float64
 	for currentDay := dateRange.StartDate; !currentDay.After(dateRange.EndDate); currentDay = currentDay.AddDate(0, 0, 1) {
-		fmt.Printf("Processing date: %v\n", currentDay.Format("2006-01-02"))
-
 		transactionsByDate := groupTransactionsByDate(transactions)
 
 		// This may or may not contain transactions
-		transactionsAtDate, exists := transactionsByDate[currentDay]
-		if !exists {
-			fmt.Printf("No transactions on date: %v\n", currentDay.Format("2006-01-02"))
-		}
+		transactionsAtDate, _ := transactionsByDate[currentDay]
 
 		// Calculate daily cost
 		var dailyCost float64
@@ -112,9 +107,6 @@ func (s PerformanceService) CalculateDailyHistoricalValueAndCost(
 				targetCurrencyCode,
 				currencyRatesMap,
 			)
-
-			fmt.Printf("tradePriceCurrencyRate: %v\n", tradePriceCurrencyRate)
-			fmt.Printf("brokerageFeeCurrencyRate: %v\n", brokerageFeeCurrencyRate)
 
 			if !found {
 				return nil, fmt.Errorf("no currency rate found for currency pair %v on date %v", txn.TradePriceCurrencyCode, currentDay.Format("2006-01-02"))
