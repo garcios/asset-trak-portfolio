@@ -38,13 +38,15 @@ class GraphQLService {
     }
 
     async fetchPerformanceNumbers(accountId: string): Promise<PerformanceDataResponse> {
-        const variables = { accountId: accountId };
+        const variables = { accountId: accountId, startDate: '2020-07-29', endDate: '2025-03-10' };
 
         try {
             const { data: performanceNumbers } = await client.query<PerformanceDataResponse>({
                 query: GET_PERFORMANCE_NUMBERS,
                 variables
             });
+
+            console.log('performanceNumbers:', performanceNumbers);
 
             return performanceNumbers;
         } catch (error) {

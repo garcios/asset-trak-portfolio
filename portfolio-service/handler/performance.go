@@ -6,6 +6,8 @@ import (
 	"log"
 	"time"
 
+	ap "github.com/garcios/asset-trak-portfolio/asset-price-service/proto"
+	cr "github.com/garcios/asset-trak-portfolio/currency-service/proto"
 	"github.com/garcios/asset-trak-portfolio/portfolio-service/db"
 	"github.com/garcios/asset-trak-portfolio/portfolio-service/model"
 	pb "github.com/garcios/asset-trak-portfolio/portfolio-service/proto"
@@ -54,9 +56,21 @@ func (h *Transaction) GetPerformanceHistory(
 		EndDate:   endDate,
 	}
 
+	assetIds := collectUniqueAssetIds(transactions)
+	assetPrices, err := h.getAssetPrices(ctx, assetIds, req.StartDate, req.EndDate)
+	if err != nil {
+		return err
+	}
+
+	currencies := collectUniqueCurrencies(transactions)
+	currencyRates, err := h.getCurrencyRates(ctx, currencies, req.StartDate, req.EndDate)
+	if err != nil {
+		return err
+	}
+
 	marketData := service.MarketData{
-		AssetPrices:   h.getAssetPrices(),
-		CurrencyRates: h.getCurrencyRates(),
+		AssetPrices:   assetPrices,
+		CurrencyRates: currencyRates,
 	}
 
 	recs, err := h.performanceService.CalculateDailyHistoricalValueAndCost(
@@ -77,14 +91,128 @@ func (h *Transaction) GetPerformanceHistory(
 	return nil
 }
 
-func (h *Transaction) getCurrencyRates() []*service.CurrencyRate {
-	return nil
+func collectUniqueCurrencies(transactions []*service.TransactionRecord) []string {
+	uniqueCurrencies := make(map[string]struct{}, 0)
+
+	for _, txn := range transactions {
+		if _, ok := uniqueCurrencies[txn.TradePriceCurrencyCode]; !ok {
+			uniqueCurrencies[txn.TradePriceCurrencyCode] = struct{}{}
+		}
+
+		if _, ok := uniqueCurrencies[txn.BrokerageFeeCurrencyCode]; !ok {
+			uniqueCurrencies[txn.BrokerageFeeCurrencyCode] = struct{}{}
+		}
+	}
+
+	delete(uniqueCurrencies, targetCurrency)
+
+	currencies := make([]string, 0, len(uniqueCurrencies))
+	for currency := range uniqueCurrencies {
+		currencies = append(currencies, currency)
+	}
+
+	return currencies
 }
 
-func (h *Transaction) getAssetPrices() []*service.AssetPrice {
-	//h.assetPriceService.GetAssetPricesByDateRange()
+func collectUniqueAssetIds(transactions []*service.TransactionRecord) []string {
+	uniqueAssetIds := make(map[string]struct{}, 0)
 
-	return nil
+	for _, txn := range transactions {
+		fmt.Printf("txn.AssetID: %s\n", txn.AssetID)
+		if _, ok := uniqueAssetIds[txn.AssetID]; !ok {
+			uniqueAssetIds[txn.AssetID] = struct{}{}
+		}
+	}
+
+	assetIds := make([]string, 0, len(uniqueAssetIds))
+	for assetId := range uniqueAssetIds {
+		assetIds = append(assetIds, assetId)
+	}
+
+	return assetIds
+}
+
+func (h *Transaction) getCurrencyRates(
+	ctx context.Context,
+	currencies []string,
+	startDate string,
+	endDate string,
+) ([]*service.CurrencyRate, error) {
+	currencyRates := make([]*service.CurrencyRate, 0)
+
+	for _, currency := range currencies {
+		req := &cr.GetHistoricalExchangeRatesRequest{
+			FromCurrency: currency,
+			ToCurrency:   targetCurrency,
+			StartDate:    startDate,
+			EndDate:      endDate,
+		}
+
+		//TODO: make parallel calls
+		res, err := h.currencyService.GetHistoricalExchangeRates(ctx, req)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, r := range res.GetHistoricalRates() {
+			parsedDate, err := time.Parse("2006-01-02", r.TradeDate)
+			if err != nil {
+				return nil, err
+			}
+			rate := &service.CurrencyRate{
+				Date:         parsedDate,
+				FromCurrency: currency,
+				ToCurrency:   targetCurrency,
+				Rate:         r.ExchangeRate,
+			}
+			currencyRates = append(currencyRates, rate)
+		}
+	}
+
+	return currencyRates, nil
+}
+
+func (h *Transaction) getAssetPrices(
+	ctx context.Context,
+	assetIds []string,
+	startDate string,
+	endDate string,
+) ([]*service.AssetPrice, error) {
+	assetPrices := make([]*service.AssetPrice, 0)
+
+	for _, assetId := range assetIds {
+		fmt.Printf("assetId: %s\n", assetId)
+
+		req := &ap.GetAssetPricesByDateRangeRequest{
+			AssetId:   assetId,
+			StartDate: startDate,
+			EndDate:   endDate,
+		}
+
+		//TODO: make parallel calls
+		res, err := h.assetPriceService.GetAssetPricesByDateRange(ctx, req)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, p := range res.GetPrices() {
+			parsedDate, err := time.Parse("2006-01-02", p.Date)
+			if err != nil {
+				return nil, err
+			}
+
+			price := &service.AssetPrice{
+				Date:         parsedDate,
+				AssetID:      assetId,
+				ClosingPrice: p.GetPrice(),
+			}
+
+			assetPrices = append(assetPrices, price)
+		}
+
+	}
+
+	return assetPrices, nil
 }
 
 func (h *Transaction) toHistoricalRecords(recs []*service.HistoricalRecord, res *pb.PerformanceHistoryResponse) {
@@ -97,7 +225,7 @@ func (h *Transaction) toHistoricalRecords(recs []*service.HistoricalRecord, res 
 }
 
 func (h *Transaction) toTransactions(txns []*model.Transaction) []*service.TransactionRecord {
-	trades := make([]*service.TransactionRecord, len(txns))
+	trades := make([]*service.TransactionRecord, 0, len(txns))
 
 	for _, txn := range txns {
 		trades = append(trades, &service.TransactionRecord{

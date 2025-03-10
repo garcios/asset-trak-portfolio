@@ -8,6 +8,8 @@ replace github.com/garcios/asset-trak-portfolio/lib => /Users/oscargarcia/worksp
 
 replace github.com/garcios/asset-trak-portfolio/asset-price-service => /Users/oscargarcia/workspace/asset-trak-portfolio/asset-price-service
 
+replace github.com/garcios/asset-trak-portfolio/currency-service => /Users/oscargarcia/workspace/asset-trak-portfolio/currency-service
+
 require (
 	github.com/BurntSushi/toml v1.4.0
 	github.com/Thiht/transactor v1.1.0

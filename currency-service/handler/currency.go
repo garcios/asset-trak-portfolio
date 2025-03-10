@@ -14,14 +14,14 @@ import (
 
 const DateFormat = "2006-01-02"
 
-func New(currencyManager service.ICurrencyManager) *Currency {
+func New(currencyManager service.ICurrencyRepository) *Currency {
 	return &Currency{
 		currencyManager: currencyManager,
 	}
 }
 
 type Currency struct {
-	currencyManager service.ICurrencyManager
+	currencyManager service.ICurrencyRepository
 }
 
 // extractGetExchangeRate extracts the exchange rate between two currencies for a given trade date, considering
@@ -82,6 +82,33 @@ func (h *Currency) GetHistoricalExchangeRates(
 	in *pb.GetHistoricalExchangeRatesRequest,
 	out *pb.GetHistoricalExchangeRatesResponse,
 ) error {
+	log.Println("handler.GetHistoricalExchangeRates...")
+
+	rates, err := h.currencyManager.GeExchangeRates(
+		in.GetFromCurrency(),
+		in.GetToCurrency(),
+		in.GetStartDate(),
+		in.GetEndDate(),
+	)
+
+	if err != nil {
+		return err
+	}
+
+	historicalRates := make([]*pb.HistoricalRate, 0)
+
+	for _, rate := range rates {
+		h := pb.HistoricalRate{
+			FromCurrency: rate.BaseCurrency,
+			ToCurrency:   rate.TargetCurrency,
+			TradeDate:    rate.TradeDate.Format(DateFormat),
+			ExchangeRate: rate.ExchangeRate,
+		}
+
+		historicalRates = append(historicalRates, &h)
+	}
+
+	out.HistoricalRates = historicalRates
 
 	return nil
 }

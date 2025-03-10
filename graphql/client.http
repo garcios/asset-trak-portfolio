@@ -74,9 +74,10 @@ query {
 GRAPHQL localhost:8080/query
 
 query  {
-    getHistoricalValues(accountId: "eb08df3c-958d-4ae8-b3ae-41ec04418786") {
+    getPerformanceHistory(accountId: "eb08df3c-958d-4ae8-b3ae-41ec04418786", startDate: "2020-07-29", endDate: "2025-03-10") {
         tradeDate
-        amount
+        cost
+        value
         currencyCode
     }
 }

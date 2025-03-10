@@ -35,8 +35,10 @@ message GetHistoricalExchangeRatesRequest {
 
 // Object to hold a date and the exchange rate for that date
 message HistoricalRate {
-  string trade_date = 1; // Date in 'yyyy-mm-dd' format
-  double exchange_rate = 2; // Exchange rate for the given date
+  string from_currency = 1; // Origin currency code
+  string to_currency = 2; // Target currency code
+  string trade_date = 3; // Date in 'yyyy-mm-dd' format
+  double exchange_rate = 4; // Exchange rate for the given date
 }
 
 // The response message containing a list of historical exchange rates

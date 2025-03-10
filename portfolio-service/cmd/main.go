@@ -11,10 +11,6 @@ import (
 
 	"github.com/BurntSushi/toml"
 	stdlibTransactor "github.com/Thiht/transactor/stdlib"
-	_ "github.com/go-micro/plugins/v4/client/grpc"
-	_ "github.com/go-micro/plugins/v4/registry/etcd"
-	"github.com/go-redis/redis/v8"
-
 	pba "github.com/garcios/asset-trak-portfolio/asset-price-service/proto"
 	pbc "github.com/garcios/asset-trak-portfolio/currency-service/proto"
 	"github.com/garcios/asset-trak-portfolio/lib/mysql"
@@ -22,6 +18,8 @@ import (
 	"github.com/garcios/asset-trak-portfolio/portfolio-service/handler"
 	pb "github.com/garcios/asset-trak-portfolio/portfolio-service/proto"
 	"github.com/garcios/asset-trak-portfolio/portfolio-service/service"
+	_ "github.com/go-micro/plugins/v4/client/grpc"
+	_ "github.com/go-micro/plugins/v4/registry/etcd"
 )
 
 const (
@@ -44,11 +42,11 @@ func main() {
 	}
 
 	// redis
-	rdb := redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%d", cfg.Redis.Host, cfg.Redis.Port),
-		Password: cfg.Redis.Password,
-		DB:       cfg.Redis.DB,
-	})
+	//rdb := redis.NewClient(&redis.Options{
+	//	Addr:     fmt.Sprintf("%s:%d", cfg.Redis.Host, cfg.Redis.Port),
+	//	Password: cfg.Redis.Password,
+	//	DB:       cfg.Redis.DB,
+	//})
 
 	// database
 	conn, err := mysql.Connect()
@@ -86,7 +84,7 @@ func main() {
 		&cfg,
 	)
 
-	performnaceSvc := service.NewPerformanceService(rdb)
+	performnaceSvc := service.NewPerformanceService()
 
 	switch *processor {
 	case tradesIngestorProcessor:

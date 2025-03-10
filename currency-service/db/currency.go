@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/garcios/asset-trak-portfolio/currency-service/model"
 	"log"
 	"time"
 )
@@ -54,4 +55,57 @@ func (r *CurrencyRepository) GetExchangeRate(
 	}
 
 	return exchangeRate, nil
+}
+
+func (r *CurrencyRepository) GeExchangeRates(
+	fromCurrency string,
+	toCurrency string,
+	startDate string,
+	endDate string,
+) ([]*model.CurrencyRate, error) {
+	query := `
+		SELECT base_currency, target_currency, exchange_rate, DATE(trade_date) 
+		FROM currency_rate
+		WHERE base_currency = ?
+		  AND target_currency = ?
+		  AND trade_date BETWEEN ? AND ?;
+	`
+
+	stmt, err := r.DB.Prepare(query)
+	if err != nil {
+		return nil, fmt.Errorf("GetExchangeRate: %v", err)
+	}
+
+	defer stmt.Close()
+
+	rows, err := stmt.Query(fromCurrency, toCurrency, startDate, endDate)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query exchange rates: %w", err)
+	}
+	defer rows.Close()
+
+	exchangeRates := make([]*model.CurrencyRate, 0)
+	var tradeDateStr string
+	for rows.Next() {
+		var rate model.CurrencyRate
+		err := rows.Scan(&rate.BaseCurrency, &rate.TargetCurrency, &rate.ExchangeRate, &tradeDateStr)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan exchange rate: %w", err)
+		}
+
+		convertedDate, err := time.Parse("2006-01-02", tradeDateStr)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse trade_date: %v", err)
+		}
+
+		rate.TradeDate = &convertedDate
+
+		exchangeRates = append(exchangeRates, &rate)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating over rows: %w", err)
+	}
+
+	return exchangeRates, nil
 }
