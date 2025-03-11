@@ -34,7 +34,7 @@ const SummaryTotals: React.FC = () => {
     }, []);
 
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <p>Loading Summary Totals...</p>;
     if (error) return <p>Error: {error}</p>;
 
 

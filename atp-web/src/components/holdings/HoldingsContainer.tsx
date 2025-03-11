@@ -29,7 +29,7 @@ function HoldingsContainer() {
     }, []);
 
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <p>Loading Holdings...</p>;
     if (error) return <p>Error: {error}</p>;
 
     return (

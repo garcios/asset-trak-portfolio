@@ -58,7 +58,7 @@ const Performance: React.FC = () => {
     }, []);
 
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <p>Loading Performance Chart...</p>;
     if (error) return <p>Error: {error}</p>;
 
 
