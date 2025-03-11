@@ -4,6 +4,12 @@ import (
 	"context"
 	"fmt"
 	"time"
+
+	con "github.com/garcios/asset-trak-portfolio/lib/concurrency"
+)
+
+const (
+	maxConcurrency = 10
 )
 
 type PerformanceService struct {
@@ -66,18 +72,19 @@ func (s PerformanceService) CalculateDailyHistoricalValueAndCost(
 	targetCurrencyCode string,
 	dateRange DateRange,
 ) ([]*HistoricalRecord, error) {
-	// Step 1: Convert assetPrices to map
+	// Step 1: Convert assetPrices, currency rates to map and group transactions by date
 	priceDataMap := buildAssetPricesMap(marketData.AssetPrices, dateRange.StartDate, dateRange.EndDate)
 	currencyRatesMap := buildCurrencyRatesMap(marketData.CurrencyRates)
+	transactionsByDate := groupTransactionsByDate(transactions)
 
 	// Step 2: Calculate daily value and cost for each date
 	var dailyRecords []*HistoricalRecord
 
+	g, ctx := con.WithContext(ctx, maxConcurrency)
+
 	// Initialize running totals for cost
 	var runningCost float64
 	for currentDay := dateRange.StartDate; !currentDay.After(dateRange.EndDate); currentDay = currentDay.AddDate(0, 0, 1) {
-		transactionsByDate := groupTransactionsByDate(transactions)
-
 		// This may or may not contain transactions
 		transactionsAtDate, _ := transactionsByDate[currentDay]
 
@@ -88,30 +95,45 @@ func (s PerformanceService) CalculateDailyHistoricalValueAndCost(
 				continue
 			}
 
+			var tradePriceCurrencyRate float64
+			var found bool
+			g.Go(func() error {
+				tradePriceCurrencyRate, found = getLastAvailableCurrencyRate(
+					currentDay,
+					txn.TradePriceCurrencyCode,
+					targetCurrencyCode,
+					currencyRatesMap,
+				)
+
+				if !found {
+					currencyPair := txn.TradePriceCurrencyCode + "-" + targetCurrencyCode
+					return fmt.Errorf("no currency rate found for currency pair %v on date %v", currencyPair, currentDay.Format("2006-01-02"))
+				}
+
+				return nil
+			})
+
+			var brokerageFeeCurrencyRate float64
+			g.Go(func() error {
+				brokerageFeeCurrencyRate, found = getLastAvailableCurrencyRate(
+					currentDay,
+					txn.BrokerageFeeCurrencyCode,
+					targetCurrencyCode,
+					currencyRatesMap,
+				)
+
+				if !found {
+					return fmt.Errorf("no currency rate found for currency pair %v on date %v", txn.TradePriceCurrencyCode, currentDay.Format("2006-01-02"))
+				}
+
+				return nil
+			})
+
+			if err := g.Wait(); err != nil {
+				return nil, err
+			}
+
 			// Calculate cost for the txn
-			tradePriceCurrencyRate, found := getLastAvailableCurrencyRate(
-				currentDay,
-				txn.TradePriceCurrencyCode,
-				targetCurrencyCode,
-				currencyRatesMap,
-			)
-
-			if !found {
-				currencyPair := txn.TradePriceCurrencyCode + "-" + targetCurrencyCode
-				return nil, fmt.Errorf("no currency rate found for currency pair %v on date %v", currencyPair, currentDay.Format("2006-01-02"))
-			}
-
-			brokerageFeeCurrencyRate, found := getLastAvailableCurrencyRate(
-				currentDay,
-				txn.BrokerageFeeCurrencyCode,
-				targetCurrencyCode,
-				currencyRatesMap,
-			)
-
-			if !found {
-				return nil, fmt.Errorf("no currency rate found for currency pair %v on date %v", txn.TradePriceCurrencyCode, currentDay.Format("2006-01-02"))
-			}
-
 			dailyCost += txn.Quantity*txn.TradePrice*tradePriceCurrencyRate + (txn.BrokerageFee * brokerageFeeCurrencyRate)
 		}
 
@@ -119,29 +141,51 @@ func (s PerformanceService) CalculateDailyHistoricalValueAndCost(
 		var dailyValue float64
 		assetIDs := extractUniqueAssetIDsByDateRange(transactionsByDate, dateRange.StartDate, currentDay)
 		for assetID, currencyCode := range assetIDs {
+
+			var quantity float64
+
+			g.Go(func() error {
+				quantity = getHoldingQuantity(assetID, dateRange.StartDate, currentDay, transactionsByDate)
+				return nil
+			})
+
+			var price float64
+			var found bool
+			g.Go(func() error {
+				price, found = getLastAvailablePrice(
+					currentDay,
+					assetID,
+					priceDataMap)
+
+				if !found {
+					return fmt.Errorf("no price found for asset %v on date %v", assetID, currentDay.Format("2006-01-02"))
+				}
+
+				return nil
+			})
+
+			var tradePriceCurrencyRate float64
+			g.Go(func() error {
+				tradePriceCurrencyRate, found = getLastAvailableCurrencyRate(
+					currentDay,
+					currencyCode,
+					targetCurrencyCode,
+					currencyRatesMap,
+				)
+
+				if !found {
+					currencyPair := currencyCode + "-" + targetCurrencyCode
+					return fmt.Errorf("no currency rate found for currency pair %v on date %v", currencyPair, currentDay.Format("2006-01-02"))
+				}
+
+				return nil
+			})
+
+			if err := g.Wait(); err != nil {
+				return nil, err
+			}
+
 			// Add the value of any assets already held
-			quantity := getHoldingQuantity(assetID, dateRange.StartDate, currentDay, transactionsByDate)
-			price, found := getLastAvailablePrice(
-				currentDay,
-				assetID,
-				priceDataMap)
-
-			if !found {
-				return nil, fmt.Errorf("no price found for asset %v on date %v", assetID, currentDay.Format("2006-01-02"))
-			}
-
-			tradePriceCurrencyRate, found := getLastAvailableCurrencyRate(
-				currentDay,
-				currencyCode,
-				targetCurrencyCode,
-				currencyRatesMap,
-			)
-
-			if !found {
-				currencyPair := currencyCode + "-" + targetCurrencyCode
-				return nil, fmt.Errorf("no currency rate found for currency pair %v on date %v", currencyPair, currentDay.Format("2006-01-02"))
-			}
-
 			dailyValue += quantity * price * tradePriceCurrencyRate
 		}
 

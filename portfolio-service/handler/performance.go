@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"log"
+	"sync"
 	"time"
 
 	ap "github.com/garcios/asset-trak-portfolio/asset-price-service/proto"
@@ -11,6 +12,12 @@ import (
 	"github.com/garcios/asset-trak-portfolio/portfolio-service/model"
 	pb "github.com/garcios/asset-trak-portfolio/portfolio-service/proto"
 	"github.com/garcios/asset-trak-portfolio/portfolio-service/service"
+
+	con "github.com/garcios/asset-trak-portfolio/lib/concurrency"
+)
+
+const (
+	maxConcurrency = 20
 )
 
 func (h *Transaction) GetPerformanceHistory(
@@ -137,33 +144,45 @@ func (h *Transaction) getCurrencyRates(
 ) ([]*service.CurrencyRate, error) {
 	currencyRates := make([]*service.CurrencyRate, 0)
 
+	g, gctx := con.WithContext(ctx, maxConcurrency)
+	var mutex sync.Mutex
+
 	for _, currency := range currencies {
-		req := &cr.GetHistoricalExchangeRatesRequest{
-			FromCurrency: currency,
-			ToCurrency:   targetCurrency,
-			StartDate:    startDate,
-			EndDate:      endDate,
-		}
-
-		//TODO: make parallel calls
-		res, err := h.currencyService.GetHistoricalExchangeRates(ctx, req)
-		if err != nil {
-			return nil, err
-		}
-
-		for _, r := range res.GetHistoricalRates() {
-			parsedDate, err := time.Parse("2006-01-02", r.TradeDate)
-			if err != nil {
-				return nil, err
-			}
-			rate := &service.CurrencyRate{
-				Date:         parsedDate,
+		g.Go(func() error {
+			req := &cr.GetHistoricalExchangeRatesRequest{
 				FromCurrency: currency,
 				ToCurrency:   targetCurrency,
-				Rate:         r.ExchangeRate,
+				StartDate:    startDate,
+				EndDate:      endDate,
 			}
-			currencyRates = append(currencyRates, rate)
-		}
+
+			res, err := h.currencyService.GetHistoricalExchangeRates(gctx, req)
+			if err != nil {
+				return err
+			}
+
+			for _, r := range res.GetHistoricalRates() {
+				parsedDate, err := time.Parse("2006-01-02", r.TradeDate)
+				if err != nil {
+					return err
+				}
+				rate := &service.CurrencyRate{
+					Date:         parsedDate,
+					FromCurrency: currency,
+					ToCurrency:   targetCurrency,
+					Rate:         r.ExchangeRate,
+				}
+
+				mutex.Lock()
+				currencyRates = append(currencyRates, rate)
+				mutex.Unlock()
+			}
+			return nil
+		})
+	}
+
+	if err := g.Wait(); err != nil {
+		return nil, err
 	}
 
 	return currencyRates, nil
@@ -177,34 +196,45 @@ func (h *Transaction) getAssetPrices(
 ) ([]*service.AssetPrice, error) {
 	assetPrices := make([]*service.AssetPrice, 0)
 
+	g, gctx := con.WithContext(ctx, maxConcurrency)
+	var mutex sync.Mutex
+
 	for _, assetId := range assetIds {
-		req := &ap.GetAssetPricesByDateRangeRequest{
-			AssetId:   assetId,
-			StartDate: startDate,
-			EndDate:   endDate,
-		}
+		g.Go(func() error {
+			req := &ap.GetAssetPricesByDateRangeRequest{
+				AssetId:   assetId,
+				StartDate: startDate,
+				EndDate:   endDate,
+			}
 
-		//TODO: make parallel calls
-		res, err := h.assetPriceService.GetAssetPricesByDateRange(ctx, req)
-		if err != nil {
-			return nil, err
-		}
-
-		for _, p := range res.GetPrices() {
-			parsedDate, err := time.Parse("2006-01-02", p.Date)
+			res, err := h.assetPriceService.GetAssetPricesByDateRange(gctx, req)
 			if err != nil {
-				return nil, err
+				return err
 			}
 
-			price := &service.AssetPrice{
-				Date:         parsedDate,
-				AssetID:      assetId,
-				ClosingPrice: p.GetPrice(),
+			for _, p := range res.GetPrices() {
+				parsedDate, err := time.Parse("2006-01-02", p.Date)
+				if err != nil {
+					return err
+				}
+
+				price := &service.AssetPrice{
+					Date:         parsedDate,
+					AssetID:      assetId,
+					ClosingPrice: p.GetPrice(),
+				}
+
+				mutex.Lock()
+				assetPrices = append(assetPrices, price)
+				mutex.Unlock()
 			}
 
-			assetPrices = append(assetPrices, price)
-		}
+			return nil
+		})
+	}
 
+	if err := g.Wait(); err != nil {
+		return nil, err
 	}
 
 	return assetPrices, nil
