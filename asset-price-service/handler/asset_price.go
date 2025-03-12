@@ -43,8 +43,8 @@ func (a *AssetPrice) GetAssetPrice(ctx context.Context, req *pba.GetAssetPriceRe
 	return nil
 }
 
-func (a *AssetPrice) GetAssetPricesByDateRange(ctx context.Context, req *pba.GetAssetPricesByDateRangeRequest, res *pba.GetAssetPricesByDateRangeResponse) error {
-	ap, err := a.repo.GetAssetPrices(req.AssetId, req.StartDate, req.EndDate)
+func (a *AssetPrice) GetAssetPriceHistory(ctx context.Context, req *pba.GetAssetPriceHistoryRequest, res *pba.GetAssetPriceHistoryResponse) error {
+	ap, err := a.repo.GetAssetPriceHistory(req.AssetId, req.StartDate, req.EndDate)
 	if err != nil {
 		return err
 	}
@@ -58,7 +58,7 @@ func (a *AssetPrice) GetAssetPricesByDateRange(ctx context.Context, req *pba.Get
 	}
 
 	assetPrices := make([]*pba.AssetPriceEntry, 0, len(ap))
-	
+
 	for _, ap := range ap {
 		apEntry := &pba.AssetPriceEntry{
 			Date:     ap.TradeDate.Format("2006-01-02"),

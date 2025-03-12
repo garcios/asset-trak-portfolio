@@ -62,13 +62,13 @@ func (h *Transaction) GetPerformanceHistory(
 	}
 
 	assetIds := collectUniqueAssetIds(transactions)
-	assetPrices, err := h.getAssetPrices(ctx, assetIds, req.StartDate, req.EndDate)
+	assetPrices, err := h.getAssetPriceHistory(ctx, assetIds, req.StartDate, req.EndDate)
 	if err != nil {
 		return err
 	}
 
 	currencies := collectUniqueCurrencies(transactions)
-	currencyRates, err := h.getCurrencyRates(ctx, currencies, req.StartDate, req.EndDate)
+	currencyRates, err := h.getCurrencyRateHistory(ctx, currencies, req.StartDate, req.EndDate)
 	if err != nil {
 		return err
 	}
@@ -136,7 +136,7 @@ func collectUniqueAssetIds(transactions []*service.TransactionRecord) []string {
 	return assetIds
 }
 
-func (h *Transaction) getCurrencyRates(
+func (h *Transaction) getCurrencyRateHistory(
 	ctx context.Context,
 	currencies []string,
 	startDate string,
@@ -188,7 +188,7 @@ func (h *Transaction) getCurrencyRates(
 	return currencyRates, nil
 }
 
-func (h *Transaction) getAssetPrices(
+func (h *Transaction) getAssetPriceHistory(
 	ctx context.Context,
 	assetIds []string,
 	startDate string,
@@ -201,13 +201,13 @@ func (h *Transaction) getAssetPrices(
 
 	for _, assetId := range assetIds {
 		g.Go(func() error {
-			req := &ap.GetAssetPricesByDateRangeRequest{
+			req := &ap.GetAssetPriceHistoryRequest{
 				AssetId:   assetId,
 				StartDate: startDate,
 				EndDate:   endDate,
 			}
 
-			res, err := h.assetPriceService.GetAssetPricesByDateRange(gctx, req)
+			res, err := h.assetPriceService.GetAssetPriceHistory(gctx, req)
 			if err != nil {
 				return err
 			}

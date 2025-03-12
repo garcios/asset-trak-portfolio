@@ -36,13 +36,13 @@ func main() {
 
 	//log.Println(resp)
 
-	req2 := &pb.GetAssetPricesByDateRangeRequest{
+	req2 := &pb.GetAssetPriceHistoryRequest{
 		AssetId:   "2264c1ab-0adf-4349-afb4-b1694e7f97c1",
 		StartDate: "2020-07-01",
 		EndDate:   "2025-01-30",
 	}
 
-	res2, err := apSrv.GetAssetPricesByDateRange(context.Background(), req2)
+	res2, err := apSrv.GetAssetPriceHistory(context.Background(), req2)
 	if err != nil {
 		log.Printf("Get asset prices error: %v", err)
 		return

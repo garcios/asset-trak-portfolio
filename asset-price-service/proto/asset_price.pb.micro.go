@@ -39,7 +39,7 @@ type AssetPriceService interface {
 	// Get the price of a specific asset by ID
 	GetAssetPrice(ctx context.Context, in *GetAssetPriceRequest, opts ...client.CallOption) (*GetAssetPriceResponse, error)
 	// Get the prices of an asset by ID and a date range
-	GetAssetPricesByDateRange(ctx context.Context, in *GetAssetPricesByDateRangeRequest, opts ...client.CallOption) (*GetAssetPricesByDateRangeResponse, error)
+	GetAssetPriceHistory(ctx context.Context, in *GetAssetPriceHistoryRequest, opts ...client.CallOption) (*GetAssetPriceHistoryResponse, error)
 }
 
 type assetPriceService struct {
@@ -64,9 +64,9 @@ func (c *assetPriceService) GetAssetPrice(ctx context.Context, in *GetAssetPrice
 	return out, nil
 }
 
-func (c *assetPriceService) GetAssetPricesByDateRange(ctx context.Context, in *GetAssetPricesByDateRangeRequest, opts ...client.CallOption) (*GetAssetPricesByDateRangeResponse, error) {
-	req := c.c.NewRequest(c.name, "AssetPrice.GetAssetPricesByDateRange", in)
-	out := new(GetAssetPricesByDateRangeResponse)
+func (c *assetPriceService) GetAssetPriceHistory(ctx context.Context, in *GetAssetPriceHistoryRequest, opts ...client.CallOption) (*GetAssetPriceHistoryResponse, error) {
+	req := c.c.NewRequest(c.name, "AssetPrice.GetAssetPriceHistory", in)
+	out := new(GetAssetPriceHistoryResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -80,13 +80,13 @@ type AssetPriceHandler interface {
 	// Get the price of a specific asset by ID
 	GetAssetPrice(context.Context, *GetAssetPriceRequest, *GetAssetPriceResponse) error
 	// Get the prices of an asset by ID and a date range
-	GetAssetPricesByDateRange(context.Context, *GetAssetPricesByDateRangeRequest, *GetAssetPricesByDateRangeResponse) error
+	GetAssetPriceHistory(context.Context, *GetAssetPriceHistoryRequest, *GetAssetPriceHistoryResponse) error
 }
 
 func RegisterAssetPriceHandler(s server.Server, hdlr AssetPriceHandler, opts ...server.HandlerOption) error {
 	type assetPrice interface {
 		GetAssetPrice(ctx context.Context, in *GetAssetPriceRequest, out *GetAssetPriceResponse) error
-		GetAssetPricesByDateRange(ctx context.Context, in *GetAssetPricesByDateRangeRequest, out *GetAssetPricesByDateRangeResponse) error
+		GetAssetPriceHistory(ctx context.Context, in *GetAssetPriceHistoryRequest, out *GetAssetPriceHistoryResponse) error
 	}
 	type AssetPrice struct {
 		assetPrice
@@ -103,6 +103,6 @@ func (h *assetPriceHandler) GetAssetPrice(ctx context.Context, in *GetAssetPrice
 	return h.AssetPriceHandler.GetAssetPrice(ctx, in, out)
 }
 
-func (h *assetPriceHandler) GetAssetPricesByDateRange(ctx context.Context, in *GetAssetPricesByDateRangeRequest, out *GetAssetPricesByDateRangeResponse) error {
-	return h.AssetPriceHandler.GetAssetPricesByDateRange(ctx, in, out)
+func (h *assetPriceHandler) GetAssetPriceHistory(ctx context.Context, in *GetAssetPriceHistoryRequest, out *GetAssetPriceHistoryResponse) error {
+	return h.AssetPriceHandler.GetAssetPriceHistory(ctx, in, out)
 }

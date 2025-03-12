@@ -54,7 +54,7 @@ func (r *AssetPriceRepository) GetAssetPrice(
 	return assetPrice, nil
 }
 
-func (r *AssetPriceRepository) GetAssetPrices(assetID string, startDate, endDate string) ([]*model.AssetPrice, error) {
+func (r *AssetPriceRepository) GetAssetPriceHistory(assetID string, startDate, endDate string) ([]*model.AssetPrice, error) {
 	query := `SELECT asset_id, price, currency_code, DATE(trade_date) FROM asset_price WHERE asset_id = ? AND trade_date BETWEEN ? AND ?`
 
 	stmt, err := r.DB.Prepare(query)

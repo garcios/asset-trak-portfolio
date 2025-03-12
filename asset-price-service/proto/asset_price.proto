@@ -7,7 +7,7 @@ service AssetPrice {
   rpc GetAssetPrice(GetAssetPriceRequest) returns (GetAssetPriceResponse);
 
   // Get the prices of an asset by ID and a date range
-  rpc GetAssetPricesByDateRange(GetAssetPricesByDateRangeRequest) returns (GetAssetPricesByDateRangeResponse);
+  rpc GetAssetPriceHistory(GetAssetPriceHistoryRequest) returns (GetAssetPriceHistoryResponse);
 }
 
 // Request message for getting the price of an asset
@@ -25,14 +25,14 @@ message GetAssetPriceResponse {
 }
 
 // Request message for getting asset prices by date range
-message GetAssetPricesByDateRangeRequest {
+message GetAssetPriceHistoryRequest {
   string asset_id = 1;       // Identifier of the asset
   string start_date = 2;     // Start date in ISO 8601 format (e.g., "2023-01-01")
   string end_date = 3;       // End date in ISO 8601 format (e.g., "2023-12-31")
 }
 
 // Response message containing a list of asset prices within the date range
-message GetAssetPricesByDateRangeResponse {
+message GetAssetPriceHistoryResponse {
   string asset_id = 1;             // Identifier of the asset
   repeated AssetPriceEntry prices = 2; // List of asset prices in the date range
 }
