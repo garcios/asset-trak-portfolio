@@ -142,3 +142,7 @@ The initial screen, populated with mock data, appears as follows (Last updated o
 > Please note that this is still in the early stages of development and will be updated as progress is made.
 
 ![webui-7.png](../webui-7.png)
+
+## References
+- https://recharts.org/en-US/ (what this app uses)
+- https://echarts.apache.org/en/index.html (alternative)
