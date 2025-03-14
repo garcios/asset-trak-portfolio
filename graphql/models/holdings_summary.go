@@ -9,8 +9,10 @@ type Investment struct {
 	AssetName    string
 	MarketCode   string
 	Price        *Money
+	Weight       float64
 	Quantity     float64
 	Value        *Money
+	Cost         *Money
 	CapitalGain  *MoneyWithPercentage
 	Dividend     *MoneyWithPercentage
 	CurrencyGain *MoneyWithPercentage

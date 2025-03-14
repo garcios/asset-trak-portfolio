@@ -8,7 +8,9 @@ const getHoldingsSummaryResolver:GraphQLResponseResolver = ({query, variables}) 
                     assetName: "iShares S&P 500 ETF Trust",
                     price: {amount: 64.21, currencyCode: "AUD"},
                     quantity: 1442,
+                    weight: 20,
                     value: {amount: 92590.82, currencyCode: "AUD"},
+                    cost: {amount: 60000.13, currencyCode: "AUD"},
                     capitalGain: {
                         amount: 18935.30,
                         currencyCode: "AUD",
@@ -36,7 +38,9 @@ const getHoldingsSummaryResolver:GraphQLResponseResolver = ({query, variables}) 
                     assetName: "Amazon.com Inc.",
                     price: {amount: 229.15, currencyCode: "USD"},
                     quantity: 116,
+                    weight: 20,
                     value: {amount: 42508.37, currencyCode: "AUD"},
+                    cost: {amount: 20000.00, currencyCode: "AUD"},
                     capitalGain: {
                         amount: 10957.74,
                         currencyCode: "AUD",
@@ -64,7 +68,9 @@ const getHoldingsSummaryResolver:GraphQLResponseResolver = ({query, variables}) 
                     assetName: "Alphabet Inc - Class A",
                     price: {amount: 185.34, currencyCode: "USD"},
                     quantity: 115,
+                    weight: 20,
                     value: {amount: 34068.23, currencyCode: "AUD"},
+                    cost: {amount: 15000.00, currencyCode: "AUD"},
                     capitalGain: {
                         amount: 4393.17,
                         currencyCode: "AUD",
@@ -92,7 +98,9 @@ const getHoldingsSummaryResolver:GraphQLResponseResolver = ({query, variables}) 
                     assetName: "Microsoft Inc.",
                     price: {amount: 409.75, currencyCode: "USD"},
                     quantity: 49,
+                    weight: 20,
                     value: {amount: 32092.06, currencyCode: "AUD"},
+                    cost: {amount: 10000.00, currencyCode: "AUD"},
                     capitalGain: {
                         amount: 282.99,
                         currencyCode: "AUD",
@@ -120,7 +128,9 @@ const getHoldingsSummaryResolver:GraphQLResponseResolver = ({query, variables}) 
                     assetName: "Spdr S&P/Asx 200 Fund",
                     price: {amount: 76.15, currencyCode: "AUD"},
                     quantity: 347,
+                    weight: 20,
                     value: {amount: 26424.05, currencyCode: "AUD"},
+                    cost: {amount: 10000.00, currencyCode: "AUD"},
                     capitalGain: {
                         amount: 2905.20,
                         currencyCode: "AUD",
@@ -148,7 +158,9 @@ const getHoldingsSummaryResolver:GraphQLResponseResolver = ({query, variables}) 
                     assetName: "Betashares Nasdaq 100 ETF",
                     price: {amount: 51.18, currencyCode: "AUD"},
                     quantity: 356,
+                    weight: 20,
                     value: {amount: 18220.08, currencyCode: "AUD"},
+                    cost: {amount: 10000.00, currencyCode: "AUD"},
                     capitalGain: {
                         amount: 2452.72,
                         currencyCode: "AUD",
@@ -176,7 +188,9 @@ const getHoldingsSummaryResolver:GraphQLResponseResolver = ({query, variables}) 
                     assetName: "Broadcom Inc",
                     price: {amount: 224.87, currencyCode: "USD"},
                     quantity: 36,
+                    weight: 20,
                     value: {amount: 12939.47, currencyCode: "AUD"},
+                    cost: {amount: 10000.00, currencyCode: "AUD"},
                     capitalGain: {
                         amount: 3381.19,
                         currencyCode: "AUD",
@@ -204,7 +218,9 @@ const getHoldingsSummaryResolver:GraphQLResponseResolver = ({query, variables}) 
                     assetName: "Taiwan Semiconductor Manufacturing Company Limited",
                     price: {amount: 206.12, currencyCode: "USD"},
                     quantity: 35,
+                    weight: 20,
                     value: {amount: 11531.10, currencyCode: "AUD"},
+                    cost: {amount: 10000.00, currencyCode: "AUD"},
                     capitalGain: {
                         amount: 2532.43,
                         currencyCode: "AUD",
@@ -232,7 +248,9 @@ const getHoldingsSummaryResolver:GraphQLResponseResolver = ({query, variables}) 
                     assetName: "Nvidia Corporation",
                     price: {amount: 129.84, currencyCode: "USD"},
                     quantity: 45,
+                    weight: 20,
                     value: {amount: 9317.17, currencyCode: "AUD"},
+                    cost: {amount: 10000.00, currencyCode: "AUD"},
                     capitalGain: {
                         amount: 904.51,
                         currencyCode: "AUD",
@@ -260,7 +278,9 @@ const getHoldingsSummaryResolver:GraphQLResponseResolver = ({query, variables}) 
                     assetName: "Adavanced Micro Devices Inc.",
                     price: {amount: 107.56, currencyCode: "USD"},
                     quantity: 39,
+                    weight: 20,
                     value: {amount: 6689.27, currencyCode: "AUD"},
+                    cost: {amount: 10000.00, currencyCode: "AUD"},
                     capitalGain: {
                         amount: -2013.41,
                         currencyCode: "AUD",
@@ -288,7 +308,9 @@ const getHoldingsSummaryResolver:GraphQLResponseResolver = ({query, variables}) 
                     assetName: "Mastercard Inc.",
                     price: {amount: 562.75, currencyCode: "USD"},
                     quantity: 7,
+                    weight: 20,
                     value: {amount: 6281.69, currencyCode: "AUD"},
+                    cost: {amount: 10000.00, currencyCode: "AUD"},
                     capitalGain: {
                         amount: 1599.11,
                         currencyCode: "AUD",
@@ -316,7 +338,9 @@ const getHoldingsSummaryResolver:GraphQLResponseResolver = ({query, variables}) 
                     assetName: "Uber Technologies, Inc.",
                     price: {amount: 74.60, currencyCode: "USD"},
                     quantity: 52,
+                    weight: 20,
                     value: {amount: 6185.93, currencyCode: "AUD"},
+                    cost: {amount: 10000.00, currencyCode: "AUD"},
                     capitalGain: {
                         amount: 1097.22,
                         currencyCode: "AUD",
@@ -344,7 +368,9 @@ const getHoldingsSummaryResolver:GraphQLResponseResolver = ({query, variables}) 
                     assetName: "Fortinet Inc.",
                     price: {amount: 107.66, currencyCode: "USD"},
                     quantity: 34,
+                    weight: 20,
                     value: {amount: 5837.09, currencyCode: "AUD"},
+                    cost: {amount: 5000.00, currencyCode: "AUD"},
                     capitalGain: {
                         amount: 1751.43,
                         currencyCode: "AUD",
@@ -372,7 +398,9 @@ const getHoldingsSummaryResolver:GraphQLResponseResolver = ({query, variables}) 
                     assetName: "Applied Materials Inc.",
                     price: {amount: 180.00, currencyCode: "USD"},
                     quantity: 15,
+                    weight: 20,
                     value: {amount: 4305.53, currencyCode: "AUD"},
+                    cost: {amount: 3000.00, currencyCode: "AUD"},
                     capitalGain: {
                         amount: -95.22,
                         currencyCode: "AUD",
@@ -400,7 +428,9 @@ const getHoldingsSummaryResolver:GraphQLResponseResolver = ({query, variables}) 
                     assetName: "Wisetech Global Ltd",
                     price: {amount: 124.10, currencyCode: "AUD"},
                     quantity: 30,
+                    weight: 20,
                     value: {amount: 3723.00, currencyCode: "AUD"},
+                    cost: {amount: 4000.00, currencyCode: "AUD"},
                     capitalGain: {
                         amount: 1102.21,
                         currencyCode: "AUD",
@@ -428,7 +458,9 @@ const getHoldingsSummaryResolver:GraphQLResponseResolver = ({query, variables}) 
                     assetName: "Alphabet Inc - Class C",
                     price: {amount: 187.14, currencyCode: "USD"},
                     quantity: 5,
+                    weight: 20,
                     value: {amount: 1492.11, currencyCode: "AUD"},
+                    cost: {amount: 1000.00, currencyCode: "AUD"},
                     capitalGain: {
                         amount: 502.15,
                         currencyCode: "AUD",

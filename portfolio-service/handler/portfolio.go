@@ -200,6 +200,7 @@ func (h *Transaction) GetHoldings(
 			AssetSymbol: s.AssetSymbol,
 			AssetName:   s.AssetName,
 			MarketCode:  s.MarketCode,
+			Weight:      0,
 			Quantity:    s.Quantity,
 			CurrentPrice: &pbp.Money{
 				Amount:       s.Price,
@@ -217,6 +218,16 @@ func (h *Transaction) GetHoldings(
 			TotalReturn:    h.computeTotalReturn(capitalReturn, dividendReturn, currencyReturn),
 		}
 		res.Investments = append(res.Investments, investment)
+	}
+
+	portfolioValue := 0.0
+	for _, investment := range res.Investments {
+		portfolioValue += investment.TotalValue.Amount
+	}
+
+	// Update weight
+	for _, investment := range res.Investments {
+		investment.Weight = (investment.TotalValue.Amount / portfolioValue) * 100
 	}
 
 	// Sort the investments by Value.Amount in descending order

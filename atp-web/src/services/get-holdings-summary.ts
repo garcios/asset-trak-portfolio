@@ -11,9 +11,14 @@ const GET_HOLDINGS_SUMMARY = gql`
                     currencyCode
                 }
                 quantity
+                weight
                 value {
                     amount
                     currencyCode
+                }
+                cost {
+                   amount
+                   currencyCode
                 }
                 capitalGain{
                     amount
@@ -48,7 +53,9 @@ export interface InvestmentLineItem {
     assetName: string;
     price: Money;
     quantity: number;
+    weight: number;
     value: Money;
+    cost: Money;
     capitalGain: MoneyWithPercentage;
     dividend: MoneyWithPercentage;
     currencyGain: MoneyWithPercentage;

@@ -31,12 +31,12 @@ const columns: readonly Column[] = [
     },
     {
         id: 'quantity',
-        label: 'Quantity',
+        label: 'Weight & Quantity',
         minWidth: 100,
     },
     {
         id: 'value',
-        label: 'Value',
+        label: 'Value & Cost',
         minWidth: 100,
         align: 'left',
     },
@@ -116,10 +116,12 @@ export default function AssetsTable({ items }: { items: InvestmentLineItem[] }) 
                                             <Typography variant="body1">{FormatCurrency(row.price?.amount, row.price?.currencyCode)}</Typography>
                                         </TableCell>
                                         <TableCell key='quantity' align="left">
-                                            <Typography variant="body1">{row.quantity}</Typography>
+                                            <Typography variant="body1">{FormatPercentage(row.weight)}</Typography>
+                                            <Typography variant="body2" color="textSecondary">{row.quantity}</Typography>
                                         </TableCell>
                                         <TableCell key='value' align="left">
                                             <Typography variant="body1">{FormatCurrency(row.value?.amount, row.value?.currencyCode)}</Typography>
+                                            <Typography variant="body2" color="textSecondary">{FormatCurrency(row.cost?.amount, row.cost?.currencyCode)}</Typography>
                                         </TableCell>
                                         <TableCell key='capitalGain' align="left">
                                             <Typography

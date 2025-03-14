@@ -2,7 +2,7 @@ import {GraphQLResponseResolver, HttpResponse} from "msw";
 
 const getPerformanceNumbersResolver:GraphQLResponseResolver = ({query, variables}) => {
     const mockData = { data: {
-            getHistoricalValues: [
+            getPerformanceHistory: [
                 { tradeDate: "Jan 2020", cost: 10000, value: 10000, currencyCode: "AUD" },
                 { tradeDate: "Jul 2020", cost: 15000, value: 20000, currencyCode: "AUD" },
                 { tradeDate: "Jan 2021", cost: 16000, value: 80000, currencyCode: "AUD" },

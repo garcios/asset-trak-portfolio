@@ -49,6 +49,7 @@ type ComplexityRoot struct {
 		AssetName    func(childComplexity int) int
 		AssetSymbol  func(childComplexity int) int
 		CapitalGain  func(childComplexity int) int
+		Cost         func(childComplexity int) int
 		CurrencyGain func(childComplexity int) int
 		Dividend     func(childComplexity int) int
 		MarketCode   func(childComplexity int) int
@@ -56,6 +57,7 @@ type ComplexityRoot struct {
 		Quantity     func(childComplexity int) int
 		TotalReturn  func(childComplexity int) int
 		Value        func(childComplexity int) int
+		Weight       func(childComplexity int) int
 	}
 
 	Money struct {
@@ -137,6 +139,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Investment.CapitalGain(childComplexity), true
 
+	case "Investment.cost":
+		if e.complexity.Investment.Cost == nil {
+			break
+		}
+
+		return e.complexity.Investment.Cost(childComplexity), true
+
 	case "Investment.currencyGain":
 		if e.complexity.Investment.CurrencyGain == nil {
 			break
@@ -185,6 +194,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Investment.Value(childComplexity), true
+
+	case "Investment.weight":
+		if e.complexity.Investment.Weight == nil {
+			break
+		}
+
+		return e.complexity.Investment.Weight(childComplexity), true
 
 	case "Money.amount":
 		if e.complexity.Money.Amount == nil {
@@ -426,8 +442,10 @@ type Investment {
   assetName: String!
   marketCode: String!
   price: Money!
+  weight: Float!
   quantity: Float!
   value: Money!
+  cost: Money!
   capitalGain: MoneyWithPercentage!
   dividend: MoneyWithPercentage!
   currencyGain: MoneyWithPercentage!
@@ -872,6 +890,50 @@ func (ec *executionContext) fieldContext_Investment_price(_ context.Context, fie
 	return fc, nil
 }
 
+func (ec *executionContext) _Investment_weight(ctx context.Context, field graphql.CollectedField, obj *models.Investment) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Investment_weight(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Weight, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalNFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Investment_weight(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Investment",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Investment_quantity(ctx context.Context, field graphql.CollectedField, obj *models.Investment) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Investment_quantity(ctx, field)
 	if err != nil {
@@ -948,6 +1010,56 @@ func (ec *executionContext) _Investment_value(ctx context.Context, field graphql
 }
 
 func (ec *executionContext) fieldContext_Investment_value(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Investment",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "amount":
+				return ec.fieldContext_Money_amount(ctx, field)
+			case "currencyCode":
+				return ec.fieldContext_Money_currencyCode(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Money", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Investment_cost(ctx context.Context, field graphql.CollectedField, obj *models.Investment) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Investment_cost(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cost, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*models.Money)
+	fc.Result = res
+	return ec.marshalNMoney2ᚖgithubᚗcomᚋgarciosᚋassetᚑtrakᚑportfolioᚋgraphqlᚋmodelsᚐMoney(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Investment_cost(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Investment",
 		Field:      field,
@@ -1617,10 +1729,14 @@ func (ec *executionContext) fieldContext_Query_getHoldingsSummary(ctx context.Co
 				return ec.fieldContext_Investment_marketCode(ctx, field)
 			case "price":
 				return ec.fieldContext_Investment_price(ctx, field)
+			case "weight":
+				return ec.fieldContext_Investment_weight(ctx, field)
 			case "quantity":
 				return ec.fieldContext_Investment_quantity(ctx, field)
 			case "value":
 				return ec.fieldContext_Investment_value(ctx, field)
+			case "cost":
+				return ec.fieldContext_Investment_cost(ctx, field)
 			case "capitalGain":
 				return ec.fieldContext_Investment_capitalGain(ctx, field)
 			case "dividend":
@@ -4158,6 +4274,11 @@ func (ec *executionContext) _Investment(ctx context.Context, sel ast.SelectionSe
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "weight":
+			out.Values[i] = ec._Investment_weight(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "quantity":
 			out.Values[i] = ec._Investment_quantity(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -4165,6 +4286,11 @@ func (ec *executionContext) _Investment(ctx context.Context, sel ast.SelectionSe
 			}
 		case "value":
 			out.Values[i] = ec._Investment_value(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "cost":
+			out.Values[i] = ec._Investment_cost(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}

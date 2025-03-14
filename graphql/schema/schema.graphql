@@ -15,8 +15,10 @@ type Investment {
   assetName: String!
   marketCode: String!
   price: Money!
+  weight: Float!
   quantity: Float!
   value: Money!
+  cost: Money!
   capitalGain: MoneyWithPercentage!
   dividend: MoneyWithPercentage!
   currencyGain: MoneyWithPercentage!

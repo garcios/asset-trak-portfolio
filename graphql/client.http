@@ -10,8 +10,13 @@ query {
             amount
             currencyCode
         }
+        weight
         quantity
         value {
+            amount
+            currencyCode
+        }
+        cost {
             amount
             currencyCode
         }

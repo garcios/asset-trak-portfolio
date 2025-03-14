@@ -44,26 +44,29 @@ message Investment {
   // The average price of the asset.
   Money average_price=5;
 
+  // The weight of the asset held in the portfolio.
+  double  weight=6;
+
   // The quantity of the asset held in the portfolio.
-  double  quantity=6;
+  double  quantity=7;
 
   // The total value of the investment, calculated as price * quantity.
-  Money total_value=7;
+  Money total_value=8;
 
   // The total cost of all trades including commissions.
-  Money total_cost=8;
+  Money total_cost=9;
 
   // The return on the investment due to price appreciation or depreciation.
-  InvestmentReturn capital_return = 9;
+  InvestmentReturn capital_return = 10;
 
   // The return on the investment from dividends paid by the asset.
-  InvestmentReturn dividend_return = 10;
+  InvestmentReturn dividend_return = 11;
 
   // The return on the investment due to currency fluctuations (if applicable).
-  InvestmentReturn currency_return = 11;
+  InvestmentReturn currency_return = 12;
 
   // The total return on the investment, combining capital, dividend, and currency returns.
-  InvestmentReturn total_return = 12;
+  InvestmentReturn total_return = 13;
 }
 
 // Represents an amount of money with its associated currency.
