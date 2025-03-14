@@ -129,6 +129,7 @@ export default function AssetsTable({ items }: { items: InvestmentLineItem[] }) 
                                                 color={getColor(row.capitalGain.amount)}>{FormatCurrency(row.capitalGain?.amount, row.capitalGain?.currencyCode)}
                                             </Typography>
                                             <Typography
+                                                sx={{ opacity: 0.7 }}
                                                 variant="body2"
                                                 color={getColor(row.capitalGain.percentage)}>{FormatPercentage(row.capitalGain.percentage)}
                                             </Typography>
@@ -139,6 +140,7 @@ export default function AssetsTable({ items }: { items: InvestmentLineItem[] }) 
                                                 color={getColor(row.dividend.amount)}>{FormatCurrency(row.dividend?.amount, row.dividend?.currencyCode)}
                                             </Typography>
                                             <Typography
+                                                sx={{ opacity: 0.7 }}
                                                 variant="body2"
                                                 color={getColor(row.dividend.percentage)}>{FormatPercentage(row.dividend.percentage)}
                                             </Typography>
@@ -149,6 +151,7 @@ export default function AssetsTable({ items }: { items: InvestmentLineItem[] }) 
                                                 color={getColor(row.currencyGain.amount)}>{FormatCurrency(row.currencyGain.amount, row.currencyGain.currencyCode)}
                                             </Typography>
                                             <Typography
+                                                sx={{ opacity: 0.7 }}
                                                 variant="body2"
                                                 color={getColor(row.currencyGain.percentage)}>{FormatPercentage(row.currencyGain.percentage)}
                                             </Typography>
@@ -159,6 +162,7 @@ export default function AssetsTable({ items }: { items: InvestmentLineItem[] }) 
                                                 color={getColor(row.totalReturn.amount)}>{FormatCurrency(row.totalReturn.amount, row.totalReturn.currencyCode)}
                                             </Typography>
                                             <Typography
+                                                sx={{ opacity: 0.7 }}
                                                 variant="body2"
                                                 color={getColor(row.totalReturn.percentage)}>{FormatPercentage(row.totalReturn.percentage)}
                                             </Typography>
