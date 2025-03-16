@@ -14,7 +14,7 @@ type queryResolver struct{ *Resolver }
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
 // GetHoldingsSummary is the resolver for the getBalanceSummary field.
-func (r *queryResolver) GetHoldingsSummary(ctx context.Context, accountID string) ([]*models.Investment, error) {
+func (r *queryResolver) Holdings(ctx context.Context, accountID string) ([]*models.Investment, error) {
 	svcs := middlewares.GetServices(ctx)
 	resp, err := svcs.PortfolioService.GetHoldingsSummary(ctx, accountID)
 	if err != nil {

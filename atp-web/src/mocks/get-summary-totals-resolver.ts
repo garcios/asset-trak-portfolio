@@ -2,7 +2,7 @@ import {GraphQLResponseResolver, HttpResponse} from "msw";
 
 const getSummaryTotalsResolver:GraphQLResponseResolver = ({query, variables}) => {
     const mockData = { data: {
-            getSummaryTotals: {
+            summaryTotals: {
                 portfolioValue: {
                     amount: 316076.18,
                     currencyCode: "AUD"

@@ -1,5 +1,5 @@
 import {graphql} from "msw";
-import {HoldingsSummaryResponse} from "../services/get-balance-summary";
+import {HoldingsSummaryResponse} from "../services/get-holdings-summary";
 import getHoldingsSummaryResolver from "./get-holdings-summary-resolver";
 import getSummaryTotalsResolver from "./get-summary-totals-resolver";
 import {SummaryTotalsResponse} from "../services/get-summary-totals";
@@ -8,15 +8,15 @@ import getPerformanceNumbersResolver from "./get-performance-numbers-resolvers";
 
 const handlers = [
     graphql.query<HoldingsSummaryResponse, { accountId: string }>(
-        'GetHoldingsSummary',
+        'holdings',
         getHoldingsSummaryResolver,
     ),
     graphql.query<SummaryTotalsResponse, { accountId: string }>(
-        'GetSummaryTotals',
+        'summaryTotals',
         getSummaryTotalsResolver,
     ),
     graphql.query<PerformanceDataResponse, { accountId: string }>(
-        'GetPerformanceNumbers',
+        'performanceNumbers',
         getPerformanceNumbersResolver,
     ),
 ];

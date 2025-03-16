@@ -2,7 +2,7 @@ import {gql} from "@apollo/client";
 
 const GET_HOLDINGS_SUMMARY = gql`
     query GetHoldingsSummary($accountId: String!){
-        getHoldingsSummary(accountId: $accountId) {
+        holdings(accountId: $accountId) {
                 assetSymbol
                 assetName
                 marketCode
@@ -45,7 +45,7 @@ const GET_HOLDINGS_SUMMARY = gql`
 `;
 
 export interface HoldingsSummaryResponse {
-    getHoldingsSummary: InvestmentLineItem[];
+    holdings: InvestmentLineItem[];
 }
 
 export interface InvestmentLineItem {

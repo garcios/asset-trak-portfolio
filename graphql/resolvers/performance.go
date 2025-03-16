@@ -6,7 +6,7 @@ import (
 	"github.com/garcios/asset-trak-portfolio/graphql/models"
 )
 
-func (r *queryResolver) GetPerformanceHistory(
+func (r *queryResolver) PerformanceHistory(
 	ctx context.Context,
 	accountID string,
 	startDate string,

@@ -2,7 +2,7 @@
 GRAPHQL localhost:8080/query
 
 query {
-    getHoldingsSummary(accountId: "eb08df3c-958d-4ae8-b3ae-41ec04418786") {
+    holdings(accountId: "eb08df3c-958d-4ae8-b3ae-41ec04418786") {
         assetSymbol
         assetName
         marketCode
@@ -47,7 +47,7 @@ query {
 GRAPHQL localhost:8080/query
 
 query {
-    getSummaryTotals(accountId: "eb08df3c-958d-4ae8-b3ae-41ec04418786") {
+    summaryTotals(accountId: "eb08df3c-958d-4ae8-b3ae-41ec04418786") {
         portfolioValue{
             amount
             currencyCode
@@ -79,7 +79,7 @@ query {
 GRAPHQL localhost:8080/query
 
 query  {
-    getPerformanceHistory(accountId: "eb08df3c-958d-4ae8-b3ae-41ec04418786", startDate: "2020-07-29", endDate: "2025-03-10") {
+    performanceHistory(accountId: "eb08df3c-958d-4ae8-b3ae-41ec04418786", startDate: "2020-07-29", endDate: "2025-03-10") {
         tradeDate
         cost
         value

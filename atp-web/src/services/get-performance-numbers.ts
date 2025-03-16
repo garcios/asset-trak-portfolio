@@ -2,7 +2,7 @@ import {gql} from "@apollo/client";
 
 const GET_PERFORMANCE_NUMBERS = gql`
     query GetPerformanceNumbers($accountId: String!, $startDate: String!, $endDate: String!){
-        getPerformanceHistory(accountId: $accountId, startDate: $startDate, endDate: $endDate) {
+        performanceHistory(accountId: $accountId, startDate: $startDate, endDate: $endDate) {
             tradeDate
             cost
             value
@@ -12,7 +12,7 @@ const GET_PERFORMANCE_NUMBERS = gql`
 `;
 
 export interface PerformanceDataResponse{
-    getHistoricalValues: PerformanceData[];
+    performanceHistory: PerformanceData[];
 }
 
 export interface PerformanceData {

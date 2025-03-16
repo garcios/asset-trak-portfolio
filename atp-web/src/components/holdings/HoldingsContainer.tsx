@@ -16,7 +16,7 @@ function HoldingsContainer() {
         setError(null);
         try {
             const data = await GraphQLService.fetchHoldingsSummary('eb08df3c-958d-4ae8-b3ae-41ec04418786');
-            setLineItems(data?.getHoldingsSummary);
+            setLineItems(data?.holdings);
         } catch (err) {
             setError(FAILED_TO_LOAD_MESSAGE);
         } finally {

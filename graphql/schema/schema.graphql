@@ -1,3 +1,8 @@
+type Query {
+  holdings(accountId: String!): [Investment!]!
+  summaryTotals(accountId: String!): SummaryTotals!
+  performanceHistory(accountId: String!, startDate:String!, endDate:String!): [PerformanceData!]!
+}
 
 type Money {
   amount: Float!
@@ -40,8 +45,3 @@ type PerformanceData{
   currencyCode: String!
 }
 
-type Query {
-  getHoldingsSummary(accountId: String!): [Investment!]!
-  getSummaryTotals(accountId: String!): SummaryTotals!
-  getPerformanceHistory(accountId: String!, startDate:String!, endDate:String!): [PerformanceData!]!
-}

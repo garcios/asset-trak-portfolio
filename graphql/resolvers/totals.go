@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-func (r *queryResolver) GetSummaryTotals(ctx context.Context, accountID string) (*models.SummaryTotals, error) {
+func (r *queryResolver) SummaryTotals(ctx context.Context, accountID string) (*models.SummaryTotals, error) {
 	svcs := middlewares.GetServices(ctx)
 	resp, err := svcs.PortfolioService.GetSummaryTotals(ctx, accountID)
 	if err != nil {
